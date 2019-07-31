@@ -34,3 +34,15 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+# Third-Party plugins
+PlayMaker/
+PlayMaker.meta
+
+tripolygon/
+tripolygon.meta
+
+# Mate Specifics
+# /Common/*.png.meta
+# /Common/UI/*.png.meta
+# /Common/Fonts/*.png.meta
