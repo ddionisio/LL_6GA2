@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraOrientInput : MonoBehaviour
+public class CameraPanInputDrag : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
