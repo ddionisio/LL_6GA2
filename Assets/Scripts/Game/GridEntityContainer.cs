@@ -12,7 +12,9 @@ public class GridEntityContainer : MonoBehaviour {
 
     public GridController controller { get { return _controller; } }
 
-    private int[,] mEntityMap; //indices from mEntities, -1 = empty, [row, col]
+    public M8.CacheList<GridEntity> entities { get { return mEntities; } }
+
+    private GridEntity[,] mEntityMap; //[row, col]
 
     private M8.CacheList<GridEntity> mEntities;
 
@@ -20,30 +22,28 @@ public class GridEntityContainer : MonoBehaviour {
         //clear map
         for(int r = 0; r < mEntityMap.GetLength(0); r++) {
             for(int c = 0; c < mEntityMap.GetLength(1); c++) {
-                mEntityMap[r, c] = -1;
+                mEntityMap[r, c] = null;
             }
-        }
-
-        //clear entities
-        for(int i = 0; i < mEntities.Count; i++) {
-            if(mEntities[i])
-                mEntities[i].Release();
         }
 
         mEntities.Clear();
     }
 
     public void AddEntity(GridEntity ent) {
+        //check if it already exists
+        if(mEntities.Exists(ent)) {
+            //remove current mapping
 
+            
+        }
+
+        //apply mapping
     }
 
-    public void RemoveEntity(GridEntity ent, bool release) {
+    public void RemoveEntity(GridEntity ent) {
         if(mEntities.Remove(ent)) {
             //clear mapping
 
-
-            if(release)
-                ent.Release();
         }
     }
 
@@ -62,10 +62,8 @@ public class GridEntityContainer : MonoBehaviour {
         //init containers
         var cellSize = _controller.cellSize;
 
-        mEntityMap = new int[cellSize.row, cellSize.col];
+        mEntityMap = new GridEntity[cellSize.row, cellSize.col];
 
         mEntities = new M8.CacheList<GridEntity>(cellSize.row * cellSize.col);
-
-        ClearEntities();
     }
 }

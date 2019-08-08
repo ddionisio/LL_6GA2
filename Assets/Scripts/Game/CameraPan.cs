@@ -148,12 +148,10 @@ public class CameraPan : MonoBehaviour {
 
     void OnDrawGizmosSelected() {
         if(boundTarget) {
-            var pos = boundTarget.position;
-
             //draw bounds
             if(bounds.x > 0f && bounds.y > 0f && bounds.z > 0f) {
                 Gizmos.color = Color.green;
-                Gizmos.DrawWireCube(new Vector3(pos.x, pos.y + bounds.y * 0.5f, pos.z), bounds);
+                M8.Gizmo.DrawWireCube(transform, new Vector3(0f, bounds.y * 0.5f, 0f), bounds * 0.5f);
             }
 
             //draw positions

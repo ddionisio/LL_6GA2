@@ -30,6 +30,10 @@ public struct GridCell {
         row = col = b = -1;
     }
 
+    public Vector3 GetSize(float unitSize) {
+        return new Vector3(col * unitSize, b * unitSize, row * unitSize);
+    }
+
     public override int GetHashCode() {
         return base.GetHashCode();
     }

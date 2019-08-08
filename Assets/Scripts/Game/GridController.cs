@@ -66,68 +66,61 @@ public class GridController : MonoBehaviour {
             return new GridCell { col = col, row = row, b = b };
     }
 
+    /// <summary>
+    /// Return a bounds based on given cell (local space)
+    /// </summary>
+    public Bounds GetBoundsFromCell(GridCell cell) {
+        var ext = extents;
+        var hUnitSize = unitSize * 0.5f;
+
+        var lpos = new Vector3((cell.col * unitSize - ext.x) + hUnitSize, cell.b * unitSize + hUnitSize, (cell.row * unitSize - ext.z) + hUnitSize);
+
+        return new Bounds(lpos, new Vector3(unitSize, unitSize, unitSize));
+    }
+
     void OnDrawGizmosSelected() {
         if(cellSize.isValid) {
-            Gizmos.color = Color.green;
-
             var b = bounds;
 
-            for(int baseInd = 0; baseInd <= cellSize.b; baseInd++) {
-                var y = b.min.y + baseInd * unitSize;
+            Gizmos.color = new Color(1f, 1f, 1f, 0.5f);
 
-                //draw rows
-                for(int r = 0; r <= cellSize.row; r++) {
-                    var z = b.min.z + r * unitSize;
+            var y = b.min.y;
 
-                    var pt1 = new Vector3(b.min.x, y, z);
-                    var pt2 = new Vector3(b.max.x, y, z);
-
-                    pt1 = transform.TransformPoint(pt1);
-                    pt2 = transform.TransformPoint(pt2);
-
-                    Gizmos.DrawLine(pt1, pt2);
-                }
-
-                //draw cols
-                for(int c = 0; c <= cellSize.col; c++) {
-                    var x = b.min.x + c * unitSize;
-
-                    var pt1 = new Vector3(x, y, b.min.z);
-                    var pt2 = new Vector3(x, y, b.max.z);
-
-                    pt1 = transform.TransformPoint(pt1);
-                    pt2 = transform.TransformPoint(pt2);
-
-                    Gizmos.DrawLine(pt1, pt2);
-                }
-            }
-
-            //draw bases
+            //draw rows
             for(int r = 0; r <= cellSize.row; r++) {
                 var z = b.min.z + r * unitSize;
 
-                for(int c = 0; c <= cellSize.col; c++) {
-                    var x = b.min.x + c * unitSize;
+                var pt1 = new Vector3(b.min.x, y, z);
+                var pt2 = new Vector3(b.max.x, y, z);
 
-                    var pt1 = new Vector3(x, b.min.y, z);
-                    var pt2 = new Vector3(x, b.max.y, z);
+                pt1 = transform.TransformPoint(pt1);
+                pt2 = transform.TransformPoint(pt2);
 
-                    pt1 = transform.TransformPoint(pt1);
-                    pt2 = transform.TransformPoint(pt2);
+                Gizmos.DrawLine(pt1, pt2);
+            }
 
-                    Gizmos.DrawLine(pt1, pt2);
-                }
+            //draw cols
+            for(int c = 0; c <= cellSize.col; c++) {
+                var x = b.min.x + c * unitSize;
+
+                var pt1 = new Vector3(x, y, b.min.z);
+                var pt2 = new Vector3(x, y, b.max.z);
+
+                pt1 = transform.TransformPoint(pt1);
+                pt2 = transform.TransformPoint(pt2);
+
+                Gizmos.DrawLine(pt1, pt2);
             }
         }
     }
 
     void OnDrawGizmos() {
-        if(cellSize.b > 0 && cellSize.row > 0 && cellSize.col > 0) {
-            //draw bounds
+        if(cellSize.isValid) {            
             Gizmos.color = Color.white;
 
             var b = bounds;
 
+            //draw bounds
             M8.Gizmo.DrawWireCube(transform, b.center, b.extents);
         }
     }
