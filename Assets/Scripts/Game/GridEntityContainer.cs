@@ -18,6 +18,17 @@ public class GridEntityContainer : MonoBehaviour {
 
     private M8.CacheList<GridEntity> mEntities;
 
+    public GridEntity GetEntity(GridCell cell) {
+        return GetEntity(cell.row, cell.col);
+    }
+
+    public GridEntity GetEntity(int row, int col) {
+        if(row >= 0 && row < mEntityMap.GetLength(0) && col >= 0 && col < mEntityMap.GetLength(1))
+            return mEntityMap[row, col];
+
+        return null;
+    }
+
     public void ClearEntities() {
         //clear map
         for(int r = 0; r < mEntityMap.GetLength(0); r++) {
@@ -33,26 +44,59 @@ public class GridEntityContainer : MonoBehaviour {
         //check if it already exists
         if(mEntities.Exists(ent)) {
             //remove current mapping
-
-            
+            ClearEntityMap(ent);
         }
+        else
+            mEntities.Add(ent);
 
         //apply mapping
+        ApplyEntityMap(ent);
     }
 
     public void RemoveEntity(GridEntity ent) {
         if(mEntities.Remove(ent)) {
             //clear mapping
-
+            ClearEntityMap(ent);
         }
     }
 
-    public void ClearAt(GridCell cell) {
-        ClearAt(cell.row, cell.col);
+    private void ClearEntityMap(GridEntity ent) {
+        var cellInd = ent.cellIndex;
+        var cellSize = ent.cellSize;
+
+        for(int r = 0; r < cellSize.row; r++) {
+            var rInd = r + cellInd.row;
+            if(rInd < 0 || rInd >= mEntityMap.GetLength(0))
+                continue;
+
+            for(int c = 0; c < cellSize.col; c++) {
+                var cInd = c + cellInd.col;
+                if(cInd < 0 || cInd >= mEntityMap.GetLength(1))
+                    continue;
+
+                if(mEntityMap[rInd, cInd] == ent)
+                    mEntityMap[rInd, cInd] = null;
+            }
+        }
     }
 
-    public void ClearAt(int row, int col) {
+    private void ApplyEntityMap(GridEntity ent) {
+        var cellInd = ent.cellIndex;
+        var cellSize = ent.cellSize;
 
+        for(int r = 0; r < cellSize.row; r++) {
+            var rInd = r + cellInd.row;
+            if(rInd < 0 || rInd >= mEntityMap.GetLength(0))
+                continue;
+
+            for(int c = 0; c < cellSize.col; c++) {
+                var cInd = c + cellInd.col;
+                if(cInd < 0 || cInd >= mEntityMap.GetLength(1))
+                    continue;
+
+                mEntityMap[rInd, cInd] = ent;
+            }
+        }
     }
 
     void Awake() {

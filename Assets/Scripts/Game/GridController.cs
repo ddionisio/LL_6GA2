@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GridController : MonoBehaviour {
+    public const float boxColliderHeight = 0.1f;
+
     //NOTE: pivot is at bottom, cell sequence start at bottom-left
 
     [Header("Data")]
@@ -46,6 +48,20 @@ public class GridController : MonoBehaviour {
             return transform.TransformPoint(e.x, cellSize.b * unitSize, e.z);
         }
     }
+
+    public BoxCollider boxCollider {
+        get {
+            if(!mIsBoxCollInit) {
+                mBoxColl = GetComponent<BoxCollider>();
+                mIsBoxCollInit = true;
+            }
+
+            return mBoxColl;
+        }
+    }
+
+    private BoxCollider mBoxColl;
+    private bool mIsBoxCollInit = false;
 
     public GridCell GetCell(Vector3 point, bool clamp) {
         var lpos = transform.InverseTransformPoint(point);
