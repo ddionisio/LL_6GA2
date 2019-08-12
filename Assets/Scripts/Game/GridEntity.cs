@@ -8,10 +8,16 @@ using UnityEngine;
 /// </summary>
 [ExecuteInEditMode]
 public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
+    public const string parmData = "data";
+
     [SerializeField]
-    GridCell _cellSize;
+    GridEntityData _data = null;
+    [SerializeField]
+    GridCell _cellSize = new GridCell { b=1, row=1, col=1 };
     [SerializeField]
     bool _updateCellOnEnabled = false; //set to true for non-spawned entities
+
+    public GridEntityData data { get { return _data; } }
 
     public GridEntityContainer container {
         get {
@@ -44,6 +50,8 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
                 }
                 else
                     mCellIndex = value;
+
+                cellChangedCallback?.Invoke();
             }
         }
     }
@@ -60,6 +68,8 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
                 }
                 else
                     _cellSize = value;
+
+                cellChangedCallback?.Invoke();
             }
         }
     }
@@ -91,7 +101,9 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
         }
     }
 
-    GridCell mCellIndex = new GridCell { b=-1, col=-1, row=-1 }; //cell position bottom-left
+    public event System.Action cellChangedCallback;
+
+    private GridCell mCellIndex = new GridCell { b=-1, col=-1, row=-1 }; //cell position bottom-left
 
     private M8.PoolDataController mPoolDataCtrl;
     private GridEntityContainer mContainer;

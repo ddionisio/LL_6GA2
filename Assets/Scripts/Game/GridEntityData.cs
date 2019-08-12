@@ -11,7 +11,24 @@ public class GridEntityData : ScriptableObject {
     [M8.Localize]
     public string descTextRef;
 
-    [Header("Placement Info")]
-    public Material placementMaterial; //material used during placement mode
-    public Color placementColor; //color used during placement
+    [Header("Display")]
+    public Material material; //material used during placement mode
+    public Color color; //color used during placement
+
+    [SerializeField]
+    string _shaderScalePulseVar = "_pulseScale";
+    [SerializeField]
+    string _shaderColorVar = "_color";
+
+    public int shaderScalePulseId { get; private set; }
+    public int shaderColorId { get; private set; }
+
+    public void RefreshShaderPropertyIds() {
+        shaderScalePulseId = Shader.PropertyToID(_shaderScalePulseVar);
+        shaderColorId = Shader.PropertyToID(_shaderColorVar);
+    }
+
+    void Awake() {
+        RefreshShaderPropertyIds();
+    }
 }

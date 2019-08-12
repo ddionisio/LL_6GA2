@@ -5,48 +5,54 @@ using UnityEngine;
 public class GridControllerDisplay : MonoBehaviour {
     [Header("Data")]
     public GridController gridControl;
+    
+    [Header("Display")]
+    public GameObject displayGO;
     public MeshFilter gridMeshFilter;
 
     [Header("Config")]
     public float textureTile = 1f;
     public bool refreshOnEnable = true;
+    public bool hideOnEnable = true;
 
     [Header("Animation")]
     public M8.Animator.Animate animator;
     [M8.Animator.TakeSelector(animatorField = "animator")]
-    public string takeEnter;
+    public string takeShow;
     [M8.Animator.TakeSelector(animatorField = "animator")]
-    public string takeExit;
+    public string takeHide;
+
+    private static readonly int[] mInds = new int[] { 0, 1, 2, 2, 3, 0 };
 
     //order: starting lower left, clockwise
     private Vector3[] mVtx = new Vector3[4];
     private Vector2[] mUVs = new Vector2[4];
-    private int[] mInds = new int[] { 0, 1, 2, 2, 3, 0 };
 
-    private int mGridRow = -1, mGridCol = -1;
+    private int mGridRowCount = -1, mGridColCount = -1;
     private float mUnitSize = 0f;
 
     public void RefreshMesh(bool forceRefresh) {
         if(!gridControl || !gridMeshFilter)
             return;
 
+        //generate mesh if not set
         var mesh = gridMeshFilter.sharedMesh;
-        if(!mesh)
-            return;
+        if(!mesh) {
+            mesh = new Mesh();
+            gridMeshFilter.sharedMesh = mesh;
+        }
 
         var cellSize = gridControl.cellSize;
 
-        if(!forceRefresh && mGridRow == cellSize.row && mGridCol == cellSize.col && mUnitSize == gridControl.unitSize)
+        if(!forceRefresh && mGridRowCount == cellSize.row && mGridColCount == cellSize.col && mUnitSize == gridControl.unitSize)
             return;
                 
-        mGridRow = cellSize.row;
-        mGridCol = cellSize.col;
+        mGridRowCount = cellSize.row;
+        mGridColCount = cellSize.col;
         mUnitSize = gridControl.unitSize;
 
-        if(mUnitSize <= 0f || mGridRow <= 0 || mGridCol <= 0)
+        if(mUnitSize <= 0f || mGridRowCount <= 0 || mGridColCount <= 0)
             return;
-                
-        mesh.Clear();
 
         var bounds = gridControl.bounds;
 
@@ -57,20 +63,58 @@ public class GridControllerDisplay : MonoBehaviour {
 
         //var uvUnit = 1f;// textureTile / mUnitSize;
 
-        var uvSize = new Vector2(textureTile * mGridCol, textureTile * mGridRow);
+        var uvSize = new Vector2(textureTile * mGridColCount, textureTile * mGridRowCount);
 
         mUVs[0] = new Vector2(0f, 0f);
         mUVs[1] = new Vector2(0f, uvSize.y);
         mUVs[2] = new Vector2(uvSize.x, uvSize.y);
         mUVs[3] = new Vector2(uvSize.x, 0f);
 
+        if(mesh.vertexCount != mVtx.Length)
+            mesh.Clear();
+
         mesh.vertices = mVtx;
         mesh.uv = mUVs;
         mesh.triangles = mInds;
     }
 
+    public void Show() {
+        if(displayGO)
+            displayGO.SetActive(true);
+
+        if(animator && !string.IsNullOrEmpty(takeShow))
+            animator.Play(takeShow);
+    }
+
+    public void Hide() {
+        if(animator && !string.IsNullOrEmpty(takeHide))
+            animator.Play(takeHide);
+    }
+
     void OnEnable() {
         if(refreshOnEnable)
             RefreshMesh(false);
+
+        if(hideOnEnable) {
+            if(displayGO)
+                displayGO.SetActive(false);
+        }
+    }
+
+    void OnDestroy() {
+        if(animator)
+            animator.takeCompleteCallback -= OnAnimatorTakeEnd;
+    }
+
+    void Awake() {
+        if(animator)
+            animator.takeCompleteCallback += OnAnimatorTakeEnd;
+    }
+
+    void OnAnimatorTakeEnd(M8.Animator.Animate anim, M8.Animator.Take take) {
+        if(take.name == takeHide) {
+            if(displayGO)
+                displayGO.SetActive(false);
+        }
     }
 }
