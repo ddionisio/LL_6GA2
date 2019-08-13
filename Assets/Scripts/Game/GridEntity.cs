@@ -51,6 +51,8 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
                 else
                     mCellIndex = value;
 
+                RefreshPosition();
+
                 cellChangedCallback?.Invoke();
             }
         }

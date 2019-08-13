@@ -52,10 +52,12 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
         16, 17, 18, 18, 19, 16, //right
     };
 
+    private const int vertexCount = 20;
+
     private static Color32[] vertexWhiteColors {
         get {
             if(mWhiteClrs == null) {
-                mWhiteClrs = new Color32[20];
+                mWhiteClrs = new Color32[vertexCount];
                 for(int i = 0; i < mWhiteClrs.Length; i++)
                     mWhiteClrs[i] = new Color32(255, 255, 255, 255);
             }
@@ -65,8 +67,8 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
     private static Color32[] mWhiteClrs;
 
     //order: starting lower left, clockwise
-    private Vector3[] mVtx = new Vector3[20];
-    private Vector2[] mUVs = new Vector2[20];
+    private Vector3[] mVtx = new Vector3[vertexCount];
+    private Vector2[] mUVs = new Vector2[vertexCount];
 
     private GridCell mCellSize = new GridCell { b = -1, row = -1, col = -1 };
 
@@ -114,7 +116,7 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
 
         mCellSize = cellSize;
 
-        if(mesh.vertexCount != mVtx.Length)
+        if(mesh.vertexCount != vertexCount)
             mesh.Clear();
 
         var bounds = gridEntity.bounds;
@@ -124,48 +126,53 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
             new Vector3(-bounds.extents.x, bounds.size.y, -bounds.extents.z),
             new Vector3(-bounds.extents.x, bounds.size.y, bounds.extents.z),
             new Vector3(bounds.extents.x, bounds.size.y, bounds.extents.z),
-            new Vector3(bounds.extents.x, bounds.size.y, -bounds.extents.z));
+            new Vector3(bounds.extents.x, bounds.size.y, -bounds.extents.z),
+            cellSize.row, cellSize.col);
 
         //front
         ApplyMeshData(4,
-            new Vector3(-bounds.extents.x, 0f, -bounds.extents.z),
-            new Vector3(-bounds.extents.x, bounds.size.y, -bounds.extents.z),
-            new Vector3(bounds.extents.x, bounds.size.y, -bounds.extents.z),
-            new Vector3(bounds.extents.x, 0f, -bounds.extents.z));
-
-        //back
-        ApplyMeshData(8,
             new Vector3(bounds.extents.x, 0f, bounds.extents.z),
             new Vector3(bounds.extents.x, bounds.size.y, bounds.extents.z),
             new Vector3(-bounds.extents.x, bounds.size.y, bounds.extents.z),
-            new Vector3(-bounds.extents.x, 0f, bounds.extents.z));
+            new Vector3(-bounds.extents.x, 0f, bounds.extents.z),
+            cellSize.b, cellSize.col);
+
+        //back
+        ApplyMeshData(8,
+            new Vector3(-bounds.extents.x, 0f, -bounds.extents.z),
+            new Vector3(-bounds.extents.x, bounds.size.y, -bounds.extents.z),
+            new Vector3(bounds.extents.x, bounds.size.y, -bounds.extents.z),
+            new Vector3(bounds.extents.x, 0f, -bounds.extents.z),
+            cellSize.b, cellSize.col);
 
         //left
         ApplyMeshData(12,
             new Vector3(-bounds.extents.x, 0f, bounds.extents.z),
             new Vector3(-bounds.extents.x, bounds.size.y, bounds.extents.z),
             new Vector3(-bounds.extents.x, bounds.size.y, -bounds.extents.z),
-            new Vector3(-bounds.extents.x, 0f, -bounds.extents.z));
+            new Vector3(-bounds.extents.x, 0f, -bounds.extents.z),
+            cellSize.b, cellSize.row);
 
         //right
         ApplyMeshData(16,
             new Vector3(bounds.extents.x, 0f, -bounds.extents.z),
             new Vector3(bounds.extents.x, bounds.size.y, -bounds.extents.z),
             new Vector3(bounds.extents.x, bounds.size.y, bounds.extents.z),
-            new Vector3(bounds.extents.x, 0f, bounds.extents.z));
+            new Vector3(bounds.extents.x, 0f, bounds.extents.z),
+            cellSize.b, cellSize.row);
 
         mesh.vertices = mVtx;
         mesh.uv = mUVs;        
         mesh.triangles = mInds;
     }
 
-    private void ApplyMeshData(int sInd, Vector3 vtx1, Vector3 vtx2, Vector3 vtx3, Vector3 vtx4) {
+    private void ApplyMeshData(int sInd, Vector3 vtx1, Vector3 vtx2, Vector3 vtx3, Vector3 vtx4, int tileRow, int tileCol) {
         mVtx[sInd]     = vtx1;
         mVtx[sInd + 1] = vtx2;
         mVtx[sInd + 2] = vtx3;
         mVtx[sInd + 3] = vtx4;
 
-        var uvSize = new Vector2(textureTile * mCellSize.col, textureTile * mCellSize.row);
+        var uvSize = new Vector2(textureTile * tileCol, textureTile * tileRow);
 
         mUVs[sInd]     = new Vector2(0f, 0f);
         mUVs[sInd + 1] = new Vector2(0f, uvSize.y);

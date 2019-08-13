@@ -63,6 +63,10 @@ public class GridController : MonoBehaviour {
     private BoxCollider mBoxColl;
     private bool mIsBoxCollInit = false;
 
+    public bool IsContained(GridCell index) {
+        return index.isValid && index.b < cellSize.b && index.row < cellSize.row && index.col < cellSize.col;
+    }
+
     public GridCell GetCell(Vector3 point, bool clamp) {
         var lpos = transform.InverseTransformPoint(point);
         return GetCellLocal(lpos, clamp);

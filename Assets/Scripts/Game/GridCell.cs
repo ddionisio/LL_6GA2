@@ -24,7 +24,9 @@ public struct GridCell {
 
     public int volume { get { return b * row * col; } }
 
-    public bool isValid { get { return row >= 0 && col >= 0 && b > 0; } }
+    public bool isVolumeValid { get { return b > 0 && row > 0 && col > 0; } }
+
+    public bool isValid { get { return row >= 0 && col >= 0 && b >= 0; } }
 
     public void Invalidate() {
         row = col = b = -1;
