@@ -7,8 +7,8 @@ public class GridControllerDisplay : MonoBehaviour {
     public GridController gridControl;
     
     [Header("Display")]
-    public GameObject displayGO;
     public MeshFilter gridMeshFilter;
+    public Renderer rendererDisplay;
 
     [Header("Config")]
     public float textureTile = 1f;
@@ -22,6 +22,26 @@ public class GridControllerDisplay : MonoBehaviour {
     [M8.Animator.TakeSelector(animatorField = "animator")]
     public string takeHide;
 
+    public bool isVisible {
+        get { return mIsVisible; }
+        set {
+            if(mIsVisible != value) {
+                mIsVisible = value;
+
+                if(mIsVisible) {
+                    rendererDisplay.enabled = true;
+
+                    if(animator && !string.IsNullOrEmpty(takeShow))
+                        animator.Play(takeShow);
+                }
+                else {
+                    if(animator && !string.IsNullOrEmpty(takeHide))
+                        animator.Play(takeHide);
+                }
+            }
+        }
+    }
+
     private static readonly int[] mInds = new int[] { 0, 1, 2, 2, 3, 0 };
 
     //order: starting lower left, clockwise
@@ -30,6 +50,8 @@ public class GridControllerDisplay : MonoBehaviour {
 
     private int mGridRowCount = -1, mGridColCount = -1;
     private float mUnitSize = 0f;
+
+    private bool mIsVisible;
 
     public void RefreshMesh(bool forceRefresh) {
         if(!gridControl || !gridMeshFilter)
@@ -78,26 +100,13 @@ public class GridControllerDisplay : MonoBehaviour {
         mesh.triangles = mInds;
     }
 
-    public void Show() {
-        if(displayGO)
-            displayGO.SetActive(true);
-
-        if(animator && !string.IsNullOrEmpty(takeShow))
-            animator.Play(takeShow);
-    }
-
-    public void Hide() {
-        if(animator && !string.IsNullOrEmpty(takeHide))
-            animator.Play(takeHide);
-    }
-
     void OnEnable() {
         if(refreshOnEnable)
             RefreshMesh(false);
 
         if(hideOnEnable) {
-            if(displayGO)
-                displayGO.SetActive(false);
+            mIsVisible = false;
+            rendererDisplay.enabled = false;
         }
     }
 
@@ -109,12 +118,13 @@ public class GridControllerDisplay : MonoBehaviour {
     void Awake() {
         if(animator)
             animator.takeCompleteCallback += OnAnimatorTakeEnd;
+
+        mIsVisible = rendererDisplay.enabled;
     }
 
     void OnAnimatorTakeEnd(M8.Animator.Animate anim, M8.Animator.Take take) {
         if(take.name == takeHide) {
-            if(displayGO)
-                displayGO.SetActive(false);
+            rendererDisplay.enabled = false;
         }
     }
 }

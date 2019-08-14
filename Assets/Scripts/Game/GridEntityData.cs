@@ -15,10 +15,13 @@ public class GridEntityData : ScriptableObject {
     public Material material; //material used during placement mode
     public Color color; //color used during placement
 
+    [Header("Template")]
+    public GameObject template;
+
     [SerializeField]
-    string _shaderScalePulseVar = "_pulseScale";
+    string _shaderScalePulseVar = "_PulseScale";
     [SerializeField]
-    string _shaderColorVar = "_color";
+    string _shaderColorVar = "_Color";
 
     public int shaderScalePulseId { get; private set; }
     public int shaderColorId { get; private set; }

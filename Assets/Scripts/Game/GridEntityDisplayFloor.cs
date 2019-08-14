@@ -12,15 +12,19 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
     
     [Header("Config")]
     public float textureTile = 1f;
+    public float alpha = 0.5f;
     public bool refreshOnEnable = false; //set this to true for non-placeables
     public bool hideOnEnable = false; //set this to true for non-placeables
 
-    [Header("Animation")]
-    public M8.Animator.Animate animator;
-    [M8.Animator.TakeSelector(animatorField = "animator")]
-    public string takeShow;
-    [M8.Animator.TakeSelector(animatorField = "animator")]
-    public string takeHide;
+    public bool isVisible {
+        get { return mIsVisible; }
+        set {
+            if(mIsVisible != value) {
+                mIsVisible = value;
+                gridRenderer.enabled = mIsVisible;
+            }
+        }
+    }
 
     private static readonly int[] mInds = new int[] { 0, 1, 2, 2, 3, 0 };
 
@@ -32,11 +36,16 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
 
     private Material mMat;
 
+    private bool mIsVisible;
+
     public void RefreshColor() {
         if(!mMat || !gridEntity || !gridEntity.data)
             return;
 
-        mMat.SetColor(gridEntity.data.shaderColorId, gridEntity.data.color);
+        var clr = gridEntity.data.color;
+        clr.a = alpha;
+
+        mMat.SetColor(gridEntity.data.shaderColorId, clr);
     }
 
     public void RefreshMesh(bool forceRefresh) {
@@ -85,57 +94,33 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
         mesh.triangles = mInds;
     }
 
-    public void Show() {
-        if(gridRenderer)
-            gridRenderer.gameObject.SetActive(true);
-
-        if(animator && !string.IsNullOrEmpty(takeShow))
-            animator.Play(takeShow);
-    }
-
-    public void Hide() {
-        if(animator && !string.IsNullOrEmpty(takeHide))
-            animator.Play(takeHide);
-    }
-
     void M8.IPoolSpawnComplete.OnSpawnComplete() {
         RefreshColor();
         RefreshMesh(true);
 
-        if(gridRenderer)
-            gridRenderer.gameObject.SetActive(false);
+        mIsVisible = false;
+        gridRenderer.enabled = false;
     }
 
     void OnEnable() {
-        if(refreshOnEnable)
+        if(refreshOnEnable) {
+            RefreshColor();
             RefreshMesh(false);
+        }
 
         if(hideOnEnable) {
-            if(gridRenderer)
-                gridRenderer.gameObject.SetActive(false);
+            mIsVisible = false;
+            gridRenderer.enabled = false;
         }
     }
 
     void OnDestroy() {
-        if(animator)
-            animator.takeCompleteCallback -= OnAnimatorTakeEnd;
-
         if(mMat)
             Destroy(mMat);
     }
 
     void Awake() {
-        if(animator)
-            animator.takeCompleteCallback += OnAnimatorTakeEnd;
-
-        if(gridRenderer)
-            mMat = gridRenderer.material;
-    }
-
-    void OnAnimatorTakeEnd(M8.Animator.Animate anim, M8.Animator.Take take) {
-        if(take.name == takeHide) {
-            if(gridRenderer)
-                gridRenderer.gameObject.SetActive(false);
-        }
+        mMat = gridRenderer.material;
+        mIsVisible = gridRenderer.enabled;
     }
 }

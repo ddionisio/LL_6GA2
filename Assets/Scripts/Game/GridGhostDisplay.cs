@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Use for display of resizing/moving. Ensure that this is inside the GridController hierarchy.
 /// </summary>
-public class GridEditDisplay : MonoBehaviour {
+public class GridGhostDisplay : MonoBehaviour {
     [Header("Display")]
     public MeshFilter cubeMeshFilter; //if not null, apply entity's dimension
     public Renderer rendererDisplay;
@@ -33,6 +33,16 @@ public class GridEditDisplay : MonoBehaviour {
 
     public Material material { get; private set; }
 
+    public bool isVisible {
+        get { return mIsVisible; }
+        set {
+            if(mIsVisible != value) {
+                mIsVisible = value;
+                rendererDisplay.enabled = mIsVisible;
+            }
+        }
+    }
+
     private static readonly int[] mInds = new int[] {
          0,  1,  2,  2,  3,  0, //top
          4,  5,  6,  6,  7,  4, //back
@@ -51,6 +61,8 @@ public class GridEditDisplay : MonoBehaviour {
     private FaceFlags mFaceHighlight = FaceFlags.None;
         
     private Mesh mCubeMesh; //generated mesh if not available
+
+    private bool mIsVisible;
 
     public void ApplyMaterial(GridEntityData data) {
         var mat = data.material;
@@ -183,7 +195,8 @@ public class GridEditDisplay : MonoBehaviour {
     }
 
     void Awake() {
-        rendererDisplay.gameObject.SetActive(false);
+        mIsVisible = false;
+        rendererDisplay.enabled = false;
 
         //ensure there is a mesh
         var mesh = cubeMeshFilter.sharedMesh;

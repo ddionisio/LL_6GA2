@@ -35,12 +35,20 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
 
     public Material material {
         get {
-            if(!mMat) {
-                if(rendererDisplay)
-                    mMat = rendererDisplay.material;
-            }
+            if(!mMat)
+                mMat = rendererDisplay.material;
 
             return mMat;
+        }
+    }
+
+    public bool isVisible {
+        get { return mIsVisible; }
+        set {
+            if(mIsVisible != value) {
+                mIsVisible = value;
+                rendererDisplay.enabled = mIsVisible;
+            }
         }
     }
 
@@ -78,10 +86,9 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
     private float mAlpha;
     private float mPulseScale;
 
-    public void ApplyMaterial(Material mat) {
-        if(!rendererDisplay)
-            return;
+    private bool mIsVisible;
 
+    public void ApplyMaterial(Material mat) {
         if(rendererDisplay.sharedMaterial == null || mat == null || rendererDisplay.sharedMaterial.name != mat.name) {
             if(mMat) {
                 Destroy(mMat);
@@ -190,6 +197,9 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
             ApplyMaterial(gridEntity.data.material);
 
         RefreshMesh(true);
+
+        mIsVisible = true;
+        rendererDisplay.enabled = true;
     }
 
     void OnDestroy() {
@@ -203,7 +213,7 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
     void Awake() {
         //initialize property values
         var dat = gridEntity ? gridEntity.data : null;
-        var mat = rendererDisplay ? rendererDisplay.sharedMaterial : null;
+        var mat = rendererDisplay.sharedMaterial;
 
         if(dat && mat) {
             var clr = mat.GetColor(dat.shaderColorId);
@@ -211,6 +221,8 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
 
             mPulseScale = mat.GetFloat(dat.shaderScalePulseId);
         }
+
+        mIsVisible = rendererDisplay.enabled;
 
         if(gridEntity)
             gridEntity.cellChangedCallback += OnGridEntityCellChanged;
