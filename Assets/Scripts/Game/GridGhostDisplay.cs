@@ -33,6 +33,16 @@ public class GridGhostDisplay : MonoBehaviour {
 
     public Material material { get; private set; }
 
+    public Color pulseColor {
+        get { return material ? material.GetColor(mShaderPulseColorId) : Color.clear; }
+        set {
+            if(material)
+                material.SetColor(mShaderPulseColorId, value);
+        }
+    }
+
+    public Color pulseColorDefault { get; private set; }
+
     public bool isVisible {
         get { return rendererDisplay.enabled; }
         set { rendererDisplay.enabled = value; }
@@ -57,8 +67,12 @@ public class GridGhostDisplay : MonoBehaviour {
         
     private Mesh mCubeMesh; //generated mesh if not available
 
+    private int mShaderPulseColorId;
+
     public void ApplyMaterial(GridEntityData data) {
         var mat = data.material;
+
+        mShaderPulseColorId = data.shaderPulseColorId;
 
         if(!material || !mat || material.name != mat.name) {
             if(material) {
@@ -76,7 +90,9 @@ public class GridGhostDisplay : MonoBehaviour {
                 material.SetColor(data.shaderColorId, clr);
 
                 //apply pulse scale
-                material.SetFloat(data.shaderScalePulseId, _pulseScale);
+                material.SetFloat(data.shaderPulseScaleId, _pulseScale);
+
+                pulseColorDefault = material.GetColor(data.shaderPulseColorId);
             }
             else
                 rendererDisplay.sharedMaterial = null;
@@ -204,5 +220,10 @@ public class GridGhostDisplay : MonoBehaviour {
 
         if(mCubeMesh)
             Destroy(mCubeMesh);
+    }
+
+    void Awake() {
+        //default hidden
+        rendererDisplay.enabled = false;
     }
 }

@@ -29,6 +29,16 @@ public class GridEntityContainer : MonoBehaviour {
         return null;
     }
 
+    public bool IsPlaceable(GridCell index, GridCell size) {
+
+        return false;
+    }
+
+    public bool IsPlaceable(GridEntity ent) {
+
+        return false;
+    }
+
     public void ClearEntities() {
         //clear map
         for(int r = 0; r < mEntityMap.GetLength(0); r++) {

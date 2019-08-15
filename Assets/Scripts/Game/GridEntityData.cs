@@ -19,19 +19,28 @@ public class GridEntityData : ScriptableObject {
     public GameObject template;
 
     [SerializeField]
-    string _shaderScalePulseVar = "_PulseScale";
+    string _shaderPulseScaleVar = "_PulseScale";
     [SerializeField]
-    string _shaderColorVar = "_Color";
+    string _shaderPulseColorVar = "_PulseColor";
+    [SerializeField]
+    string _shaderColorVar = "_Color";    
 
-    public int shaderScalePulseId { get; private set; }
+    public int shaderPulseScaleId { get; private set; }
+    public int shaderPulseColorId { get; private set; }
     public int shaderColorId { get; private set; }
 
-    public void RefreshShaderPropertyIds() {
-        shaderScalePulseId = Shader.PropertyToID(_shaderScalePulseVar);
+    public Color pulseColor { get; private set; }
+
+    public void Init() {
+        shaderPulseScaleId = Shader.PropertyToID(_shaderPulseScaleVar);
+        shaderPulseColorId = Shader.PropertyToID(_shaderPulseColorVar);
         shaderColorId = Shader.PropertyToID(_shaderColorVar);
+
+        if(material)
+            pulseColor = material.GetColor(shaderPulseColorId);
     }
 
     void Awake() {
-        RefreshShaderPropertyIds();
+        Init();
     }
 }

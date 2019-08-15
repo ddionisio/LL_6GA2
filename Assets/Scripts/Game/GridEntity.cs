@@ -9,6 +9,8 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
     public const string parmData = "data";
+    public const string parmCellIndex = "cInd";
+    public const string parmCellSize = "cSize";
 
     [SerializeField]
     GridEntityData _data = null;
@@ -121,6 +123,12 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
                 _cellSize = size;
 
                 container.AddEntity(this);
+
+                RefreshPosition();
+
+                mIsBoundsUpdated = false;
+
+                cellChangedCallback?.Invoke();
             }
             else {
                 mCellIndex = index;
@@ -178,6 +186,35 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
         }
     }
 
+    void M8.IPoolSpawn.OnSpawned(M8.GenericParams parms) {
+        mCellIndex = new GridCell { b=0, row=0, col=0 };
+        _cellSize = new GridCell { b=1, row=1, col=1 };
+
+
+        if(parms != null) {
+            if(parms.ContainsKey(parmData))
+                _data = parms.GetValue<GridEntityData>(parmData);
+
+            if(parms.ContainsKey(parmCellIndex))
+                mCellIndex = parms.GetValue<GridCell>(parmCellIndex);
+
+            if(parms.ContainsKey(parmCellSize))
+                _cellSize = parms.GetValue<GridCell>(parmCellSize);
+        }
+
+        container.AddEntity(this);
+
+        RefreshPosition();
+        RefreshBounds();
+    }
+
+    void M8.IPoolDespawn.OnDespawned() {
+        if(container)
+            container.RemoveEntity(this);
+
+        mContainer = null;
+    }
+
 #if UNITY_EDITOR
     void Update() {
         if(!Application.isPlaying) {
@@ -201,20 +238,6 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
         }
     }
 #endif
-
-    void M8.IPoolSpawn.OnSpawned(M8.GenericParams parms) {
-        //set cell info if available
-
-        RefreshBounds();
-        RefreshGridPostion();
-    }
-
-    void M8.IPoolDespawn.OnDespawned() {
-        if(container)
-            container.RemoveEntity(this);
-
-        mContainer = null;
-    }
 
     private void RefreshBounds() {
         if(container) {

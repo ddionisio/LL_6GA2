@@ -55,8 +55,6 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
                 //update position
                 RefreshPosition();
-
-                RefreshVisible();
             }
         }
     }
@@ -73,8 +71,6 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
                 }
                 else
                     mCellSize = value;
-
-                RefreshVisible();
 
                 //update bounds
                 RefreshBounds();
@@ -95,16 +91,6 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         get {
             var pos = new Vector3(bounds.center.x, bounds.max.y + GameData.instance.anchorOffset, bounds.center.z);
             return transform.TransformPoint(pos);
-        }
-    }
-
-    public bool isVisible {
-        get { return mIsVisible; }
-        set {
-            if(mIsVisible != value) {
-                mIsVisible = value;
-                RefreshVisible();
-            }
         }
     }
 
@@ -129,7 +115,6 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     private GridCell mCellIndex = new GridCell { b = -1, row = -1, col = -1 };
     private GridCell mCellSize = new GridCell { b = 1, row = 1, col = 1 };
 
-    private bool mIsVisible = false;
     private InputMode mInputMode = InputMode.None;
 
     private FaceFlags mPointerFace = FaceFlags.None;
@@ -137,8 +122,6 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
     void Awake() {
         mColl = GetComponent<BoxCollider>();
-                
-        RefreshVisible();
 
         RefreshInputMode();
 
@@ -221,10 +204,6 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         var startBound = ctrl.GetBoundsFromCell(cellIndex);
 
         transform.localPosition = new Vector3(startBound.min.x + size.x * 0.5f, startBound.min.y, startBound.min.z + size.z * 0.5f);
-    }
-
-    private void RefreshVisible() {
-        display.isVisible = mIsVisible && mCellSize.isVolumeValid && controller.IsContained(mCellIndex);
     }
         
     private void RefreshInputMode() {

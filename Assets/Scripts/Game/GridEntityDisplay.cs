@@ -211,7 +211,7 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
             var clr = mat.GetColor(dat.shaderColorId);
             mAlpha = clr.a;
 
-            mPulseScale = mat.GetFloat(dat.shaderScalePulseId);
+            mPulseScale = mat.GetFloat(dat.shaderPulseScaleId);
         }
 
         if(gridEntity)
@@ -236,6 +236,6 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
         var dat = gridEntity ? gridEntity.data : null;
         var mat = material;
         if(dat && mat)
-            mat.SetFloat(dat.shaderScalePulseId, mPulseScale);
+            mat.SetFloat(dat.shaderPulseScaleId, mPulseScale);
     }
 }

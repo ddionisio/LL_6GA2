@@ -12,7 +12,7 @@ public class GridEntityDataInspector : Editor {
         if(GUI.changed) {
             var dat = target as GridEntityData;
 
-            dat.RefreshShaderPropertyIds();
+            dat.Init();
         }
     }
 }
