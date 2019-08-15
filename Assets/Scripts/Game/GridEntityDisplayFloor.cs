@@ -12,18 +12,12 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
     
     [Header("Config")]
     public float textureTile = 1f;
-    public float alpha = 0.5f;
-    public bool refreshOnEnable = false; //set this to true for non-placeables
-    public bool hideOnEnable = false; //set this to true for non-placeables
+    [SerializeField]
+    bool _refreshOnEnable = false; //set this to true for non-placeables
 
     public bool isVisible {
-        get { return mIsVisible; }
-        set {
-            if(mIsVisible != value) {
-                mIsVisible = value;
-                gridRenderer.enabled = mIsVisible;
-            }
-        }
+        get { return gridRenderer.enabled; }
+        set { gridRenderer.enabled = value; }
     }
 
     private static readonly int[] mInds = new int[] { 0, 1, 2, 2, 3, 0 };
@@ -35,15 +29,17 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
     private int mGridRowCount = -1, mGridColCount = -1;
 
     private Material mMat;
-
-    private bool mIsVisible;
+    private Mesh mFloorMesh;
 
     public void RefreshColor() {
-        if(!mMat || !gridEntity || !gridEntity.data)
+        if(!gridEntity || !gridEntity.data)
             return;
 
+        if(!mMat)
+            mMat = gridRenderer.material;
+
         var clr = gridEntity.data.color;
-        clr.a = alpha;
+        clr.a = GameData.instance.floorAlpha;
 
         mMat.SetColor(gridEntity.data.shaderColorId, clr);
     }
@@ -55,8 +51,8 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
         //generate mesh if not set
         var mesh = gridMeshFilter.sharedMesh;
         if(!mesh) {
-            mesh = new Mesh();
-            gridMeshFilter.sharedMesh = mesh;
+            mFloorMesh = new Mesh();
+            gridMeshFilter.sharedMesh = mFloorMesh;
         }
 
         var cellSize = gridEntity.cellSize;
@@ -97,30 +93,20 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
     void M8.IPoolSpawnComplete.OnSpawnComplete() {
         RefreshColor();
         RefreshMesh(true);
-
-        mIsVisible = false;
-        gridRenderer.enabled = false;
     }
 
     void OnEnable() {
-        if(refreshOnEnable) {
+        if(_refreshOnEnable) {
             RefreshColor();
             RefreshMesh(false);
-        }
-
-        if(hideOnEnable) {
-            mIsVisible = false;
-            gridRenderer.enabled = false;
         }
     }
 
     void OnDestroy() {
         if(mMat)
             Destroy(mMat);
-    }
 
-    void Awake() {
-        mMat = gridRenderer.material;
-        mIsVisible = gridRenderer.enabled;
+        if(mFloorMesh)
+            Destroy(mFloorMesh);
     }
 }

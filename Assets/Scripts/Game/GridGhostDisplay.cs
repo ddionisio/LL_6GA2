@@ -34,13 +34,8 @@ public class GridGhostDisplay : MonoBehaviour {
     public Material material { get; private set; }
 
     public bool isVisible {
-        get { return mIsVisible; }
-        set {
-            if(mIsVisible != value) {
-                mIsVisible = value;
-                rendererDisplay.enabled = mIsVisible;
-            }
-        }
+        get { return rendererDisplay.enabled; }
+        set { rendererDisplay.enabled = value; }
     }
 
     private static readonly int[] mInds = new int[] {
@@ -54,15 +49,13 @@ public class GridGhostDisplay : MonoBehaviour {
     private const int vertexCount = 20;
 
     //order: starting lower left, clockwise
-    private Vector3[] mVtx = new Vector3[vertexCount];
-    private Vector2[] mUVs = new Vector2[vertexCount];
-    private Color32[] mClrs = new Color32[vertexCount];
+    private Vector3[] mVtx;
+    private Vector2[] mUVs;
+    private Color32[] mClrs;
 
     private FaceFlags mFaceHighlight = FaceFlags.None;
         
     private Mesh mCubeMesh; //generated mesh if not available
-
-    private bool mIsVisible;
 
     public void ApplyMaterial(GridEntityData data) {
         var mat = data.material;
@@ -94,7 +87,21 @@ public class GridGhostDisplay : MonoBehaviour {
         if(!cubeMeshFilter)
             return;
 
+        bool isMeshInit = false;
+
+        //ensure there is a mesh
         var mesh = cubeMeshFilter.sharedMesh;
+        if(!mesh) {
+            mCubeMesh = new Mesh();
+            cubeMeshFilter.sharedMesh = mCubeMesh;
+
+            isMeshInit = true;
+        }
+
+        if(mVtx == null)
+            mVtx = new Vector3[vertexCount];
+        if(mUVs == null)
+            mUVs = new Vector2[vertexCount];
 
         //top
         ApplyMeshData(0,
@@ -139,13 +146,14 @@ public class GridGhostDisplay : MonoBehaviour {
         mesh.vertices = mVtx;
         mesh.uv = mUVs;
         mesh.triangles = mInds;
+
+        if(isMeshInit)
+            RefreshColorVertices();
     }
 
     private void RefreshColorVertices() {
-        if(!cubeMeshFilter)
-            return;
-
-        var mesh = cubeMeshFilter.sharedMesh;
+        if(mClrs == null)
+            mClrs = new Color32[vertexCount];
 
         var clr = new Color32(255, 255, 255, (byte)Mathf.RoundToInt(255f * _baseAlpha));
         var clrHighlight = new Color32(255, 255, 255, 255);
@@ -165,7 +173,8 @@ public class GridGhostDisplay : MonoBehaviour {
         //right
         ApplyMeshColor(16, (mFaceHighlight & FaceFlags.Right) != FaceFlags.None ? clrHighlight : clr);
 
-        mesh.colors32 = mClrs;
+        if(cubeMeshFilter && cubeMeshFilter.sharedMesh)
+            cubeMeshFilter.sharedMesh.colors32 = mClrs;
     }
 
     private void ApplyMeshData(int sInd, Vector3 vtx1, Vector3 vtx2, Vector3 vtx3, Vector3 vtx4, int tileRow, int tileCol) {
@@ -192,19 +201,8 @@ public class GridGhostDisplay : MonoBehaviour {
     void OnDestroy() {
         if(material)
             Destroy(material);
-    }
 
-    void Awake() {
-        mIsVisible = false;
-        rendererDisplay.enabled = false;
-
-        //ensure there is a mesh
-        var mesh = cubeMeshFilter.sharedMesh;
-        if(!mesh) {
-            mesh = new Mesh();
-            cubeMeshFilter.sharedMesh = mesh;
-        }
-
-        RefreshColorVertices();
+        if(mCubeMesh)
+            Destroy(mCubeMesh);
     }
 }

@@ -91,6 +91,13 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     /// </summary>
     public Bounds bounds { get; private set; }
 
+    public Vector3 anchorPosition {
+        get {
+            var pos = new Vector3(bounds.center.x, bounds.max.y + GameData.instance.anchorOffset, bounds.center.z);
+            return transform.TransformPoint(pos);
+        }
+    }
+
     public bool isVisible {
         get { return mIsVisible; }
         set {

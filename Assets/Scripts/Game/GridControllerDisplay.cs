@@ -13,33 +13,10 @@ public class GridControllerDisplay : MonoBehaviour {
     [Header("Config")]
     public float textureTile = 1f;
     public bool refreshOnEnable = true;
-    public bool hideOnEnable = true;
-
-    [Header("Animation")]
-    public M8.Animator.Animate animator;
-    [M8.Animator.TakeSelector(animatorField = "animator")]
-    public string takeShow;
-    [M8.Animator.TakeSelector(animatorField = "animator")]
-    public string takeHide;
 
     public bool isVisible {
-        get { return mIsVisible; }
-        set {
-            if(mIsVisible != value) {
-                mIsVisible = value;
-
-                if(mIsVisible) {
-                    rendererDisplay.enabled = true;
-
-                    if(animator && !string.IsNullOrEmpty(takeShow))
-                        animator.Play(takeShow);
-                }
-                else {
-                    if(animator && !string.IsNullOrEmpty(takeHide))
-                        animator.Play(takeHide);
-                }
-            }
-        }
+        get { return rendererDisplay.enabled; }
+        set { rendererDisplay.enabled = value; }
     }
 
     private static readonly int[] mInds = new int[] { 0, 1, 2, 2, 3, 0 };
@@ -52,6 +29,7 @@ public class GridControllerDisplay : MonoBehaviour {
     private float mUnitSize = 0f;
 
     private bool mIsVisible;
+    private Mesh mMesh;
 
     public void RefreshMesh(bool forceRefresh) {
         if(!gridControl || !gridMeshFilter)
@@ -60,8 +38,8 @@ public class GridControllerDisplay : MonoBehaviour {
         //generate mesh if not set
         var mesh = gridMeshFilter.sharedMesh;
         if(!mesh) {
-            mesh = new Mesh();
-            gridMeshFilter.sharedMesh = mesh;
+            mMesh = new Mesh();
+            gridMeshFilter.sharedMesh = mMesh;
         }
 
         var cellSize = gridControl.cellSize;
@@ -103,28 +81,10 @@ public class GridControllerDisplay : MonoBehaviour {
     void OnEnable() {
         if(refreshOnEnable)
             RefreshMesh(false);
-
-        if(hideOnEnable) {
-            mIsVisible = false;
-            rendererDisplay.enabled = false;
-        }
     }
 
     void OnDestroy() {
-        if(animator)
-            animator.takeCompleteCallback -= OnAnimatorTakeEnd;
-    }
-
-    void Awake() {
-        if(animator)
-            animator.takeCompleteCallback += OnAnimatorTakeEnd;
-
-        mIsVisible = rendererDisplay.enabled;
-    }
-
-    void OnAnimatorTakeEnd(M8.Animator.Animate anim, M8.Animator.Take take) {
-        if(take.name == takeHide) {
-            rendererDisplay.enabled = false;
-        }
+        if(mMesh)
+            Destroy(mMesh);
     }
 }

@@ -43,13 +43,8 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
     }
 
     public bool isVisible {
-        get { return mIsVisible; }
-        set {
-            if(mIsVisible != value) {
-                mIsVisible = value;
-                rendererDisplay.enabled = mIsVisible;
-            }
-        }
+        get { return rendererDisplay.enabled; }
+        set { rendererDisplay.enabled = value; }
     }
 
     private static readonly int[] mInds = new int[] {
@@ -75,8 +70,8 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
     private static Color32[] mWhiteClrs;
 
     //order: starting lower left, clockwise
-    private Vector3[] mVtx = new Vector3[vertexCount];
-    private Vector2[] mUVs = new Vector2[vertexCount];
+    private Vector3[] mVtx;
+    private Vector2[] mUVs;
 
     private GridCell mCellSize = new GridCell { b = -1, row = -1, col = -1 };
 
@@ -85,8 +80,6 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
     private Material mMat;
     private float mAlpha;
     private float mPulseScale;
-
-    private bool mIsVisible;
 
     public void ApplyMaterial(Material mat) {
         if(rendererDisplay.sharedMaterial == null || mat == null || rendererDisplay.sharedMaterial.name != mat.name) {
@@ -106,16 +99,7 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
     public void RefreshMesh(bool forceRefresh) {
         if(!gridEntity || !cubeMeshFilter)
             return;
-
-        //generate mesh first-time
-        var mesh = cubeMeshFilter.sharedMesh;
-        if(!mesh) {
-            mesh = new Mesh();
-            cubeMeshFilter.sharedMesh = mesh;
-
-            mesh.colors32 = vertexWhiteColors;
-        }
-
+                
         var cellSize = gridEntity.cellSize;
 
         if(!forceRefresh && mCellSize == cellSize)
@@ -123,10 +107,21 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
 
         mCellSize = cellSize;
 
-        if(mesh.vertexCount != vertexCount)
+        //generate mesh first-time
+        var mesh = cubeMeshFilter.sharedMesh;
+        if(!mesh) {
+            mCubeMesh = new Mesh();
+            cubeMeshFilter.sharedMesh = mCubeMesh;
+        }
+        else if(mesh.vertexCount != vertexCount)
             mesh.Clear();
 
         var bounds = gridEntity.bounds;
+
+        if(mVtx == null)
+            mVtx = new Vector3[vertexCount];
+        if(mUVs == null)
+            mUVs = new Vector2[vertexCount];
 
         //top
         ApplyMeshData(0,
@@ -169,8 +164,9 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
             cellSize.b, cellSize.row);
 
         mesh.vertices = mVtx;
-        mesh.uv = mUVs;        
+        mesh.uv = mUVs;
         mesh.triangles = mInds;
+        mesh.colors32 = vertexWhiteColors;
     }
 
     private void ApplyMeshData(int sInd, Vector3 vtx1, Vector3 vtx2, Vector3 vtx3, Vector3 vtx4, int tileRow, int tileCol) {
@@ -188,18 +184,11 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
     }
 
     void M8.IPoolSpawnComplete.OnSpawnComplete() {
-        //reset values
-        mAlpha = 1f;
-        mPulseScale = 0f;
-
         var dat = gridEntity ? gridEntity.data : null;
         if(dat)
             ApplyMaterial(gridEntity.data.material);
 
         RefreshMesh(true);
-
-        mIsVisible = true;
-        rendererDisplay.enabled = true;
     }
 
     void OnDestroy() {
@@ -208,6 +197,9 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
 
         if(mMat)
             Destroy(mMat);
+
+        if(mCubeMesh)
+            Destroy(mCubeMesh);
     }
 
     void Awake() {
@@ -221,8 +213,6 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
 
             mPulseScale = mat.GetFloat(dat.shaderScalePulseId);
         }
-
-        mIsVisible = rendererDisplay.enabled;
 
         if(gridEntity)
             gridEntity.cellChangedCallback += OnGridEntityCellChanged;

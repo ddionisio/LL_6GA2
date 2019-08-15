@@ -71,6 +71,8 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
                 else
                     _cellSize = value;
 
+                mIsBoundsUpdated = false;
+
                 cellChangedCallback?.Invoke();
             }
         }
@@ -88,18 +90,14 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
     }
 
     /// <summary>
-    /// This is local relative to container
+    /// This is local
     /// </summary>
     public Bounds bounds {
         get {
-            if(container) {
-                var unitSize = container.controller.unitSize;
-                var pos = transform.localPosition;
-                pos.y += cellSize.b * unitSize * 0.5f;
-                return new Bounds(pos, cellSize.GetSize(unitSize));
-            }
-            else
-                return new Bounds(transform.localPosition, Vector3.zero);
+            if(!mIsBoundsUpdated)
+                RefreshBounds();
+
+            return mBounds;
         }
     }
 
@@ -111,6 +109,9 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
     private GridEntityContainer mContainer;
 
     private bool mIsCellUpdatedOnEnable;
+
+    private Bounds mBounds;
+    private bool mIsBoundsUpdated;
 
     public void SetCell(GridCell index, GridCell size) {
         if(mCellIndex != index || _cellSize != size) {
@@ -162,6 +163,7 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
         transform.localPosition = new Vector3(cellBound.center.x, cellBound.min.y, cellBound.center.z);
 
         //apply cell index
+        RefreshBounds();
         var b = bounds;
 
         cellIndex = gridCtrl.GetCellLocal(new Vector3(cellBound.center.x - b.extents.x, cellBound.min.y, cellBound.center.z - b.extents.z), false);
@@ -169,8 +171,10 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
 
     void OnEnable() {
         if(Application.isPlaying) {
-            if(_updateCellOnEnabled)
+            if(_updateCellOnEnabled) {
+                RefreshBounds();
                 RefreshGridPostion();
+            }
         }
     }
 
@@ -200,11 +204,28 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
 
     void M8.IPoolSpawn.OnSpawned(M8.GenericParams parms) {
         //set cell info if available
+
+        RefreshBounds();
+        RefreshGridPostion();
     }
 
     void M8.IPoolDespawn.OnDespawned() {
         if(container)
             container.RemoveEntity(this);
+
+        mContainer = null;
+    }
+
+    private void RefreshBounds() {
+        if(container) {
+            var unitSize = container.controller.unitSize;
+            var pos = new Vector3(0f, cellSize.b * unitSize * 0.5f, 0f);
+            mBounds = new Bounds(pos, cellSize.GetSize(unitSize));
+        }
+        else
+            mBounds = new Bounds(Vector3.zero, Vector3.zero);
+
+        mIsBoundsUpdated = true;
     }
 
     void OnDrawGizmos() {
@@ -214,7 +235,7 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
             var b = bounds;
 
             //draw bounds
-            M8.Gizmo.DrawWireCube(container.transform, b.center, b.extents);
+            M8.Gizmo.DrawWireCube(transform, b.center, b.extents);
         }
     }
 }
