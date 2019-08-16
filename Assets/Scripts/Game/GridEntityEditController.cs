@@ -108,7 +108,7 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
             entity.cellChangedCallback += RefreshBounds;
 
         if(editController)
-            editController.changedCallback += RefreshMode;
+            editController.editChangedCallback += RefreshMode;
 
         //refresh based on current edit state
         RefreshBounds();
@@ -122,7 +122,7 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
             entity.cellChangedCallback -= RefreshBounds;
 
         if(mEditCtrl) {
-            mEditCtrl.changedCallback -= RefreshMode;
+            mEditCtrl.editChangedCallback -= RefreshMode;
             mEditCtrl = null;
         }
     }

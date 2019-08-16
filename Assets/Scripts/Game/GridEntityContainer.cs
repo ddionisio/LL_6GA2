@@ -12,11 +12,26 @@ public class GridEntityContainer : MonoBehaviour {
 
     public GridController controller { get { return _controller; } }
 
-    public M8.CacheList<GridEntity> entities { get { return mEntities; } }
+    public M8.CacheList<GridEntity> entities { get; private set; }
+
+    /// <summary>
+    /// Called when an entity is added/removed/updated
+    /// </summary>
+    public event System.Action<GridEntityData> mapUpdateCallback;
 
     private GridEntity[,] mEntityMap; //[row, col]
 
-    private M8.CacheList<GridEntity> mEntities;
+    public int GetVolumeCount(GridEntityData entDat) {
+        int count = 0;
+        
+        for(int i = 0; i < entities.Count; i++) {
+            var ent = entities[i];
+            if(ent.data == entDat)
+                count += ent.cellSize.volume;
+        }
+
+        return count;
+    }
 
     public GridEntity GetEntity(GridCell cell) {
         return GetEntity(cell.row, cell.col);
@@ -47,27 +62,31 @@ public class GridEntityContainer : MonoBehaviour {
             }
         }
 
-        mEntities.Clear();
+        entities.Clear();
     }
 
     public void AddEntity(GridEntity ent) {
         //check if it already exists
-        if(mEntities.Exists(ent)) {
+        if(entities.Exists(ent)) {
             //remove current mapping
             ClearEntityMap(ent);
         }
         else
-            mEntities.Add(ent);
+            entities.Add(ent);
 
         //apply mapping
         ApplyEntityMap(ent);
+
+        mapUpdateCallback?.Invoke(ent.data);
     }
 
     public void RemoveEntity(GridEntity ent) {
-        if(mEntities.Remove(ent)) {
+        if(entities.Remove(ent)) {
             //clear mapping
             ClearEntityMap(ent);
         }
+
+        mapUpdateCallback?.Invoke(ent.data);
     }
 
     private void ClearEntityMap(GridEntity ent) {
@@ -118,6 +137,6 @@ public class GridEntityContainer : MonoBehaviour {
 
         mEntityMap = new GridEntity[cellSize.row, cellSize.col];
 
-        mEntities = new M8.CacheList<GridEntity>(cellSize.row * cellSize.col);
+        entities = new M8.CacheList<GridEntity>(cellSize.row * cellSize.col);
     }
 }

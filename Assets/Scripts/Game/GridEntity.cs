@@ -212,6 +212,7 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
         if(container)
             container.RemoveEntity(this);
 
+        _data = null;
         mContainer = null;
     }
 

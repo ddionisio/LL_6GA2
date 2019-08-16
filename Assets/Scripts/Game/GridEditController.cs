@@ -16,16 +16,20 @@ public class GridEditController : MonoBehaviour {
 
     [Header("Data")]
     [SerializeField]
-    GridController _controller = null;
+    GridEntityDataGroup _entityDataGroup = null;
+    [SerializeField]
+    GridEntityContainer _entityContainer = null;
 
-    public GridController controller { get { return _controller; } }
+    public GridEntityDataGroup entityDataGroup { get { return _entityDataGroup; } }
+
+    public GridEntityContainer entityContainer { get { return _entityContainer; } }
 
     public Mode mode {
         get { return mCurMode; }
         set {
             if(mCurMode != value) {
                 mCurMode = value;
-                changedCallback?.Invoke();
+                editChangedCallback?.Invoke();
             }
         }
     }
@@ -35,7 +39,7 @@ public class GridEditController : MonoBehaviour {
         set {
             if(mCurSelected != value) {
                 mCurSelected = value;
-                changedCallback?.Invoke();
+                editChangedCallback?.Invoke();
             }
         }
     }
@@ -43,8 +47,9 @@ public class GridEditController : MonoBehaviour {
     /// <summary>
     /// Called when mode and/or selection is changed
     /// </summary>
-    public event System.Action changedCallback;
+    public event System.Action editChangedCallback;
 
-    private Mode mCurMode = Mode.None;
+    private Mode mCurMode = Mode.None;    
     private GridEntityEditController mCurSelected = null;
+
 }
