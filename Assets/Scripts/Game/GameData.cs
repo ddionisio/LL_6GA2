@@ -6,6 +6,8 @@ using UnityEngine;
 public class GameData : M8.SingletonScriptableObject<GameData> {
     [Header("Edit Config")]
     public float anchorOffset = 0.15f; //offset from top of entity
+    public float panningScaleX = -0.01f;
+    public float panningScaleZ = -0.01f;
 
     [Header("Display Config")]
     public float selectHighlightScale = 1f;

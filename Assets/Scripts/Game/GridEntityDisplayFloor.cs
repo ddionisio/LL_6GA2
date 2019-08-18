@@ -51,7 +51,7 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
         //generate mesh if not set
         var mesh = gridMeshFilter.sharedMesh;
         if(!mesh) {
-            mFloorMesh = new Mesh();
+            mesh = mFloorMesh = new Mesh();
             gridMeshFilter.sharedMesh = mFloorMesh;
         }
 

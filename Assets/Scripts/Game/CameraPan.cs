@@ -126,7 +126,15 @@ public class CameraPan : MonoBehaviour {
     }
 
     void OnSignalLookAtMoveDelta(Vector3 delta) {
-        lookAtLocalPosition += delta;
+        var r = _lookTarget.right;
+        var xDelta = new Vector2(r.x * delta.x, r.z * delta.x);
+
+        var f = _lookTarget.forward; f.y = 0f; f.Normalize();
+        var zDelta = new Vector2(f.x * delta.z, f.z * delta.z);
+
+        var d = new Vector3(xDelta.x + zDelta.x, delta.y, xDelta.y + zDelta.y);
+
+        lookAtLocalPosition += d;
     }
 
     void OnSignalLookYawDelta(float a) {

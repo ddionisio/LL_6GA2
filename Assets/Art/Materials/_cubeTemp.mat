@@ -67,10 +67,10 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _PulseEnd: 1
+    - _PulseEnd: 0.9
     - _PulseScale: 0
-    - _PulseSpeed: 1
-    - _PulseStart: 0.5
+    - _PulseSpeed: 3
+    - _PulseStart: 0.7
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

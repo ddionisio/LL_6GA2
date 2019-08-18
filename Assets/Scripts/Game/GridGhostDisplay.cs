@@ -117,7 +117,7 @@ public class GridGhostDisplay : MonoBehaviour {
         //ensure there is a mesh
         var mesh = cubeMeshFilter.sharedMesh;
         if(!mesh) {
-            mCubeMesh = new Mesh();
+            mesh = mCubeMesh = new Mesh();
             cubeMeshFilter.sharedMesh = mCubeMesh;
 
             isMeshInit = true;

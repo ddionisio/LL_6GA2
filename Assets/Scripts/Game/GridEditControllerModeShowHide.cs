@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class GridEditControllerModeShowHide : MonoBehaviour {
     [Header("Data")]
-    public GridEditController.Mode[] visibleModes;
+    public GridEditController.EditMode[] visibleModes;
 
     [Header("Display")]
     public GameObject displayGO;
@@ -75,7 +75,7 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
         }
 
         var editCtrl = GridEditController.instance;
-        var curMode = editCtrl.mode;
+        var curMode = editCtrl.editMode;
 
         bool isVisible = false;
 

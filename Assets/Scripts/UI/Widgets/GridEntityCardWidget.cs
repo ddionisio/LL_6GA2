@@ -9,6 +9,7 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
     public Image icon;
     public Text titleText;
     public Text countText;
+    public Color countValidColor;
     public Color countInvalidColor;
     public Selectable selectable; //used for disabling when count is 0
 
@@ -18,7 +19,6 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
 
     private GridEntityCardWidget mDragWidget;
     private bool mIsDragging;
-    private Color mCountDefaultColor;
 
     public void SetCount(int count) {
         if(!countText)
@@ -27,7 +27,7 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
         countText.text = count.ToString();
 
         if(count > 0) {
-            countText.color = mCountDefaultColor;
+            countText.color = countValidColor;
             selectable.interactable = true;
         }
         else {
@@ -62,11 +62,6 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
         DragEnd();
     }
 
-    void Awake() {
-        if(countText)
-            mCountDefaultColor = countText.color;
-    }
-
     void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) {
         if(selectable && !selectable.interactable)
             return;
@@ -81,6 +76,8 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
         var ghost = GridEditController.instance.ghostController;
         ghost.data = data;
         ghost.cellSize = spawnSize;
+
+        GridEditController.instance.editMode = GridEditController.EditMode.Placement;
 
         DragUpdate(eventData);
     }
@@ -97,9 +94,9 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
             return;
 
         //determine placement
-        var editCtrl = GridEditController.instance;
-        var levelGO = editCtrl.gameObject;
+        var editCtrl = GridEditController.instance;        
         var container = editCtrl.entityContainer;
+        var levelGO = container.gameObject;
         var ctrl = container.controller;
 
         if(eventData.pointerCurrentRaycast.isValid && eventData.pointerCurrentRaycast.gameObject == levelGO) {
@@ -111,7 +108,7 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
             if(spawnEnt) {
                 //select and set mode to expand
                 editCtrl.selected = spawnEnt;
-                editCtrl.mode = GridEditController.Mode.Expand;
+                editCtrl.editMode = GridEditController.EditMode.Expand;
             }
         }
 
@@ -122,10 +119,10 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
         //update drag position
         if(mDragWidget)
             mDragWidget.transform.position = eventData.position;
-
-        var levelGO = GridEditController.instance.gameObject;
+                
         var ghost = GridEditController.instance.ghostController;
         var container = GridEditController.instance.entityContainer;
+        var levelGO = container.gameObject;
         var ctrl = container.controller;
 
         if(eventData.pointerCurrentRaycast.isValid && eventData.pointerCurrentRaycast.gameObject == levelGO) {
@@ -156,8 +153,8 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
 
             //stop placement mode
             var editCtrl = GridEditController.instance;
-            if(editCtrl.mode == GridEditController.Mode.Placement)
-                editCtrl.mode = GridEditController.Mode.Select;
+            if(editCtrl.editMode == GridEditController.EditMode.Placement)
+                editCtrl.editMode = GridEditController.EditMode.Select;
 
             mIsDragging = false;
         }

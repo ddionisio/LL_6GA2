@@ -5,8 +5,8 @@ using UnityEngine;
 /// <summary>
 /// Handles edit state
 /// </summary>
-public class GridEditController : M8.SingletonBehaviour<GridEditController> {
-    public enum Mode {
+public class GridEditController : GameModeController<GridEditController> {
+    public enum EditMode {
         None,
         Select,
         Placement, //dragging block from palette
@@ -17,22 +17,42 @@ public class GridEditController : M8.SingletonBehaviour<GridEditController> {
     [Header("Data")]
     [SerializeField]
     GridEntityDataGroup _entityDataGroup = null;
+
     [SerializeField]
-    GridEntityContainer _entityContainer = null;
+    [M8.TagSelector]
+    string _tagEntityContainer;
+    
     [SerializeField]
-    GridGhostController _ghostController = null;
+    [M8.TagSelector]
+    string _tagGhostController;    
 
     public GridEntityDataGroup entityDataGroup { get { return _entityDataGroup; } }
 
-    public GridEntityContainer entityContainer { get { return _entityContainer; } }
+    public GridEntityContainer entityContainer {
+        get {
+            if(!mEntityContainer) {
+                var go = GameObject.FindGameObjectWithTag(_tagEntityContainer);
+                mEntityContainer = go.GetComponent<GridEntityContainer>();
+            }
+            return mEntityContainer;
+        }
+    }
 
-    public GridGhostController ghostController { get { return _ghostController; } }
+    public GridGhostController ghostController {
+        get {
+            if(!mGhostController) {
+                var go = GameObject.FindGameObjectWithTag(_tagGhostController);
+                mGhostController = go.GetComponent<GridGhostController>();
+            }
+            return mGhostController;
+        }
+    }
 
-    public Mode mode {
-        get { return mCurMode; }
+    public EditMode editMode {
+        get { return mCurEditMode; }
         set {
-            if(mCurMode != value) {
-                mCurMode = value;
+            if(mCurEditMode != value) {
+                mCurEditMode = value;
                 editChangedCallback?.Invoke();
             }
         }
@@ -60,7 +80,9 @@ public class GridEditController : M8.SingletonBehaviour<GridEditController> {
     /// </summary>
     public event System.Action editChangedCallback;
 
-    private Mode mCurMode = Mode.None;    
+    private EditMode mCurEditMode = EditMode.None;    
     private GridEntity mCurSelected = null;
 
+    private GridEntityContainer mEntityContainer;
+    private GridGhostController mGhostController;
 }

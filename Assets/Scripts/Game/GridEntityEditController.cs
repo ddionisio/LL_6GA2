@@ -24,16 +24,7 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
         }
     }
 
-    public GridEditController editController {
-        get {
-            if(!mEditCtrl)
-                mEditCtrl = GetComponentInParent<GridEditController>();
-            return mEditCtrl;
-        }
-    }
-
-    public bool isSelected { get { return editController && editController.selected == this; } }
-    public GridEditController.Mode mode { get { return editController ? editController.mode : GridEditController.Mode.None; } }
+    public bool isSelected { get { return GridEditController.instance.selected == entity; } }
 
     public Vector3 anchorPosition {
         get {
@@ -44,7 +35,6 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
     }
 
     private BoxCollider mColl;
-    private GridEditController mEditCtrl;
 
     private bool mIsHighlighted;
 
@@ -76,7 +66,7 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
     }
 
     void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) {
-        if(_isNonPlaceable || mode != GridEditController.Mode.Select)
+        if(_isNonPlaceable || GridEditController.instance.editMode != GridEditController.EditMode.Select)
             return;
 
         mIsHighlighted = true;
@@ -86,7 +76,7 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
     }
 
     void IPointerExitHandler.OnPointerExit(PointerEventData eventData) {
-        if(_isNonPlaceable || mode != GridEditController.Mode.Select)
+        if(_isNonPlaceable || GridEditController.instance.editMode != GridEditController.EditMode.Select)
             return;
 
         mIsHighlighted = false;
@@ -96,19 +86,19 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
     }
 
     void IPointerClickHandler.OnPointerClick(PointerEventData eventData) {
-        if(_isNonPlaceable || mode != GridEditController.Mode.Select)
+        var editCtrl = GridEditController.instance;
+
+        if(_isNonPlaceable || editCtrl.editMode != GridEditController.EditMode.Select)
             return;
 
-        if(editController)
-            editController.selected = entity;
+        editCtrl.selected = entity;
     }
         
     private void Init() {
         if(entity)
             entity.cellChangedCallback += RefreshBounds;
 
-        if(editController)
-            editController.editChangedCallback += RefreshMode;
+        GridEditController.instance.editChangedCallback += RefreshMode;
 
         //refresh based on current edit state
         RefreshBounds();
@@ -121,10 +111,8 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
         if(entity)
             entity.cellChangedCallback -= RefreshBounds;
 
-        if(mEditCtrl) {
-            mEditCtrl.editChangedCallback -= RefreshMode;
-            mEditCtrl = null;
-        }
+        if(GridEditController.isInstantiated)
+            GridEditController.instance.editChangedCallback -= RefreshMode;
     }
 
     private void RefreshBounds() {
@@ -139,8 +127,8 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
     }
 
     private void RefreshMode() {
-        var ctrl = editController;
-        if(!ctrl)
+        var editCtrl = GridEditController.instance;
+        if(!editCtrl)
             return;
 
         mIsHighlighted = false;
@@ -150,8 +138,8 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
         bool isFloorVisible = false;
         var fadeScale = 0f;
 
-        switch(ctrl.mode) {
-            case GridEditController.Mode.Select:
+        switch(editCtrl.editMode) {
+            case GridEditController.EditMode.Select:
                 isCollEnabled = true;
 
                 fadeScale = 1f;
@@ -160,13 +148,13 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
                     mIsHighlighted = true;
                 break;
 
-            case GridEditController.Mode.Placement:
+            case GridEditController.EditMode.Placement:
                 fadeScale = GameData.instance.selectFadeScale;
                 isFloorVisible = true;
                 break;
 
-            case GridEditController.Mode.Expand:
-            case GridEditController.Mode.Move:
+            case GridEditController.EditMode.Expand:
+            case GridEditController.EditMode.Move:
                 //controls handled by GridGhostController, hide if we are the one selected
                 if(!isSelected) {
                     fadeScale = GameData.instance.selectFadeScale;

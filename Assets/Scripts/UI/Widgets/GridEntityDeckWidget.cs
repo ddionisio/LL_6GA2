@@ -26,7 +26,7 @@ public class GridEntityDeckWidget : MonoBehaviour {
             var itm = items[i];
 
             var cardWidget = Instantiate(cardTemplate, container);
-
+                        
             cardWidget.Setup(itm.data, cardDrag);
             cardWidget.SetCount(itm.count);
 

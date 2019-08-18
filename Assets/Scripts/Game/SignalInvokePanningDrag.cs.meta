@@ -3,7 +3,9 @@ guid: cf7cb81a273c4444c8f0a1d6ca454ea0
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - signalInvokeDelta: {fileID: 11400000, guid: 693745d6b16c45b499813926f63ce576,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

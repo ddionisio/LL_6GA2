@@ -20,10 +20,10 @@ public class CameraPanInputWidget : MonoBehaviour {
     }
 
     public void RotateLeft() {
-        signalInvokeRotateYawDelta.Invoke(-angleDelta);
+        signalInvokeRotateYawDelta.Invoke(angleDelta);
     }
 
     public void RotateRight() {
-        signalInvokeRotateYawDelta.Invoke(angleDelta);
+        signalInvokeRotateYawDelta.Invoke(-angleDelta);
     }
 }

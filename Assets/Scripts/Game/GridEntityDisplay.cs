@@ -110,7 +110,7 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
         //generate mesh first-time
         var mesh = cubeMeshFilter.sharedMesh;
         if(!mesh) {
-            mCubeMesh = new Mesh();
+            mesh = mCubeMesh = new Mesh();
             cubeMeshFilter.sharedMesh = mCubeMesh;
         }
         else if(mesh.vertexCount != vertexCount)
@@ -208,10 +208,13 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
         var mat = rendererDisplay.sharedMaterial;
 
         if(dat && mat) {
-            var clr = mat.GetColor(dat.shaderColorId);
-            mAlpha = clr.a;
+            if(mat.HasProperty(dat.shaderColorId)) {
+                var clr = mat.GetColor(dat.shaderColorId);
+                mAlpha = clr.a;
+            }
 
-            mPulseScale = mat.GetFloat(dat.shaderPulseScaleId);
+            if(mat.HasProperty(dat.shaderPulseScaleId))
+                mPulseScale = mat.GetFloat(dat.shaderPulseScaleId);
         }
 
         if(gridEntity)
@@ -225,7 +228,7 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
     private void ApplyAlpha() {
         var dat = gridEntity ? gridEntity.data : null;
         var mat = material;
-        if(dat && mat) {
+        if(dat && mat && mat.HasProperty(dat.shaderColorId)) {
             var clr = mat.GetColor(dat.shaderColorId);
             clr.a = mAlpha;
             mat.SetColor(dat.shaderColorId, clr);
