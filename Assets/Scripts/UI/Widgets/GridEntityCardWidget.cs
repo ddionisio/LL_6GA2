@@ -15,6 +15,9 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
 
     public GridEntityData data { get; private set; }
 
+    [Header("Signal Listen")]
+    public SignalGridEntity signalListenEntitySizeChanged;
+
     private static readonly GridCell spawnSize = new GridCell { b=1, row=1, col=1 };
 
     private GridEntityCardWidget mDragWidget;
@@ -60,6 +63,21 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
 
     void OnDisable() {
         DragEnd();
+
+        if(signalListenEntitySizeChanged)
+            signalListenEntitySizeChanged.callback -= OnEntitySizeChanged;
+    }
+
+    void OnEnable() {
+        RefreshCount();
+
+        if(signalListenEntitySizeChanged)
+            signalListenEntitySizeChanged.callback += OnEntitySizeChanged;
+    }
+
+    void OnEntitySizeChanged(GridEntity ent) {
+        if(ent.data == data)
+            RefreshCount();
     }
 
     void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) {
@@ -109,6 +127,8 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
                 //select and set mode to expand
                 editCtrl.selected = spawnEnt;
                 editCtrl.editMode = GridEditController.EditMode.Expand;
+
+                RefreshCount();
             }
         }
 
@@ -148,9 +168,7 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
 
             var ghost = GridEditController.instance.ghostController;
             ghost.display.isVisible = false;
-
-            RefreshCount();
-
+                        
             //stop placement mode
             var editCtrl = GridEditController.instance;
             if(editCtrl.editMode == GridEditController.EditMode.Placement)

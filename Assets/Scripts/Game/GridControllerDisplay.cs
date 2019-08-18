@@ -78,13 +78,26 @@ public class GridControllerDisplay : MonoBehaviour {
         mesh.triangles = mInds;
     }
 
+    void OnDisable() {
+        if(GridEditController.isInstantiated)
+            GridEditController.instance.editChangedCallback -= OnEditChanged;
+    }
+
     void OnEnable() {
         if(refreshOnEnable)
             RefreshMesh(false);
+
+        OnEditChanged();
+
+        GridEditController.instance.editChangedCallback += OnEditChanged;
     }
 
     void OnDestroy() {
         if(mMesh)
             Destroy(mMesh);
+    }
+
+    void OnEditChanged() {
+        isVisible = GridEditController.instance.editMode != GridEditController.EditMode.None;
     }
 }

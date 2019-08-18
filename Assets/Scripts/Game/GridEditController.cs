@@ -20,11 +20,11 @@ public class GridEditController : GameModeController<GridEditController> {
 
     [SerializeField]
     [M8.TagSelector]
-    string _tagEntityContainer;
+    string _tagEntityContainer = "";
     
     [SerializeField]
     [M8.TagSelector]
-    string _tagGhostController;    
+    string _tagGhostController = "";
 
     public GridEntityDataGroup entityDataGroup { get { return _entityDataGroup; } }
 

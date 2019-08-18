@@ -56,6 +56,8 @@ MonoBehaviour:
     row: 1
     col: 1
   _updateCellOnEnabled: 0
+  signalInvokeEntitySizeChanged: {fileID: 11400000, guid: b9a642828fba7ab488e3681155ab1f3b,
+    type: 2}
 --- !u!114 &179421406840529794
 MonoBehaviour:
   m_ObjectHideFlags: 0

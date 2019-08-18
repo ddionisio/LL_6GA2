@@ -19,6 +19,9 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
     [SerializeField]
     bool _updateCellOnEnabled = false; //set to true for non-spawned entities
 
+    [Header("Signal Invoke")]
+    public SignalGridEntity signalInvokeEntitySizeChanged;
+
     public GridEntityData data { get { return _data; } }
 
     public GridEntityContainer container {
@@ -76,6 +79,9 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
                 mIsBoundsUpdated = false;
 
                 cellChangedCallback?.Invoke();
+
+                if(signalInvokeEntitySizeChanged)
+                    signalInvokeEntitySizeChanged.Invoke(this);
             }
         }
     }
