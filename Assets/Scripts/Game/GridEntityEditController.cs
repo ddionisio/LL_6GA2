@@ -100,7 +100,7 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
             return;
 
         if(editController)
-            editController.selected = this;
+            editController.selected = entity;
     }
         
     private void Init() {

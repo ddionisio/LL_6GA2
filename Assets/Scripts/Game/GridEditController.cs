@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Handles edit state
 /// </summary>
-public class GridEditController : MonoBehaviour {
+public class GridEditController : M8.SingletonBehaviour<GridEditController> {
     public enum Mode {
         None,
         Select,
@@ -19,10 +19,14 @@ public class GridEditController : MonoBehaviour {
     GridEntityDataGroup _entityDataGroup = null;
     [SerializeField]
     GridEntityContainer _entityContainer = null;
+    [SerializeField]
+    GridGhostController _ghostController = null;
 
     public GridEntityDataGroup entityDataGroup { get { return _entityDataGroup; } }
 
     public GridEntityContainer entityContainer { get { return _entityContainer; } }
+
+    public GridGhostController ghostController { get { return _ghostController; } }
 
     public Mode mode {
         get { return mCurMode; }
@@ -34,7 +38,7 @@ public class GridEditController : MonoBehaviour {
         }
     }
 
-    public GridEntityEditController selected {
+    public GridEntity selected {
         get { return mCurSelected; }
         set {
             if(mCurSelected != value) {
@@ -44,12 +48,19 @@ public class GridEditController : MonoBehaviour {
         }
     }
 
+    public int GetAvailableCount(GridEntityData dat) {
+        var placedCount = entityContainer.GetVolumeCount(dat);
+        var count = _entityDataGroup.GetCount(dat);
+
+        return count - placedCount;
+    }
+
     /// <summary>
     /// Called when mode and/or selection is changed
     /// </summary>
     public event System.Action editChangedCallback;
 
     private Mode mCurMode = Mode.None;    
-    private GridEntityEditController mCurSelected = null;
+    private GridEntity mCurSelected = null;
 
 }

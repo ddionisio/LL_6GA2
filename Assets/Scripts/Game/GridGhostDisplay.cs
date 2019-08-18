@@ -18,6 +18,8 @@ public class GridGhostDisplay : MonoBehaviour {
     float _pulseScale = 0.5f;
     [SerializeField]
     float _baseAlpha = 0.5f;
+    [SerializeField]
+    Color _pulseColorInvalid = Color.red;
 
     public FaceFlags faceHighlight {
         get { return mFaceHighlight; }
@@ -68,6 +70,13 @@ public class GridGhostDisplay : MonoBehaviour {
     private Mesh mCubeMesh; //generated mesh if not available
 
     private int mShaderPulseColorId;
+
+    /// <summary>
+    /// Set pulse color based on valid. If true, set to default, otherwise invalid color.
+    /// </summary>
+    public void SetPulseColorValid(bool isValid) {
+        pulseColor = isValid ? pulseColorDefault : _pulseColorInvalid;
+    }
 
     public void ApplyMaterial(GridEntityData data) {
         var mat = data.material;

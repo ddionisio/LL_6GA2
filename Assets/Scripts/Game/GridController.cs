@@ -63,6 +63,22 @@ public class GridController : MonoBehaviour {
     private BoxCollider mBoxColl;
     private bool mIsBoxCollInit = false;
 
+    public bool IsContained(GridCell index, GridCell size) {
+        var volume = size.volume;
+
+        if(volume > 0 && IsContained(index)) {
+            if(volume > 1) {
+                GridCell endIndex = new GridCell { b = index.b + size.b - 1, row = index.row + size.row - 1, col = index.col + size.col - 1 };
+                if(IsContained(endIndex))
+                    return true;
+            }
+            else
+                return true;
+        }
+
+        return false;
+    }
+
     public bool IsContained(GridCell index) {
         return index.isValid && index.b < cellSize.b && index.row < cellSize.row && index.col < cellSize.col;
     }

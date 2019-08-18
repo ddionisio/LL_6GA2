@@ -7,7 +7,8 @@ using UnityEngine.EventSystems;
 /// Use for resizing/moving controls. Ensure that this is inside the GridController hierarchy.
 /// </summary>
 public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
-    public enum InputMode {
+    public enum Mode {
+        Hidden,
         None,
         Move,
         Expand
@@ -94,12 +95,12 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         }
     }
 
-    public InputMode inputMode {
-        get { return mInputMode; }
+    public Mode mode {
+        get { return mMode; }
         set {
-            if(mInputMode != value) {
-                mInputMode = value;
-                RefreshInputMode();
+            if(mMode != value) {
+                mMode = value;
+                RefreshMode();
             }
         }
     }
@@ -115,7 +116,7 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     private GridCell mCellIndex = new GridCell { b = -1, row = -1, col = -1 };
     private GridCell mCellSize = new GridCell { b = 1, row = 1, col = 1 };
 
-    private InputMode mInputMode = InputMode.None;
+    private Mode mMode = Mode.Hidden;
 
     private FaceFlags mPointerFace = FaceFlags.None;
     private FaceFlags mDragFace = FaceFlags.None;
@@ -123,7 +124,7 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     void Awake() {
         mColl = GetComponent<BoxCollider>();
 
-        RefreshInputMode();
+        RefreshMode();
 
         RefreshBounds();
 
@@ -132,7 +133,7 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     }
 
     void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) {
-        if(mInputMode == InputMode.None)
+        if(mMode == Mode.None || mMode == Mode.Hidden)
             return;
 
         if(eventData.pointerCurrentRaycast.gameObject == gameObject)
@@ -140,18 +141,18 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         else
             mPointerFace = FaceFlags.None;
 
-        if(!isDragging && mInputMode == InputMode.Expand) {
+        if(!isDragging && mMode == Mode.Expand) {
             display.faceHighlight = mPointerFace;
             RefreshHighlight();
         }
     }
 
     void IPointerExitHandler.OnPointerExit(PointerEventData eventData) {
-        if(mInputMode == InputMode.None)
+        if(mMode == Mode.None || mMode == Mode.Hidden)
             return;
 
         mPointerFace = FaceFlags.None;
-        if(!isDragging && mInputMode == InputMode.Expand) {
+        if(!isDragging && mMode == Mode.Expand) {
             display.faceHighlight = mPointerFace;
             RefreshHighlight();
         }
@@ -206,18 +207,25 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         transform.localPosition = new Vector3(startBound.min.x + size.x * 0.5f, startBound.min.y, startBound.min.z + size.z * 0.5f);
     }
         
-    private void RefreshInputMode() {
-        switch(mInputMode) {
-            case InputMode.None:
-            case InputMode.Expand: //allow highlight to update
-                display.faceHighlight = FaceFlags.None;
-                break;
-            case InputMode.Move:
-                display.faceHighlight = FaceFlags.All;
-                break;
-        }
+    private void RefreshMode() {
+        mColl.enabled = !(mMode == Mode.None || mMode == Mode.Hidden);
 
-        mColl.enabled = mInputMode != InputMode.None;
+        if(mMode == Mode.Hidden)
+            display.isVisible = false;
+        else {
+            switch(mMode) {
+                case Mode.Hidden:
+                case Mode.None:
+                case Mode.Expand: //allow highlight to update
+                    display.faceHighlight = FaceFlags.None;
+                    break;
+                case Mode.Move:
+                    display.faceHighlight = FaceFlags.All;
+                    break;
+            }
+
+            display.isVisible = true;
+        }
 
         RefreshHighlight();
     }
@@ -225,8 +233,9 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     private void RefreshHighlight() {
         var face = display.faceHighlight;
 
-        switch(mInputMode) {
-            case InputMode.None:
+        switch(mMode) {
+            case Mode.None:
+            case Mode.Hidden:
                 faceHighlightTopGO.SetActive(false);
                 faceHighlightFrontGO.SetActive(false);
                 faceHighlightBackGO.SetActive(false);
@@ -234,7 +243,7 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
                 faceHighlightRightGO.SetActive(false);
                 break;
 
-            case InputMode.Expand:
+            case Mode.Expand:
                 faceHighlightTopGO.SetActive((face & FaceFlags.Top) != FaceFlags.None);
                 faceHighlightFrontGO.SetActive((face & FaceFlags.Front) != FaceFlags.None);
                 faceHighlightBackGO.SetActive((face & FaceFlags.Back) != FaceFlags.None);
@@ -242,7 +251,7 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
                 faceHighlightRightGO.SetActive((face & FaceFlags.Right) != FaceFlags.None);
                 break;
 
-            case InputMode.Move:
+            case Mode.Move:
                 faceHighlightTopGO.SetActive(false);
                 faceHighlightFrontGO.SetActive(true);
                 faceHighlightBackGO.SetActive(true);

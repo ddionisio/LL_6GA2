@@ -8,9 +8,13 @@ using UnityEngine;
 public class GridEntityContainer : MonoBehaviour {
     [Header("Data")]
     [SerializeField]
-    GridController _controller;
+    GridController _controller = null;
+    [SerializeField]
+    Transform _root = null;
 
     public GridController controller { get { return _controller; } }
+
+    public Transform root { get { return _root; } }
 
     public M8.CacheList<GridEntity> entities { get; private set; }
 
@@ -44,7 +48,23 @@ public class GridEntityContainer : MonoBehaviour {
         return null;
     }
 
-    public bool IsPlaceable(GridCell index, GridCell size) {
+    /// <summary>
+    /// Check if an area is empty, set ignoreEnt to treat that entity as empty (use during moving/expanding)
+    /// </summary>
+    public bool IsPlaceable(GridCell index, GridCell size, GridEntity ignoreEnt) {
+        //check if contained
+        if(controller.IsContained(index, size)) {
+            //ensure nothing is occupying the spaces
+            for(int r = 0; r < size.row; r++) {
+                for(int c = 0; c < size.col; c++) {
+                    var ent = mEntityMap[r + index.row, c + index.col];
+                    if(ent != ignoreEnt)
+                        return false;
+                }
+            }
+
+            return true;
+        }
 
         return false;
     }

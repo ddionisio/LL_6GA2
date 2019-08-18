@@ -25,12 +25,12 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
     void OnDisable() {
         mRout = null;
 
-        if(GameData.isInstantiated && GameData.instance.gridEditController)
-            GameData.instance.gridEditController.editChangedCallback -= OnEditControllerChanged;
+        if(GridEditController.isInstantiated)
+            GridEditController.instance.editChangedCallback -= OnEditControllerChanged;
     }
 
     void OnEnable() {
-        var editCtrl = GameData.instance.gridEditController;
+        var editCtrl = GridEditController.instance;
         editCtrl.editChangedCallback += OnEditControllerChanged;
 
         RefreshDisplay(true);
@@ -74,7 +74,7 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
             mRout = null;
         }
 
-        var editCtrl = GameData.instance.gridEditController;
+        var editCtrl = GridEditController.instance;
         var curMode = editCtrl.mode;
 
         bool isVisible = false;
