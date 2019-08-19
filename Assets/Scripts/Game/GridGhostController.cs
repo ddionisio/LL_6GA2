@@ -14,6 +14,9 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         Expand
     }
 
+    [Header("Data")]
+    public float topExpandDragScale = 1f;
+
     [Header("Display")]
     public GridGhostDisplay display;
 
@@ -22,6 +25,9 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     public GameObject faceHighlightBackGO;
     public GameObject faceHighlightLeftGO;
     public GameObject faceHighlightRightGO;
+
+    [Header("Signal Invoke")]
+    public M8.Signal signalInvokeSizeChanged;
 
     public GridEntityData data {
         get { return mData; }
@@ -79,12 +85,24 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
                 //update mesh
                 if(mCellSize.isVolumeValid)
                     display.ApplyMesh(bounds, mCellSize);
+
+                if(signalInvokeSizeChanged)
+                    signalInvokeSizeChanged.Invoke();
             }
         }
     }
 
+    public GridCell cellEnd {
+        get {
+            var _cellInd = cellIndex;
+            var _cellSize = cellSize;
+
+            return new GridCell { b = _cellInd.b + _cellSize.b - 1, row = _cellInd.row + _cellSize.row - 1, col = _cellInd.col + _cellSize.col - 1 };
+        }
+    }
+
     /// <summary>
-    /// This is local relative to container
+    /// This is in local space
     /// </summary>
     public Bounds bounds { get; private set; }
 
@@ -105,7 +123,7 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         }
     }
 
-    public bool isDragging { get; private set; }
+    public bool isDragging { get { return mDragFace != FaceFlags.None; } }
 
     private GridController mController;
 
@@ -118,8 +136,16 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
     private Mode mMode = Mode.Hidden;
 
-    private FaceFlags mPointerFace = FaceFlags.None;
     private FaceFlags mDragFace = FaceFlags.None;
+    private GridCell mDragCellIndex;
+    private GridCell mDragCellSizeStart; //our size when we first dragged
+
+    private bool mIsFaceHighlightActive;
+
+    void OnApplicationFocus(bool focus) {
+        if(!focus)
+            EndDrag();
+    }
 
     void Awake() {
         mColl = GetComponent<BoxCollider>();
@@ -132,64 +158,177 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
             display.ApplyMesh(bounds, mCellSize);
     }
 
-    void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) {
-        if(mMode == Mode.None || mMode == Mode.Hidden)
-            return;
+    void Update() {
+        if(!isDragging && mIsFaceHighlightActive && mMode == Mode.Expand) {
+            var eventSystem = EventSystem.current;
+            if(eventSystem) {
+                var faceHighlight = FaceFlags.None;
 
-        if(eventData.pointerCurrentRaycast.gameObject == gameObject)
-            mPointerFace = GetFaceFlag(eventData.pointerCurrentRaycast.worldPosition);
-        else
-            mPointerFace = FaceFlags.None;
+                var inputModule = eventSystem.currentInputModule as M8.UI.InputModule;
+                if(inputModule) {
+                    var eventData = inputModule.LastPointerEventData(-1);
+                    if(eventData != null && eventData.pointerCurrentRaycast.isValid && eventData.pointerCurrentRaycast.gameObject == gameObject)
+                        faceHighlight = GetFaceFlag(eventData.pointerCurrentRaycast.worldNormal);
+                }
 
-        if(!isDragging && mMode == Mode.Expand) {
-            display.faceHighlight = mPointerFace;
-            RefreshHighlight();
+                if(display.faceHighlight != faceHighlight) {
+                    display.faceHighlight = faceHighlight;
+                    RefreshHighlight();
+                }
+            }
         }
     }
 
-    void IPointerExitHandler.OnPointerExit(PointerEventData eventData) {
-        if(mMode == Mode.None || mMode == Mode.Hidden)
+    void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) {
+        if(mMode == Mode.None || mMode == Mode.Hidden || mMode == Mode.Move)
             return;
 
-        mPointerFace = FaceFlags.None;
-        if(!isDragging && mMode == Mode.Expand) {
-            display.faceHighlight = mPointerFace;
-            RefreshHighlight();
+        mIsFaceHighlightActive = true;
+    }
+
+    void IPointerExitHandler.OnPointerExit(PointerEventData eventData) {
+        if(mMode == Mode.None || mMode == Mode.Hidden || mMode == Mode.Move)
+            return;
+
+        if(mIsFaceHighlightActive) {
+            mIsFaceHighlightActive = false;
+
+            if(!isDragging) {
+                display.faceHighlight = FaceFlags.None;
+                RefreshHighlight();
+            }
         }
     }
 
     void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) {
+        //ensure there's a selection
+        if(!GridEditController.instance.selected)
+            return;
 
+        //ensure it is valid
+        if(eventData.pointerPressRaycast.isValid && eventData.pointerPressRaycast.gameObject == gameObject) {
+            mDragFace = GetFaceFlag(eventData.pointerPressRaycast.worldNormal);
+            display.faceHighlight = mDragFace;
+            RefreshHighlight();
+
+            mColl.enabled = false;
+
+            mDragCellIndex.Invalidate();
+
+            mDragCellSizeStart = cellSize;
+        }
     }
 
     void IDragHandler.OnDrag(PointerEventData eventData) {
         if(!isDragging)
             return;
+
+        var editCtrl = GridEditController.instance;
+        var curEnt = editCtrl.selected;
+
+        //fail-safe, there should be a selection
+        if(!curEnt) {
+            EndDrag();
+            return;
+        }
+
+        var cast = eventData.pointerCurrentRaycast;
+
+        if(mode == Mode.Expand) {
+            if(mDragFace == FaceFlags.Top) { //special case for top, rely on screen position delta
+                var start = eventData.pressPosition;
+                var end = eventData.position;
+
+                var delta = end - start;
+
+                var ind = Mathf.RoundToInt(delta.y * topExpandDragScale);
+
+                var newSize = mDragCellSizeStart.b + ind;
+                if(newSize < 1)
+                    newSize = 1;
+                else if(newSize > editCtrl.entityContainer.controller.cellSize.b)
+                    newSize = editCtrl.entityContainer.controller.cellSize.b;
+
+                var _cellSize = cellSize;
+                _cellSize.b = newSize;
+                cellSize = _cellSize;
+            }
+            else {
+                //ensure collision is from level
+                if(!cast.isValid)
+                    return;
+
+                if(cast.gameObject != editCtrl.entityContainer.gameObject)
+                    return;
+
+                var cell = editCtrl.entityContainer.controller.GetCell(cast.worldPosition, true);
+                if(cell.isValid) {
+                    if(mDragCellIndex != cell) {
+                        mDragCellIndex = cell;
+
+                        var _cellInd = cellIndex;
+                        //var _cellSize = cellSize;
+                        var _cellEnd = cellEnd;
+
+                        //var _entCellInd = curEnt.cellIndex;
+                        //var _entCellEnd = curEnt.cellEnd;
+
+                        switch(mDragFace) {
+                            case FaceFlags.Back:
+                                if(cell.row <= _cellEnd.row)
+                                    _cellInd.row = cell.row;
+                                break;
+
+                            case FaceFlags.Front:
+                                if(cell.row >= _cellInd.row)
+                                    _cellEnd.row = cell.row;
+                                break;
+
+                            case FaceFlags.Left:
+                                if(cell.col <= _cellEnd.col)
+                                    _cellInd.col = cell.col;
+                                break;
+
+                            case FaceFlags.Right:
+                                if(cell.col >= _cellInd.col)
+                                    _cellEnd.col = cell.col;
+                                break;
+                        }
+
+                        cellIndex = _cellInd;
+                        cellSize = new GridCell { b = _cellEnd.b - _cellInd.b + 1, row = _cellEnd.row - _cellInd.row + 1, col = _cellEnd.col - _cellInd.col + 1 };
+
+                        RefreshValidDisplay();
+                    }
+                }
+            }
+        }
+        else if(mode == Mode.Move) {
+
+        }
     }
 
     void IEndDragHandler.OnEndDrag(PointerEventData eventData) {
         if(!isDragging)
             return;
+
+        EndDrag();
     }
 
-    private FaceFlags GetFaceFlag(Vector3 worldPos) {
+    private FaceFlags GetFaceFlag(Vector3 worldNormal) {
         FaceFlags face = FaceFlags.None;
 
-        var lpos = transform.InverseTransformPoint(worldPos);
+        var dir = transform.InverseTransformDirection(worldNormal);
 
-        var dpos = lpos - bounds.center;
-
-        var dir = dpos.normalized;
-
-        if(Vector3.Angle(dir, Vector3.up) <= 45f)
+        if(dir == Vector3.up)
             face = FaceFlags.Top;
-        else if(Vector3.Angle(dir, Vector3.forward) <= 45f)
+        else if(dir == Vector3.forward)
             face = FaceFlags.Front;
-        else if(Vector3.Angle(dir, Vector3.back) <= 45f)
+        else if(dir == Vector3.back)
             face = FaceFlags.Back;
-        else if(Vector3.Angle(dir, Vector3.left) <= 45f)
+        else if(dir == Vector3.left)
             face = FaceFlags.Left;
-        else if(Vector3.Angle(dir, Vector3.right) <= 45f)
+        else if(dir == Vector3.right)
             face = FaceFlags.Right;
 
         return face;
@@ -210,11 +349,12 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     private void RefreshMode() {
         mColl.enabled = !(mMode == Mode.None || mMode == Mode.Hidden);
 
-        if(mMode == Mode.Hidden)
+        if(mMode == Mode.Hidden) {
+            display.faceHighlight = FaceFlags.None;
             display.isVisible = false;
+        }
         else {
             switch(mMode) {
-                case Mode.Hidden:
                 case Mode.None:
                 case Mode.Expand: //allow highlight to update
                     display.faceHighlight = FaceFlags.None;
@@ -225,9 +365,15 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
             }
 
             display.isVisible = true;
+
+            RefreshHighlight();
+
+            RefreshValidDisplay();
         }
 
-        RefreshHighlight();
+        mIsFaceHighlightActive = false;
+
+        EndDrag();
     }
 
     private void RefreshHighlight() {
@@ -264,12 +410,12 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     private void RefreshBounds() {
         if(controller) {
             var unitSize = controller.unitSize;
-            var pos = transform.localPosition;
+            var pos = Vector3.zero;
             pos.y += cellSize.b * unitSize * 0.5f;
             bounds = new Bounds(pos, cellSize.GetSize(unitSize));
         }
         else
-            bounds = new Bounds(transform.localPosition, Vector3.zero);
+            bounds = new Bounds(Vector3.zero, Vector3.zero);
 
         //update collision
         if(bounds.size.x > 0f && bounds.size.y > 0f && bounds.size.z > 0f) {
@@ -279,9 +425,25 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
         //update face highlight positions
         faceHighlightTopGO.transform.localPosition = new Vector3(bounds.center.x, bounds.max.y, bounds.center.z);
-        faceHighlightFrontGO.transform.localPosition = new Vector3(bounds.center.x, bounds.center.y, bounds.max.z);
-        faceHighlightBackGO.transform.localPosition = new Vector3(bounds.center.x, bounds.center.y, bounds.min.z);
-        faceHighlightLeftGO.transform.localPosition = new Vector3(bounds.min.x, bounds.center.y, bounds.center.z);
-        faceHighlightRightGO.transform.localPosition = new Vector3(bounds.max.x, bounds.center.y, bounds.center.z);
+        faceHighlightFrontGO.transform.localPosition = new Vector3(bounds.center.x, faceHighlightFrontGO.transform.localPosition.y, bounds.max.z);
+        faceHighlightBackGO.transform.localPosition = new Vector3(bounds.center.x, faceHighlightBackGO.transform.localPosition.y, bounds.min.z);
+        faceHighlightLeftGO.transform.localPosition = new Vector3(bounds.min.x, faceHighlightLeftGO.transform.localPosition.y, bounds.center.z);
+        faceHighlightRightGO.transform.localPosition = new Vector3(bounds.max.x, faceHighlightRightGO.transform.localPosition.y, bounds.center.z);
+    }
+
+    private void RefreshValidDisplay() {
+        var isValid = GridEditController.instance.entityContainer.IsPlaceable(cellIndex, cellSize, GridEditController.instance.selected);
+
+        display.SetPulseColorValid(isValid);
+    }
+
+    private void EndDrag() {
+        if(isDragging) {
+            mDragFace = FaceFlags.None;
+            display.faceHighlight = FaceFlags.None;
+            RefreshHighlight();
+
+            mColl.enabled = !(mMode == Mode.None || mMode == Mode.Hidden);
+        }
     }
 }

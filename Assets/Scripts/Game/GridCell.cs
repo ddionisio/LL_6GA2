@@ -36,6 +36,10 @@ public struct GridCell {
         return new Vector3(col * unitSize, b * unitSize, row * unitSize);
     }
 
+    public override string ToString() {
+        return string.Format("{0}x{1}x{2}", col, row, b);
+    }
+
     public override int GetHashCode() {
         return base.GetHashCode();
     }

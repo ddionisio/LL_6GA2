@@ -111,6 +111,8 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
         if(!mIsDragging)
             return;
 
+        DragEnd();
+
         //determine placement
         var editCtrl = GridEditController.instance;        
         var container = editCtrl.entityContainer;
@@ -131,8 +133,6 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
                 RefreshCount();
             }
         }
-
-        DragEnd();
     }
 
     private void DragUpdate(PointerEventData eventData) {
@@ -146,7 +146,7 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
         var ctrl = container.controller;
 
         if(eventData.pointerCurrentRaycast.isValid && eventData.pointerCurrentRaycast.gameObject == levelGO) {
-            ghost.display.isVisible = true;
+            ghost.mode = GridGhostController.Mode.None;
 
             var worldPos = eventData.pointerCurrentRaycast.worldPosition;
 
@@ -159,7 +159,7 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
             ghost.display.SetPulseColorValid(isValid);
         }
         else
-            ghost.display.isVisible = false;
+            ghost.mode = GridGhostController.Mode.Hidden;
     }
 
     private void DragEnd() {
@@ -167,8 +167,8 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
             if(mDragWidget) mDragWidget.gameObject.SetActive(false);
 
             var ghost = GridEditController.instance.ghostController;
-            ghost.display.isVisible = false;
-                        
+            ghost.mode = GridGhostController.Mode.Hidden;
+
             //stop placement mode
             var editCtrl = GridEditController.instance;
             if(editCtrl.editMode == GridEditController.EditMode.Placement)

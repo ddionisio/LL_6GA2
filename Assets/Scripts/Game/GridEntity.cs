@@ -86,6 +86,15 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
         }
     }
 
+    public GridCell cellEnd {
+        get {
+            var _cellInd = cellIndex;
+            var _cellSize = cellSize;
+
+            return new GridCell { b = _cellInd.b + _cellSize.b - 1, row = _cellInd.row + _cellSize.row - 1, col = _cellInd.col + _cellSize.col - 1 };
+        }
+    }
+
     public Vector3 size {
         get {
             if(container) {
@@ -106,6 +115,13 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
                 RefreshBounds();
 
             return mBounds;
+        }
+    }
+
+    public Vector3 anchorPosition {
+        get {
+            var pos = new Vector3(bounds.center.x, bounds.max.y + GameData.instance.anchorOffset, bounds.center.z);
+            return transform.TransformPoint(pos);
         }
     }
 

@@ -58,8 +58,12 @@ public class GridEntityContainer : MonoBehaviour {
             for(int r = 0; r < size.row; r++) {
                 for(int c = 0; c < size.col; c++) {
                     var ent = mEntityMap[r + index.row, c + index.col];
-                    if(ent != ignoreEnt)
-                        return false;
+                    if(ent != null) {
+                        if(ignoreEnt && ent == ignoreEnt)
+                            continue;
+                        else
+                            return false;
+                    }
                 }
             }
 

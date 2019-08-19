@@ -83,6 +83,18 @@ public class GridController : MonoBehaviour {
         return index.isValid && index.b < cellSize.b && index.row < cellSize.row && index.col < cellSize.col;
     }
 
+    public GridCell GetCell(Ray ray, bool clamp) {
+        var coll = boxCollider;
+
+        RaycastHit hit;
+        if(boxCollider.Raycast(ray, out hit, float.PositiveInfinity)) {
+            var pos = hit.point;
+            return GetCell(pos, clamp);
+        }
+
+        return new GridCell { b=-1, row=-1, col=-1 };
+    }
+
     public GridCell GetCell(Vector3 point, bool clamp) {
         var lpos = transform.InverseTransformPoint(point);
         return GetCellLocal(lpos, clamp);
