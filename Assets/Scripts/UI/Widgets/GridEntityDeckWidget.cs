@@ -17,7 +17,7 @@ public class GridEntityDeckWidget : MonoBehaviour {
         cardDrag.gameObject.SetActive(false);
 
         //setup cards
-        var itemGrp = GridEditController.instance.entityDataGroup;
+        var itemGrp = GridEditController.instance.levelData;
         var items = itemGrp.items;
 
         cards = new M8.CacheList<GridEntityCardWidget>(items.Length);

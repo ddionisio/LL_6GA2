@@ -13,7 +13,8 @@ public class GameData : M8.SingletonScriptableObject<GameData> {
     public float textureTile = 1f;
 
     [Header("Display Config")]
-    public float selectHighlightScale = 1f;
+    public float selectHighlightPulseScale = 0.5f;
+    public float selectPulseScale = 0.7f;
     public float selectFadeScale = 0.2f;
 
     public float floorAlpha = 0.5f;

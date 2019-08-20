@@ -155,6 +155,10 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
                 }
                 break;
 
+            case GridEditController.EditMode.Evaluate:
+                fadeScale = 1f;
+                break;
+
             default: //off
                 if(_isNonPlaceable)
                     fadeScale = 1f;
@@ -176,9 +180,13 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
     }
 
     private void RefreshHighlight() {
-        if(mIsHighlighted)
-            display.pulseScale = GameData.instance.selectHighlightScale;
-        else
-            display.pulseScale = 0f;
+        if(isSelected)
+            display.pulseScale = GameData.instance.selectPulseScale;
+        else {
+            if(mIsHighlighted)
+                display.pulseScale = GameData.instance.selectHighlightPulseScale;
+            else
+                display.pulseScale = 0f;
+        }
     }
 }

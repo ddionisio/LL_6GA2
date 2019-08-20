@@ -8,6 +8,13 @@ public class SignalInvokePanningDrag : MonoBehaviour, IDragHandler {
     public M8.SignalVector3 signalInvokeDelta;
 
     void IDragHandler.OnDrag(PointerEventData eventData) {
+        //only drag on specific mode
+        switch(GridEditController.instance.editMode) {
+            case GridEditController.EditMode.None:
+            case GridEditController.EditMode.Evaluate:
+                return;
+        }
+
         var delta = eventData.delta;
 
         if(signalInvokeDelta)

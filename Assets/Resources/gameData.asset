@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bca80d96647c8b4b9db6b68573ba48a, type: 3}
   m_Name: gameData
   m_EditorClassIdentifier: 
-  selectHighlightScale: 1
+  anchorOffset: 0.15
+  panningScaleX: -0.01
+  panningScaleZ: -0.01
+  textureTile: 1
+  selectHighlightPulseScale: 0.7
+  selectPulseScale: 0.3
   selectFadeScale: 0.2
+  floorAlpha: 0.5

@@ -11,12 +11,13 @@ public class GridEditController : GameModeController<GridEditController> {
         Select,
         Placement, //dragging block from palette
         Move,
-        Expand
+        Expand,
+        Evaluate, //evaluate the goals by clustering cubes based on their data, then display each if they pass or fail
     }
 
     [Header("Data")]
     [SerializeField]
-    GridEntityDataGroup _entityDataGroup = null;
+    GridLevelData _levelData = null;
 
     [SerializeField]
     [M8.TagSelector]
@@ -26,7 +27,7 @@ public class GridEditController : GameModeController<GridEditController> {
     [M8.TagSelector]
     string _tagGhostController = "";
 
-    public GridEntityDataGroup entityDataGroup { get { return _entityDataGroup; } }
+    public GridLevelData levelData { get { return _levelData; } }
 
     public GridEntityContainer entityContainer {
         get {
@@ -69,7 +70,7 @@ public class GridEditController : GameModeController<GridEditController> {
     }
 
     public int GetAvailableCount(GridEntityData dat) {
-        var count = _entityDataGroup.GetCount(dat);
+        var count = _levelData.GetItemCount(dat);
         var placedCount = entityContainer.GetVolumeCount(dat);
 
         //if we are in expand mode, use the volume from ghost
