@@ -17,7 +17,14 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
 
     public bool isVisible {
         get { return gridRenderer.enabled; }
-        set { gridRenderer.enabled = value; }
+        set {
+            if(gridRenderer.enabled != value) {
+                if(value)
+                    RefreshMesh(false);
+
+                gridRenderer.enabled = value;
+            }
+        }
     }
 
     private static readonly int[] mInds = new int[] { 0, 1, 2, 2, 3, 0 };

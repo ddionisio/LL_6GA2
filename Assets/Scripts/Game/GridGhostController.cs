@@ -28,6 +28,7 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
     [Header("Signal Invoke")]
     public M8.Signal signalInvokeSizeChanged;
+    public SignalGridEntity signalInvokeEntitySizeChanged;
 
     public GridEntityData data {
         get { return mData; }
@@ -62,6 +63,8 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
                 //update position
                 RefreshPosition();
+
+                RefreshValid();
             }
         }
     }
@@ -81,6 +84,8 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
                 //update bounds
                 RefreshBounds();
+
+                RefreshValid();
 
                 //update mesh
                 if(mCellSize.isVolumeValid)
@@ -124,6 +129,8 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     }
 
     public bool isDragging { get { return mDragFace != FaceFlags.None; } }
+
+    public bool isValid { get; private set; }
 
     private GridController mController;
 
@@ -207,15 +214,18 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
         //ensure it is valid
         if(eventData.pointerPressRaycast.isValid && eventData.pointerPressRaycast.gameObject == gameObject) {
-            mDragFace = GetFaceFlag(eventData.pointerPressRaycast.worldNormal);
-            display.faceHighlight = mDragFace;
-            RefreshHighlight();
-
             mColl.enabled = false;
 
             mDragCellIndex.Invalidate();
-
             mDragCellSizeStart = cellSize;
+
+            if(mode == Mode.Expand) {
+                mDragFace = GetFaceFlag(eventData.pointerPressRaycast.worldNormal);
+                display.faceHighlight = mDragFace;
+                RefreshHighlight();
+            }
+            else
+                mDragFace = FaceFlags.All;
         }
     }
 
@@ -244,14 +254,21 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
                 var ind = Mathf.RoundToInt(delta.y * topExpandDragScale);
 
                 var newSize = mDragCellSizeStart.b + ind;
-                if(newSize < 1)
-                    newSize = 1;
-                else if(newSize > editCtrl.entityContainer.controller.cellSize.b)
-                    newSize = editCtrl.entityContainer.controller.cellSize.b;
+                if(cellSize.b != newSize) {
+                    if(newSize < 1)
+                        newSize = 1;
+                    else if(newSize > editCtrl.entityContainer.controller.cellSize.b)
+                        newSize = editCtrl.entityContainer.controller.cellSize.b;
 
-                var _cellSize = cellSize;
-                _cellSize.b = newSize;
-                cellSize = _cellSize;
+                    var _cellSize = cellSize;
+                    _cellSize.b = newSize;
+                    cellSize = _cellSize;
+
+                    RefreshValid();
+
+                    if(signalInvokeEntitySizeChanged)
+                        signalInvokeEntitySizeChanged.Invoke(curEnt);
+                }
             }
             else {
                 //ensure collision is from level
@@ -298,7 +315,10 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
                         cellIndex = _cellInd;
                         cellSize = new GridCell { b = _cellEnd.b - _cellInd.b + 1, row = _cellEnd.row - _cellInd.row + 1, col = _cellEnd.col - _cellInd.col + 1 };
 
-                        RefreshValidDisplay();
+                        RefreshValid();
+
+                        if(signalInvokeEntitySizeChanged)
+                            signalInvokeEntitySizeChanged.Invoke(curEnt);
                     }
                 }
             }
@@ -354,21 +374,13 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
             display.isVisible = false;
         }
         else {
-            switch(mMode) {
-                case Mode.None:
-                case Mode.Expand: //allow highlight to update
-                    display.faceHighlight = FaceFlags.None;
-                    break;
-                case Mode.Move:
-                    display.faceHighlight = FaceFlags.All;
-                    break;
-            }
-
             display.isVisible = true;
+
+            RefreshFaceHighlightFromMode();
 
             RefreshHighlight();
 
-            RefreshValidDisplay();
+            RefreshValid();
         }
 
         mIsFaceHighlightActive = false;
@@ -431,16 +443,36 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         faceHighlightRightGO.transform.localPosition = new Vector3(bounds.max.x, faceHighlightRightGO.transform.localPosition.y, bounds.center.z);
     }
 
-    private void RefreshValidDisplay() {
-        var isValid = GridEditController.instance.entityContainer.IsPlaceable(cellIndex, cellSize, GridEditController.instance.selected);
+    private void RefreshValid() {
+        var editCtrl = GridEditController.instance;
+        var curEnt = editCtrl.selected;
+
+        isValid = curEnt && editCtrl.entityContainer.IsPlaceable(cellIndex, cellSize, curEnt);
+        if(isValid) {
+            //check if available count is sufficient
+            var count = editCtrl.GetAvailableCount(curEnt.data);
+            isValid = count >= 0;
+        }
 
         display.SetPulseColorValid(isValid);
+    }
+
+    private void RefreshFaceHighlightFromMode() {
+        switch(mMode) {
+            case Mode.None:
+            case Mode.Expand: //allow highlight to update
+                display.faceHighlight = FaceFlags.None;
+                break;
+            case Mode.Move:
+                display.faceHighlight = FaceFlags.All;
+                break;
+        }
     }
 
     private void EndDrag() {
         if(isDragging) {
             mDragFace = FaceFlags.None;
-            display.faceHighlight = FaceFlags.None;
+            RefreshFaceHighlightFromMode();
             RefreshHighlight();
 
             mColl.enabled = !(mMode == Mode.None || mMode == Mode.Hidden);

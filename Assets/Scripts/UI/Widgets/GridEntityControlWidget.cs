@@ -27,6 +27,64 @@ public class GridEntityControlWidget : MonoBehaviour {
     private GridEditController.EditMode mCurEditMode = GridEditController.EditMode.None;
     private GridEntity mCurEntity;
 
+    public void ExpandToggle() {
+        var editCtrl = GridEditController.instance;
+
+        if(editCtrl.editMode == GridEditController.EditMode.Expand) {
+            if(mCurEntity) {
+                //commit ghost if valid
+                if(editCtrl.ghostController.isValid) {
+                    var toCellIndex = editCtrl.ghostController.cellIndex;
+                    var toCellSize = editCtrl.ghostController.cellSize;
+
+                    editCtrl.editMode = GridEditController.EditMode.Select;
+
+                    mCurEntity.SetCell(toCellIndex, toCellSize);
+                }
+                else {
+                    editCtrl.editMode = GridEditController.EditMode.Select;
+
+                    if(mCurEntity.signalInvokeEntitySizeChanged) //this will refresh display on cards
+                        mCurEntity.signalInvokeEntitySizeChanged.Invoke(mCurEntity);
+                }
+            }
+            else //fail-safe
+                editCtrl.editMode = GridEditController.EditMode.Select;
+        }
+        else
+            editCtrl.editMode = GridEditController.EditMode.Expand;
+    }
+
+    public void MoveToggle() {
+        var editCtrl = GridEditController.instance;
+
+        if(editCtrl.editMode == GridEditController.EditMode.Move) {
+            if(mCurEntity) {
+                //commit ghost if valid
+                if(editCtrl.ghostController.isValid) {
+                    var toCellIndex = editCtrl.ghostController.cellIndex;
+
+                    mCurEntity.cellIndex = toCellIndex;
+                }
+            }
+
+            editCtrl.editMode = GridEditController.EditMode.Select;
+        }
+        else
+            editCtrl.editMode = GridEditController.EditMode.Move;
+    }
+
+    public void Delete() {
+        if(mCurEntity && mCurEntity.poolDataController) {
+            var ent = mCurEntity;
+
+            GridEditController.instance.editMode = GridEditController.EditMode.Select;
+            GridEditController.instance.selected = null;
+                        
+            ent.poolDataController.Release();
+        }
+    }
+
     void OnDisable() {
         mCam = null;
         mCurEntity = null;
@@ -132,18 +190,12 @@ public class GridEntityControlWidget : MonoBehaviour {
                 titleText.text = M8.Localize.Get(mCurEntity.data.nameTextRef);
 
                 RefreshDimensionInfoDisplay();
-
-                //setup ghost selection
-                switch(mCurEditMode) {
-                    case GridEditController.EditMode.Expand:
-                    case GridEditController.EditMode.Move:
-
-                        //apply entity dimension to ghost
-                        ghost.cellIndex = mCurEntity.cellIndex;
-                        ghost.cellSize = mCurEntity.cellSize;
-                        break;
-                }
             }
+        }
+
+        if(ghost.mode != GridGhostController.Mode.Hidden && mCurEntity) {
+            ghost.cellIndex = mCurEntity.cellIndex;
+            ghost.cellSize = mCurEntity.cellSize;
         }
     }
 

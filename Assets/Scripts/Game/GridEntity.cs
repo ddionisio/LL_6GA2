@@ -140,7 +140,9 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
     public void SetCell(GridCell index, GridCell size) {
         if(mCellIndex != index || _cellSize != size) {
             //do we need to move?
-            if(mCellIndex.col != index.col || mCellIndex.row != index.row || _cellSize.col != size.col || _cellSize.row != size.row) {
+            var isMove = mCellIndex.col != index.col || mCellIndex.row != index.row;
+            var isSizeChanged = _cellSize.col != size.col || _cellSize.row != size.row || _cellSize.b != size.b;
+            if(isMove || isSizeChanged) {
                 mCellIndex = index;
                 _cellSize = size;
 
@@ -151,6 +153,9 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
                 mIsBoundsUpdated = false;
 
                 cellChangedCallback?.Invoke();
+
+                if(isSizeChanged && signalInvokeEntitySizeChanged)
+                    signalInvokeEntitySizeChanged.Invoke(this);
             }
             else {
                 mCellIndex = index;

@@ -69,8 +69,16 @@ public class GridEditController : GameModeController<GridEditController> {
     }
 
     public int GetAvailableCount(GridEntityData dat) {
-        var placedCount = entityContainer.GetVolumeCount(dat);
         var count = _entityDataGroup.GetCount(dat);
+        var placedCount = entityContainer.GetVolumeCount(dat);
+
+        //if we are in expand mode, use the volume from ghost
+        if(editMode == EditMode.Expand) {
+            if(selected && selected.data == dat) {
+                placedCount -= selected.cellSize.volume;
+                placedCount += ghostController.cellSize.volume;
+            }
+        }        
 
         return count - placedCount;
     }

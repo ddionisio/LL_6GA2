@@ -38,13 +38,6 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
 
     private bool mIsHighlighted;
 
-    void OnApplicationFocus(bool focus) {
-        if(!focus) {
-            mIsHighlighted = false;
-            RefreshHighlight();
-        }
-    }
-
     void OnDisable() {
         if(_isNonPlaceable) {
             Deinit();

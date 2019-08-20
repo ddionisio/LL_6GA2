@@ -12,6 +12,9 @@ public class GridEntityContainer : MonoBehaviour {
     [SerializeField]
     Transform _root = null;
 
+    [Header("Signal Invoke")]
+    public SignalGridEntityData signalInvokeMapUpdate;
+
     public GridController controller { get { return _controller; } }
 
     public Transform root { get { return _root; } }
@@ -102,6 +105,9 @@ public class GridEntityContainer : MonoBehaviour {
         ApplyEntityMap(ent);
 
         mapUpdateCallback?.Invoke(ent.data);
+
+        if(signalInvokeMapUpdate)
+            signalInvokeMapUpdate.Invoke(ent.data);
     }
 
     public void RemoveEntity(GridEntity ent) {
@@ -111,6 +117,9 @@ public class GridEntityContainer : MonoBehaviour {
         }
 
         mapUpdateCallback?.Invoke(ent.data);
+
+        if(signalInvokeMapUpdate)
+            signalInvokeMapUpdate.Invoke(ent.data);
     }
 
     private void ClearEntityMap(GridEntity ent) {

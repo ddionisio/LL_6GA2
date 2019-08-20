@@ -17,6 +17,7 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
 
     [Header("Signal Listen")]
     public SignalGridEntity signalListenEntitySizeChanged;
+    public SignalGridEntityData signalListenMapChanged;
 
     private static readonly GridCell spawnSize = new GridCell { b=1, row=1, col=1 };
 
@@ -30,12 +31,12 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
         countText.text = count.ToString();
 
         if(count > 0) {
-            countText.color = countValidColor;
             selectable.interactable = true;
+            countText.color = countValidColor;
         }
         else {
-            countText.color = countInvalidColor;
             selectable.interactable = false;
+            countText.color = countInvalidColor;
         }
     }
 
@@ -66,6 +67,9 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
 
         if(signalListenEntitySizeChanged)
             signalListenEntitySizeChanged.callback -= OnEntitySizeChanged;
+
+        if(signalListenMapChanged)
+            signalListenMapChanged.callback -= OnMapChanged;
     }
 
     void OnEnable() {
@@ -73,10 +77,18 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
 
         if(signalListenEntitySizeChanged)
             signalListenEntitySizeChanged.callback += OnEntitySizeChanged;
+
+        if(signalListenMapChanged)
+            signalListenMapChanged.callback += OnMapChanged;
     }
 
     void OnEntitySizeChanged(GridEntity ent) {
         if(ent.data == data)
+            RefreshCount();
+    }
+
+    void OnMapChanged(GridEntityData entData) {
+        if(entData == data)
             RefreshCount();
     }
 
@@ -129,8 +141,6 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
                 //select and set mode to expand
                 editCtrl.selected = spawnEnt;
                 editCtrl.editMode = GridEditController.EditMode.Expand;
-
-                RefreshCount();
             }
         }
     }
