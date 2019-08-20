@@ -50,8 +50,6 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
                 //do we need to move?
                 if(mCellIndex.row != value.row || mCellIndex.col != value.col) {
                     mCellIndex = value;
-
-                    container.AddEntity(this);
                 }
                 else
                     mCellIndex = value;
@@ -70,8 +68,6 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
                 //do we need to move?
                 if(_cellSize.row != value.row || _cellSize.col != value.col) {
                     _cellSize = value;
-
-                    container.AddEntity(this);
                 }
                 else
                     _cellSize = value;
@@ -137,6 +133,11 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
     private Bounds mBounds;
     private bool mIsBoundsUpdated;
 
+    public bool IsContained(GridCell index) {
+        var _cellEnd = cellEnd;
+        return index.row >= cellIndex.row && index.row <= _cellEnd.row && index.col >= cellIndex.col && index.col <= _cellEnd.col;
+    }
+
     public void SetCell(GridCell index, GridCell size) {
         if(mCellIndex != index || _cellSize != size) {
             //do we need to move?
@@ -145,8 +146,6 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
             if(isMove || isSizeChanged) {
                 mCellIndex = index;
                 _cellSize = size;
-
-                container.AddEntity(this);
 
                 RefreshPosition();
 
@@ -204,11 +203,21 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
         cellIndex = gridCtrl.GetCellLocal(new Vector3(cellBound.center.x - b.extents.x, cellBound.min.y, cellBound.center.z - b.extents.z), false);
     }
 
+    void OnDisable() {
+        if(Application.isPlaying) {
+            if(_updateCellOnEnabled) {
+                container.RemoveEntity(this);
+            }
+        }
+    }
+
     void OnEnable() {
         if(Application.isPlaying) {
             if(_updateCellOnEnabled) {
                 RefreshBounds();
                 RefreshGridPostion();
+
+                container.AddEntity(this);
             }
         }
     }

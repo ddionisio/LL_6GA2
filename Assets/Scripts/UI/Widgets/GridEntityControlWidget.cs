@@ -31,25 +31,7 @@ public class GridEntityControlWidget : MonoBehaviour {
         var editCtrl = GridEditController.instance;
 
         if(editCtrl.editMode == GridEditController.EditMode.Expand) {
-            if(mCurEntity) {
-                //commit ghost if valid
-                if(editCtrl.ghostController.isValid) {
-                    var toCellIndex = editCtrl.ghostController.cellIndex;
-                    var toCellSize = editCtrl.ghostController.cellSize;
-
-                    editCtrl.editMode = GridEditController.EditMode.Select;
-
-                    mCurEntity.SetCell(toCellIndex, toCellSize);
-                }
-                else {
-                    editCtrl.editMode = GridEditController.EditMode.Select;
-
-                    if(mCurEntity.signalInvokeEntitySizeChanged) //this will refresh display on cards
-                        mCurEntity.signalInvokeEntitySizeChanged.Invoke(mCurEntity);
-                }
-            }
-            else //fail-safe
-                editCtrl.editMode = GridEditController.EditMode.Select;
+            ToSelect();
         }
         else
             editCtrl.editMode = GridEditController.EditMode.Expand;
@@ -59,19 +41,34 @@ public class GridEntityControlWidget : MonoBehaviour {
         var editCtrl = GridEditController.instance;
 
         if(editCtrl.editMode == GridEditController.EditMode.Move) {
-            if(mCurEntity) {
-                //commit ghost if valid
-                if(editCtrl.ghostController.isValid) {
-                    var toCellIndex = editCtrl.ghostController.cellIndex;
-
-                    mCurEntity.cellIndex = toCellIndex;
-                }
-            }
-
-            editCtrl.editMode = GridEditController.EditMode.Select;
+            ToSelect();
         }
         else
             editCtrl.editMode = GridEditController.EditMode.Move;
+    }
+
+    public void ToSelect() {
+        var editCtrl = GridEditController.instance;
+
+        if(mCurEntity) {
+            //commit ghost if valid
+            if(editCtrl.ghostController.isValid) {
+                var toCellIndex = editCtrl.ghostController.cellIndex;
+                var toCellSize = editCtrl.ghostController.cellSize;
+
+                editCtrl.editMode = GridEditController.EditMode.Select;
+
+                mCurEntity.SetCell(toCellIndex, toCellSize);
+            }
+            else {
+                editCtrl.editMode = GridEditController.EditMode.Select;
+
+                if(mCurEntity.signalInvokeEntitySizeChanged) //this will refresh display on cards
+                    mCurEntity.signalInvokeEntitySizeChanged.Invoke(mCurEntity);
+            }
+        }
+        else //fail-safe
+            editCtrl.editMode = GridEditController.EditMode.Select;
     }
 
     public void Delete() {
@@ -136,6 +133,8 @@ public class GridEntityControlWidget : MonoBehaviour {
         var editCtrl = GridEditController.instance;
         var ghost = editCtrl.ghostController;
 
+        var prevEditMode = mCurEditMode;
+
         //change state based on edit mode
         if(forceChanged || editCtrl.editMode != mCurEditMode || mCurEntity != editCtrl.selected) {
             mCurEditMode = editCtrl.editMode;
@@ -193,9 +192,15 @@ public class GridEntityControlWidget : MonoBehaviour {
             }
         }
 
-        if(ghost.mode != GridGhostController.Mode.Hidden && mCurEntity) {
-            ghost.cellIndex = mCurEntity.cellIndex;
-            ghost.cellSize = mCurEntity.cellSize;
+        switch(prevEditMode) {
+            case GridEditController.EditMode.Placement:
+            case GridEditController.EditMode.Select:
+            case GridEditController.EditMode.None:
+                if(ghost.mode != GridGhostController.Mode.Hidden && mCurEntity) {
+                    ghost.cellIndex = mCurEntity.cellIndex;
+                    ghost.cellSize = mCurEntity.cellSize;
+                }
+                break;
         }
     }
 

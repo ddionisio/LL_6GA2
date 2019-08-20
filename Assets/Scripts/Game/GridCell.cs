@@ -41,7 +41,7 @@ public struct GridCell {
     }
 
     public override int GetHashCode() {
-        return base.GetHashCode();
+        return (row*100000 + col*100 + b).GetHashCode();
     }
 
     public override bool Equals(object obj) {
@@ -74,11 +74,50 @@ public struct GridCell {
         return 0;
     }
 
+    public static bool IsIntersectFloor(GridCell aIndex, GridCell aSize, GridCell bIndex, GridCell bSize) {
+        var aIndexEnd = (aIndex + aSize) - 1;
+        var bIndexEnd = (bIndex + bSize) - 1;
+
+        //check a against b
+        if(aIndex.row >= bIndex.row && aIndex.row <= bIndexEnd.row && aIndex.col >= bIndex.col && aIndex.col <= bIndexEnd.col)
+            return true;
+        else if(aIndexEnd.row >= bIndex.row && aIndexEnd.row <= bIndexEnd.row && aIndex.col >= bIndex.col && aIndex.col <= bIndexEnd.col)
+            return true;
+        else if(aIndexEnd.row >= bIndex.row && aIndexEnd.row <= bIndexEnd.row && aIndexEnd.col >= bIndex.col && aIndexEnd.col <= bIndexEnd.col)
+            return true;
+        else if(aIndex.row >= bIndex.row && aIndex.row <= bIndexEnd.row && aIndexEnd.col >= bIndex.col && aIndexEnd.col <= bIndexEnd.col)
+            return true;
+
+        //check b against a
+        if(bIndex.row >= aIndex.row && bIndex.row <= aIndexEnd.row && bIndex.col >= aIndex.col && bIndex.col <= aIndexEnd.col)
+            return true;
+        else if(bIndexEnd.row >= aIndex.row && bIndexEnd.row <= aIndexEnd.row && bIndex.col >= aIndex.col && bIndex.col <= aIndexEnd.col)
+            return true;
+        else if(bIndexEnd.row >= aIndex.row && bIndexEnd.row <= aIndexEnd.row && bIndexEnd.col >= aIndex.col && bIndexEnd.col <= aIndexEnd.col)
+            return true;
+        else if(bIndex.row >= aIndex.row && bIndex.row <= aIndexEnd.row && bIndexEnd.col >= aIndex.col && bIndexEnd.col <= aIndexEnd.col)
+            return true;
+
+        return false;
+    }
+
     public static bool operator ==(GridCell a, GridCell b) {
         return a.row == b.row && a.col == b.col && a.b == b.b;
     }
 
     public static bool operator !=(GridCell a, GridCell b) {
         return a.row != b.row || a.col != b.col || a.b != b.b;
+    }
+
+    public static GridCell operator +(GridCell a, GridCell b) {
+        return new GridCell { b = a.b + b.b, row = a.row + b.row, col = a.col + b.col };
+    }
+
+    public static GridCell operator -(GridCell a, GridCell b) {
+        return new GridCell { b = a.b - b.b, row = a.row - b.row, col = a.col - b.col };
+    }
+
+    public static GridCell operator -(GridCell a, int i) {
+        return new GridCell { b = a.b - i, row = a.row - i, col = a.col - i };
     }
 }

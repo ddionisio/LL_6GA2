@@ -11,7 +11,6 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
     public Renderer gridRenderer;
     
     [Header("Config")]
-    public float textureTile = 1f;
     [SerializeField]
     bool _refreshOnEnable = false; //set this to true for non-placeables
 
@@ -30,13 +29,23 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
     private static readonly int[] mInds = new int[] { 0, 1, 2, 2, 3, 0 };
 
     //order: starting lower left, clockwise
-    private Vector3[] mVtx = new Vector3[4];
-    private Vector2[] mUVs = new Vector2[4];
+    private static Vector3[] mVtx = new Vector3[4];
+    private static Vector2[] mUVs = new Vector2[4];
+
+    private static Dictionary<GridCell, Mesh> mMeshCache = new Dictionary<GridCell, Mesh>();
     
     private int mGridRowCount = -1, mGridColCount = -1;
 
     private Material mMat;
-    private Mesh mFloorMesh;
+
+    public static void ClearMeshCache() {
+        foreach(var pair in mMeshCache) {
+            if(pair.Value)
+                Destroy(pair.Value);
+        }
+
+        mMeshCache.Clear();
+    }
 
     public void RefreshColor() {
         if(!gridEntity || !gridEntity.data)
@@ -55,13 +64,6 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
         if(!gridEntity || !gridMeshFilter)
             return;
 
-        //generate mesh if not set
-        var mesh = gridMeshFilter.sharedMesh;
-        if(!mesh) {
-            mesh = mFloorMesh = new Mesh();
-            gridMeshFilter.sharedMesh = mFloorMesh;
-        }
-
         var cellSize = gridEntity.cellSize;
 
         if(!forceRefresh && mGridRowCount == cellSize.row && mGridColCount == cellSize.col)
@@ -73,28 +75,7 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
         if(mGridRowCount <= 0 || mGridColCount <= 0)
             return;
 
-        var bounds = gridEntity.bounds;
-
-        mVtx[0] = new Vector3(-bounds.extents.x, 0f, -bounds.extents.z);
-        mVtx[1] = new Vector3(-bounds.extents.x, 0f, bounds.extents.z);
-        mVtx[2] = new Vector3(bounds.extents.x, 0f, bounds.extents.z);
-        mVtx[3] = new Vector3(bounds.extents.x, 0f, -bounds.extents.z);
-
-        //var uvUnit = 1f;// textureTile / mUnitSize;
-
-        var uvSize = new Vector2(textureTile * mGridColCount, textureTile * mGridRowCount);
-
-        mUVs[0] = new Vector2(0f, 0f);
-        mUVs[1] = new Vector2(0f, uvSize.y);
-        mUVs[2] = new Vector2(uvSize.x, uvSize.y);
-        mUVs[3] = new Vector2(uvSize.x, 0f);
-
-        if(mesh.vertexCount != mVtx.Length)
-            mesh.Clear();
-
-        mesh.vertices = mVtx;
-        mesh.uv = mUVs;
-        mesh.triangles = mInds;
+        gridMeshFilter.sharedMesh = GenerateMesh(mGridRowCount, mGridColCount);
     }
 
     void M8.IPoolSpawnComplete.OnSpawnComplete() {
@@ -112,8 +93,40 @@ public class GridEntityDisplayFloor : MonoBehaviour, M8.IPoolSpawnComplete {
     void OnDestroy() {
         if(mMat)
             Destroy(mMat);
+    }
 
-        if(mFloorMesh)
-            Destroy(mFloorMesh);
+    private static Mesh GenerateMesh(int row, int col) {
+        Mesh mesh;
+
+        var cellSize = new GridCell { b = 0, row = row, col = col };
+        if(!mMeshCache.TryGetValue(cellSize, out mesh)) {
+            var unitSize = GridEditController.instance.entityContainer.controller.unitSize;
+            var pos = new Vector3(0f, cellSize.b * unitSize * 0.5f, 0f);
+            var bounds = new Bounds(pos, cellSize.GetSize(unitSize));
+
+            mVtx[0] = new Vector3(-bounds.extents.x, 0f, -bounds.extents.z);
+            mVtx[1] = new Vector3(-bounds.extents.x, 0f, bounds.extents.z);
+            mVtx[2] = new Vector3(bounds.extents.x, 0f, bounds.extents.z);
+            mVtx[3] = new Vector3(bounds.extents.x, 0f, -bounds.extents.z);
+
+            //var uvUnit = 1f;// textureTile / mUnitSize;
+
+            var textureTile = GameData.instance.textureTile;
+            var uvSize = new Vector2(textureTile * col, textureTile * row);
+
+            mUVs[0] = new Vector2(0f, 0f);
+            mUVs[1] = new Vector2(0f, uvSize.y);
+            mUVs[2] = new Vector2(uvSize.x, uvSize.y);
+            mUVs[3] = new Vector2(uvSize.x, 0f);
+
+            mesh = new Mesh();
+            mesh.vertices = mVtx;
+            mesh.uv = mUVs;
+            mesh.triangles = mInds;
+
+            mMeshCache.Add(cellSize, mesh);
+        }
+
+        return mesh;
     }
 }

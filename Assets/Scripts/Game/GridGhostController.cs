@@ -324,7 +324,46 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
             }
         }
         else if(mode == Mode.Move) {
+            //ensure collision is from level
+            if(!cast.isValid)
+                return;
 
+            if(cast.gameObject != editCtrl.entityContainer.gameObject)
+                return;
+
+            var cell = editCtrl.entityContainer.controller.GetCell(cast.worldPosition, true);
+            if(cell.isValid) {
+                if(mDragCellIndex != cell) {
+                    var apply = mDragCellIndex.isValid;
+
+                    var deltaCell = new GridCell { b = 0, row = cell.row - mDragCellIndex.row, col = cell.col - mDragCellIndex.col };
+
+                    mDragCellIndex = cell;
+
+                    if(apply) {
+                        var _cellIndex = new GridCell { b = cellIndex.b, row = cellIndex.row + deltaCell.row, col = cellIndex.col + deltaCell.col };
+                        var _cellEnd = new GridCell { b = cellIndex.b, row = _cellIndex.row + cellSize.row - 1, col = _cellIndex.col + cellSize.col - 1 };
+
+                        var gridCtrl = editCtrl.entityContainer.controller;
+
+                        //clamp if out of bounds
+                        if(_cellIndex.row < 0)
+                            _cellIndex.row = 0;
+                        else if(_cellEnd.row >= gridCtrl.cellSize.row)
+                            _cellIndex.row = gridCtrl.cellSize.row - cellSize.row;
+
+                        if(_cellIndex.col < 0)
+                            _cellIndex.col = 0;
+                        else if(_cellEnd.col >= gridCtrl.cellSize.col)
+                            _cellIndex.col = gridCtrl.cellSize.col - cellSize.col;
+
+                        if(gridCtrl.IsContained(_cellIndex))
+                            cellIndex = _cellIndex;
+                    }
+                }
+            }
+            else
+                mDragCellIndex.Invalidate();
         }
     }
 

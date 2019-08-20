@@ -93,4 +93,11 @@ public class GridEditController : GameModeController<GridEditController> {
 
     private GridEntityContainer mEntityContainer;
     private GridGhostController mGhostController;
+
+    protected override void OnInstanceDeinit() {
+        GridEntityDisplay.ClearMeshCache();
+        GridEntityDisplayFloor.ClearMeshCache();
+
+        base.OnInstanceDeinit();
+    }
 }

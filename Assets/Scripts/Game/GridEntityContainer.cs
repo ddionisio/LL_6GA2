@@ -26,8 +26,6 @@ public class GridEntityContainer : MonoBehaviour {
     /// </summary>
     public event System.Action<GridEntityData> mapUpdateCallback;
 
-    private GridEntity[,] mEntityMap; //[row, col]
-
     public int GetVolumeCount(GridEntityData entDat) {
         int count = 0;
         
@@ -41,12 +39,11 @@ public class GridEntityContainer : MonoBehaviour {
     }
 
     public GridEntity GetEntity(GridCell cell) {
-        return GetEntity(cell.row, cell.col);
-    }
-
-    public GridEntity GetEntity(int row, int col) {
-        if(row >= 0 && row < mEntityMap.GetLength(0) && col >= 0 && col < mEntityMap.GetLength(1))
-            return mEntityMap[row, col];
+        for(int i = 0; i < entities.Count; i++) {
+            var ent = entities[i];
+            if(ent.IsContained(cell))
+                return ent;
+        }
 
         return null;
     }
@@ -58,15 +55,11 @@ public class GridEntityContainer : MonoBehaviour {
         //check if contained
         if(controller.IsContained(index, size)) {
             //ensure nothing is occupying the spaces
-            for(int r = 0; r < size.row; r++) {
-                for(int c = 0; c < size.col; c++) {
-                    var ent = mEntityMap[r + index.row, c + index.col];
-                    if(ent != null) {
-                        if(ignoreEnt && ent == ignoreEnt)
-                            continue;
-                        else
-                            return false;
-                    }
+            for(int i = 0; i < entities.Count; i++) {
+                var ent = entities[i];
+                if(ent != ignoreEnt) {
+                    if(GridCell.IsIntersectFloor(index, size, ent.cellIndex, ent.cellSize))
+                        return false;
                 }
             }
 
@@ -82,82 +75,27 @@ public class GridEntityContainer : MonoBehaviour {
     }
 
     public void ClearEntities() {
-        //clear map
-        for(int r = 0; r < mEntityMap.GetLength(0); r++) {
-            for(int c = 0; c < mEntityMap.GetLength(1); c++) {
-                mEntityMap[r, c] = null;
-            }
-        }
-
         entities.Clear();
     }
 
     public void AddEntity(GridEntity ent) {
         //check if it already exists
-        if(entities.Exists(ent)) {
-            //remove current mapping
-            ClearEntityMap(ent);
-        }
-        else
+        if(!entities.Exists(ent)) {
             entities.Add(ent);
 
-        //apply mapping
-        ApplyEntityMap(ent);
+            mapUpdateCallback?.Invoke(ent.data);
 
-        mapUpdateCallback?.Invoke(ent.data);
-
-        if(signalInvokeMapUpdate)
-            signalInvokeMapUpdate.Invoke(ent.data);
+            if(signalInvokeMapUpdate)
+                signalInvokeMapUpdate.Invoke(ent.data);
+        }
     }
 
     public void RemoveEntity(GridEntity ent) {
         if(entities.Remove(ent)) {
-            //clear mapping
-            ClearEntityMap(ent);
-        }
+            mapUpdateCallback?.Invoke(ent.data);
 
-        mapUpdateCallback?.Invoke(ent.data);
-
-        if(signalInvokeMapUpdate)
-            signalInvokeMapUpdate.Invoke(ent.data);
-    }
-
-    private void ClearEntityMap(GridEntity ent) {
-        var cellInd = ent.cellIndex;
-        var cellSize = ent.cellSize;
-
-        for(int r = 0; r < cellSize.row; r++) {
-            var rInd = r + cellInd.row;
-            if(rInd < 0 || rInd >= mEntityMap.GetLength(0))
-                continue;
-
-            for(int c = 0; c < cellSize.col; c++) {
-                var cInd = c + cellInd.col;
-                if(cInd < 0 || cInd >= mEntityMap.GetLength(1))
-                    continue;
-
-                if(mEntityMap[rInd, cInd] == ent)
-                    mEntityMap[rInd, cInd] = null;
-            }
-        }
-    }
-
-    private void ApplyEntityMap(GridEntity ent) {
-        var cellInd = ent.cellIndex;
-        var cellSize = ent.cellSize;
-
-        for(int r = 0; r < cellSize.row; r++) {
-            var rInd = r + cellInd.row;
-            if(rInd < 0 || rInd >= mEntityMap.GetLength(0))
-                continue;
-
-            for(int c = 0; c < cellSize.col; c++) {
-                var cInd = c + cellInd.col;
-                if(cInd < 0 || cInd >= mEntityMap.GetLength(1))
-                    continue;
-
-                mEntityMap[rInd, cInd] = ent;
-            }
+            if(signalInvokeMapUpdate)
+                signalInvokeMapUpdate.Invoke(ent.data);
         }
     }
 
@@ -167,8 +105,6 @@ public class GridEntityContainer : MonoBehaviour {
 
         //init containers
         var cellSize = _controller.cellSize;
-
-        mEntityMap = new GridEntity[cellSize.row, cellSize.col];
 
         entities = new M8.CacheList<GridEntity>(cellSize.row * cellSize.col);
     }

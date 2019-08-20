@@ -9,9 +9,6 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
     [Header("Display")]
     public MeshFilter cubeMeshFilter; //if not null, apply entity's dimension
     public Renderer rendererDisplay; //use for fade/pulse
-        
-    [Header("Config")]
-    public float textureTile = 1f;
 
     public float alpha {
         get { return mAlpha; }
@@ -59,27 +56,31 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
 
     private static Color32[] vertexWhiteColors {
         get {
-            if(mWhiteClrs == null) {
-                mWhiteClrs = new Color32[vertexCount];
-                for(int i = 0; i < mWhiteClrs.Length; i++)
-                    mWhiteClrs[i] = new Color32(255, 255, 255, 255);
-            }
-            return mWhiteClrs;
+            for(int i = 0; i < mClrs.Length; i++)
+                mClrs[i] = new Color32(255, 255, 255, 255);
+            return mClrs;
         }
     }
-    private static Color32[] mWhiteClrs;
-
-    //order: starting lower left, clockwise
-    private Vector3[] mVtx;
-    private Vector2[] mUVs;
+    private static Color32[] mClrs = new Color32[vertexCount];
+    private static Vector3[] mVtx = new Vector3[vertexCount];
+    private static Vector2[] mUVs = new Vector2[vertexCount];
 
     private GridCell mCellSize = new GridCell { b = -1, row = -1, col = -1 };
-
-    private Mesh mCubeMesh; //generated mesh if not available
 
     private Material mMat;
     private float mAlpha;
     private float mPulseScale;
+
+    private static Dictionary<GridCell, Mesh> mMeshCache = new Dictionary<GridCell, Mesh>();
+
+    public static void ClearMeshCache() {
+        foreach(var pair in mMeshCache) {
+            if(pair.Value)
+                Destroy(pair.Value);
+        }
+
+        mMeshCache.Clear();
+    }
 
     public void ApplyMaterial(Material mat) {
         if(rendererDisplay.sharedMaterial == null || mat == null || rendererDisplay.sharedMaterial.name != mat.name) {
@@ -107,80 +108,9 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
 
         mCellSize = cellSize;
 
-        //generate mesh first-time
-        var mesh = cubeMeshFilter.sharedMesh;
-        if(!mesh) {
-            mesh = mCubeMesh = new Mesh();
-            cubeMeshFilter.sharedMesh = mCubeMesh;
-        }
-        else if(mesh.vertexCount != vertexCount)
-            mesh.Clear();
-
-        var bounds = gridEntity.bounds;
-
-        if(mVtx == null)
-            mVtx = new Vector3[vertexCount];
-        if(mUVs == null)
-            mUVs = new Vector2[vertexCount];
-
-        //top
-        ApplyMeshData(0,
-            new Vector3(-bounds.extents.x, bounds.size.y, -bounds.extents.z),
-            new Vector3(-bounds.extents.x, bounds.size.y, bounds.extents.z),
-            new Vector3(bounds.extents.x, bounds.size.y, bounds.extents.z),
-            new Vector3(bounds.extents.x, bounds.size.y, -bounds.extents.z),
-            cellSize.row, cellSize.col);
-
-        //front
-        ApplyMeshData(4,
-            new Vector3(bounds.extents.x, 0f, bounds.extents.z),
-            new Vector3(bounds.extents.x, bounds.size.y, bounds.extents.z),
-            new Vector3(-bounds.extents.x, bounds.size.y, bounds.extents.z),
-            new Vector3(-bounds.extents.x, 0f, bounds.extents.z),
-            cellSize.b, cellSize.col);
-
-        //back
-        ApplyMeshData(8,
-            new Vector3(-bounds.extents.x, 0f, -bounds.extents.z),
-            new Vector3(-bounds.extents.x, bounds.size.y, -bounds.extents.z),
-            new Vector3(bounds.extents.x, bounds.size.y, -bounds.extents.z),
-            new Vector3(bounds.extents.x, 0f, -bounds.extents.z),
-            cellSize.b, cellSize.col);
-
-        //left
-        ApplyMeshData(12,
-            new Vector3(-bounds.extents.x, 0f, bounds.extents.z),
-            new Vector3(-bounds.extents.x, bounds.size.y, bounds.extents.z),
-            new Vector3(-bounds.extents.x, bounds.size.y, -bounds.extents.z),
-            new Vector3(-bounds.extents.x, 0f, -bounds.extents.z),
-            cellSize.b, cellSize.row);
-
-        //right
-        ApplyMeshData(16,
-            new Vector3(bounds.extents.x, 0f, -bounds.extents.z),
-            new Vector3(bounds.extents.x, bounds.size.y, -bounds.extents.z),
-            new Vector3(bounds.extents.x, bounds.size.y, bounds.extents.z),
-            new Vector3(bounds.extents.x, 0f, bounds.extents.z),
-            cellSize.b, cellSize.row);
-
-        mesh.vertices = mVtx;
-        mesh.uv = mUVs;
-        mesh.triangles = mInds;
-        mesh.colors32 = vertexWhiteColors;
-    }
-
-    private void ApplyMeshData(int sInd, Vector3 vtx1, Vector3 vtx2, Vector3 vtx3, Vector3 vtx4, int tileRow, int tileCol) {
-        mVtx[sInd]     = vtx1;
-        mVtx[sInd + 1] = vtx2;
-        mVtx[sInd + 2] = vtx3;
-        mVtx[sInd + 3] = vtx4;
-
-        var uvSize = new Vector2(textureTile * tileCol, textureTile * tileRow);
-
-        mUVs[sInd]     = new Vector2(0f, 0f);
-        mUVs[sInd + 1] = new Vector2(0f, uvSize.y);
-        mUVs[sInd + 2] = new Vector2(uvSize.x, uvSize.y);
-        mUVs[sInd + 3] = new Vector2(uvSize.x, 0f);
+        //generate mesh
+        var mesh = GenerateMesh(mCellSize);
+        cubeMeshFilter.sharedMesh = mesh;
     }
 
     void M8.IPoolSpawnComplete.OnSpawnComplete() {
@@ -197,9 +127,6 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
 
         if(mMat)
             Destroy(mMat);
-
-        if(mCubeMesh)
-            Destroy(mCubeMesh);
     }
 
     void Awake() {
@@ -223,6 +150,82 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
 
     void OnGridEntityCellChanged() {
         RefreshMesh(false);
+    }
+
+    private static Mesh GenerateMesh(GridCell cellSize) {
+        Mesh mesh;
+        if(!mMeshCache.TryGetValue(cellSize, out mesh)) {
+            var unitSize = GridEditController.instance.entityContainer.controller.unitSize;
+            var pos = new Vector3(0f, cellSize.b * unitSize * 0.5f, 0f);
+            var bounds = new Bounds(pos, cellSize.GetSize(unitSize));
+
+            //top
+            ApplyMeshData(mVtx, mUVs, 0,
+                new Vector3(-bounds.extents.x, bounds.size.y, -bounds.extents.z),
+                new Vector3(-bounds.extents.x, bounds.size.y, bounds.extents.z),
+                new Vector3(bounds.extents.x, bounds.size.y, bounds.extents.z),
+                new Vector3(bounds.extents.x, bounds.size.y, -bounds.extents.z),
+                cellSize.row, cellSize.col);
+
+            //front
+            ApplyMeshData(mVtx, mUVs, 4,
+                new Vector3(bounds.extents.x, 0f, bounds.extents.z),
+                new Vector3(bounds.extents.x, bounds.size.y, bounds.extents.z),
+                new Vector3(-bounds.extents.x, bounds.size.y, bounds.extents.z),
+                new Vector3(-bounds.extents.x, 0f, bounds.extents.z),
+                cellSize.b, cellSize.col);
+
+            //back
+            ApplyMeshData(mVtx, mUVs, 8,
+                new Vector3(-bounds.extents.x, 0f, -bounds.extents.z),
+                new Vector3(-bounds.extents.x, bounds.size.y, -bounds.extents.z),
+                new Vector3(bounds.extents.x, bounds.size.y, -bounds.extents.z),
+                new Vector3(bounds.extents.x, 0f, -bounds.extents.z),
+                cellSize.b, cellSize.col);
+
+            //left
+            ApplyMeshData(mVtx, mUVs, 12,
+                new Vector3(-bounds.extents.x, 0f, bounds.extents.z),
+                new Vector3(-bounds.extents.x, bounds.size.y, bounds.extents.z),
+                new Vector3(-bounds.extents.x, bounds.size.y, -bounds.extents.z),
+                new Vector3(-bounds.extents.x, 0f, -bounds.extents.z),
+                cellSize.b, cellSize.row);
+
+            //right
+            ApplyMeshData(mVtx, mUVs, 16,
+                new Vector3(bounds.extents.x, 0f, -bounds.extents.z),
+                new Vector3(bounds.extents.x, bounds.size.y, -bounds.extents.z),
+                new Vector3(bounds.extents.x, bounds.size.y, bounds.extents.z),
+                new Vector3(bounds.extents.x, 0f, bounds.extents.z),
+                cellSize.b, cellSize.row);
+
+            mesh = new Mesh();
+
+            mesh.vertices = mVtx;
+            mesh.uv = mUVs;
+            mesh.triangles = mInds;
+            mesh.colors32 = vertexWhiteColors;
+
+            mMeshCache.Add(cellSize, mesh);
+        }
+
+        return mesh;
+    }
+
+    private static void ApplyMeshData(Vector3[] vtx, Vector2[] UVs, int sInd, Vector3 vtx1, Vector3 vtx2, Vector3 vtx3, Vector3 vtx4, int tileRow, int tileCol) {
+        vtx[sInd] = vtx1;
+        vtx[sInd + 1] = vtx2;
+        vtx[sInd + 2] = vtx3;
+        vtx[sInd + 3] = vtx4;
+
+        var textureTile = GameData.instance.textureTile;
+
+        var uvSize = new Vector2(textureTile * tileCol, textureTile * tileRow);
+
+        UVs[sInd] = new Vector2(0f, 0f);
+        UVs[sInd + 1] = new Vector2(0f, uvSize.y);
+        UVs[sInd + 2] = new Vector2(uvSize.x, uvSize.y);
+        UVs[sInd + 3] = new Vector2(uvSize.x, 0f);
     }
 
     private void ApplyAlpha() {
