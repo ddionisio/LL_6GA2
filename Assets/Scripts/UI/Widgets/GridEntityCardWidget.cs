@@ -8,46 +8,16 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
     [Header("Display")]
     public Image icon;
     public Text titleText;
-    public Text countText;
-    public Color countValidColor;
-    public Color countInvalidColor;
-    public Selectable selectable; //used for disabling when count is 0
+    public GridEntityCardWidget cardDrag; //use for dragging
 
     public GridEntityData data { get; private set; }
 
-    [Header("Signal Listen")]
-    public SignalGridEntity signalListenEntitySizeChanged;
-    public SignalGridEntityData signalListenMapChanged;
-
     private static readonly GridCell spawnSize = new GridCell { b=1, row=1, col=1 };
 
-    private GridEntityCardWidget mDragWidget;
     private bool mIsDragging;
 
-    public void SetCount(int count) {
-        if(!countText)
-            return;
-
-        countText.text = count.ToString();
-
-        if(count > 0) {
-            selectable.interactable = true;
-            countText.color = countValidColor;
-        }
-        else {
-            selectable.interactable = false;
-            countText.color = countInvalidColor;
-        }
-    }
-
-    public void RefreshCount() {
-        var count = GridEditController.instance.GetAvailableCount(data);
-        SetCount(count);
-    }
-        
-    public void Setup(GridEntityData dat, GridEntityCardWidget dragWidget) {
+    public void Setup(GridEntityData dat) {
         data = dat;
-        mDragWidget = dragWidget;
 
         if(icon) {
             icon.sprite = data.icon;
@@ -55,6 +25,8 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
         }
 
         if(titleText) titleText.text = M8.Localize.Get(data.nameTextRef);
+
+        if(cardDrag) cardDrag.gameObject.SetActive(false);
     }
 
     void OnApplicationFocus(bool focus) {
@@ -64,43 +36,14 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
 
     void OnDisable() {
         DragEnd();
-
-        if(signalListenEntitySizeChanged)
-            signalListenEntitySizeChanged.callback -= OnEntitySizeChanged;
-
-        if(signalListenMapChanged)
-            signalListenMapChanged.callback -= OnMapChanged;
-    }
-
-    void OnEnable() {
-        RefreshCount();
-
-        if(signalListenEntitySizeChanged)
-            signalListenEntitySizeChanged.callback += OnEntitySizeChanged;
-
-        if(signalListenMapChanged)
-            signalListenMapChanged.callback += OnMapChanged;
-    }
-
-    void OnEntitySizeChanged(GridEntity ent) {
-        if(ent.data == data)
-            RefreshCount();
-    }
-
-    void OnMapChanged(GridEntityData entData) {
-        if(entData == data)
-            RefreshCount();
     }
 
     void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) {
-        if(selectable && !selectable.interactable)
-            return;
-
         mIsDragging = true;
 
-        if(mDragWidget) {
-            mDragWidget.Setup(data, null);
-            mDragWidget.gameObject.SetActive(true);
+        if(cardDrag) {
+            cardDrag.Setup(data);
+            cardDrag.gameObject.SetActive(true);
         }
 
         var ghost = GridEditController.instance.ghostController;
@@ -147,8 +90,8 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
 
     private void DragUpdate(PointerEventData eventData) {
         //update drag position
-        if(mDragWidget)
-            mDragWidget.transform.position = eventData.position;
+        if(cardDrag)
+            cardDrag.transform.position = eventData.position;
                 
         var ghost = GridEditController.instance.ghostController;
         var container = GridEditController.instance.entityContainer;
@@ -174,7 +117,7 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
 
     private void DragEnd() {
         if(mIsDragging) {            
-            if(mDragWidget) mDragWidget.gameObject.SetActive(false);
+            if(cardDrag) cardDrag.gameObject.SetActive(false);
 
             var ghost = GridEditController.instance.ghostController;
             ghost.mode = GridGhostController.Mode.Hidden;

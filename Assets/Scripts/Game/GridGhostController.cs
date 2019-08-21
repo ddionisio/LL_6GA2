@@ -489,7 +489,7 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         isValid = curEnt && editCtrl.entityContainer.IsPlaceable(cellIndex, cellSize, curEnt);
         if(isValid) {
             //check if available count is sufficient
-            var count = editCtrl.GetAvailableCount(curEnt.data);
+            var count = editCtrl.GetAvailableCount();
             isValid = count >= 0;
         }
 

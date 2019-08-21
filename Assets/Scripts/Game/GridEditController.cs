@@ -54,7 +54,22 @@ public class GridEditController : GameModeController<GridEditController> {
         set {
             if(mCurEditMode != value) {
                 mCurEditMode = value;
+
+                //clear selection based on mode
+                switch(mCurEditMode) {
+                    case EditMode.None:
+                    case EditMode.Evaluate:
+                        mCurSelected = null;
+                        break;
+                }
+
                 editChangedCallback?.Invoke();
+
+                //run evaluation
+                if(mCurEditMode == EditMode.Evaluate) {
+                    StopCurRout();
+                    mRout = StartCoroutine(DoGoalEvaluate());
+                }
             }
         }
     }
@@ -69,20 +84,23 @@ public class GridEditController : GameModeController<GridEditController> {
         }
     }
 
-    public int GetAvailableCount(GridEntityData dat) {
-        var count = _levelData.GetItemCount(dat);
-        var placedCount = entityContainer.GetVolumeCount(dat);
+    public int GetAvailableCount() {
+        var placedCount = 0;
 
-        //if we are in expand mode, use the volume from ghost
-        if(editMode == EditMode.Expand) {
-            if(selected && selected.data == dat) {
-                placedCount -= selected.cellSize.volume;
+        for(int i = 0; i < entityContainer.entities.Count; i++) {
+            var ent = entityContainer.entities[i];
+
+            //if we are in expand mode, ignore select's volume and use the volume from ghost
+            if(editMode == EditMode.Expand && ent == selected)
                 placedCount += ghostController.cellSize.volume;
-            }
-        }        
+            else
+                placedCount += ent.cellSize.volume;
+        }
 
-        return count - placedCount;
+        return levelData.resourceCount - placedCount;
     }
+
+    public bool isBusy { get { return mRout != null; } }
 
     /// <summary>
     /// Called when mode and/or selection is changed
@@ -95,10 +113,28 @@ public class GridEditController : GameModeController<GridEditController> {
     private GridEntityContainer mEntityContainer;
     private GridGhostController mGhostController;
 
+    private Coroutine mRout;
+
     protected override void OnInstanceDeinit() {
         GridEntityDisplay.ClearMeshCache();
         GridEntityDisplayFloor.ClearMeshCache();
 
         base.OnInstanceDeinit();
+    }
+
+    IEnumerator DoGoalEvaluate() {
+        //group up entities
+        var entGroups = entityContainer.GenerateEntityGroups();
+
+        yield return null;
+
+        mRout = null;
+    }
+
+    private void StopCurRout() {
+        if(mRout != null) {
+            StopCoroutine(mRout);
+            mRout = null;
+        }
     }
 }

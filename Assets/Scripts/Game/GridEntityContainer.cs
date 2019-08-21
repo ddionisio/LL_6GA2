@@ -99,6 +99,59 @@ public class GridEntityContainer : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// This will group up entities with the same data if they are neighboring each other
+    /// </summary>
+    public List<List<GridEntity>> GenerateEntityGroups() {
+        var entGroups = new List<List<GridEntity>>();
+
+        var ents = new M8.CacheList<GridEntity>(entities);
+        while(ents.Count > 0) {
+            var entList = new List<GridEntity>();
+
+            var ent = ents.RemoveLast();
+
+            entList.Add(ent);
+
+            //check neighbors
+            var _cellInd = new GridCell();
+            var _cellSize = new GridCell();
+
+            for(int i = ents.Count - 1; i >= 0; i--) {
+                var checkEnt = ents[i];
+                if(checkEnt.data != ent.data)
+                    continue;
+
+                //check with top/bottom extended
+                _cellInd = ent.cellIndex;
+                _cellInd.row -= 1;
+                _cellSize = ent.cellSize;
+                _cellSize.row += 1;
+
+                if(GridCell.IsIntersectFloor(_cellInd, _cellSize, checkEnt.cellIndex, checkEnt.cellSize)) {
+                    ents.RemoveAt(i);
+                    entList.Add(checkEnt);
+                    continue;
+                }
+
+                //check with left/right extended
+                _cellInd = ent.cellIndex;
+                _cellInd.col -= 1;
+                _cellSize = ent.cellSize;
+                _cellSize.col += 1;
+                if(GridCell.IsIntersectFloor(_cellInd, _cellSize, checkEnt.cellIndex, checkEnt.cellSize)) {
+                    ents.RemoveAt(i);
+                    entList.Add(checkEnt);
+                    continue;
+                }
+            }
+
+            entGroups.Add(entList);
+        }
+
+        return entGroups;
+    }
+
     void Awake() {
         if(!_controller)
             _controller = GetComponent<GridController>();
