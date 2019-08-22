@@ -121,6 +121,20 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
         }
     }
 
+    /// <summary>
+    /// Volume based on side measure from level data
+    /// </summary>
+    public float volume {
+        get {
+            var measure = GridEditController.instance.levelData.sideMeasure;
+            var w = cellSize.col * measure;
+            var l = cellSize.row * measure;
+            var h = cellSize.b * measure;
+
+            return w * h * l;
+        }
+    }
+
     public event System.Action cellChangedCallback;
 
     private GridCell mCellIndex = new GridCell { b=-1, col=-1, row=-1 }; //cell position bottom-left

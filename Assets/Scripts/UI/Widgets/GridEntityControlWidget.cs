@@ -10,6 +10,7 @@ public class GridEntityControlWidget : MonoBehaviour {
     public GameObject expandToggleGO;
     public Text titleText;
     public Text gridDimensionText;
+    public Text volumeText;
 
     [Header("Signal Listen")]
     public M8.Signal signalListenGhostSizeChanged;
@@ -206,6 +207,7 @@ public class GridEntityControlWidget : MonoBehaviour {
 
     private void RefreshDimensionInfoDisplay() {
         GridCell size;
+        float volume;
 
         var editCtrl = GridEditController.instance;
         switch(editCtrl.editMode) {
@@ -213,17 +215,23 @@ public class GridEntityControlWidget : MonoBehaviour {
             case GridEditController.EditMode.Expand:
                 //use ghost info
                 size = editCtrl.ghostController.cellSize;
+                volume = editCtrl.ghostController.volume;
                 break;
 
             default:
                 //use entity info
-                if(mCurEntity)
+                if(mCurEntity) {
                     size = mCurEntity.cellSize;
-                else
-                    size = new GridCell { b=0, row=0, col=0 };
+                    volume = mCurEntity.volume;
+                }
+                else {
+                    size = GridCell.zero;
+                    volume = 0f;
+                }
                 break;
         }
 
         gridDimensionText.text = size.ToString();
+        volumeText.text = UnitMeasure.GetVolumeText(editCtrl.levelData.measureType, volume);
     }
 }

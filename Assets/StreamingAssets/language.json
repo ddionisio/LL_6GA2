@@ -6,6 +6,9 @@
   },
   "en": {
     "welcome": "Welcome!",
-    "title": "Kero Build"
+    "title": "Kero Builder",
+    "feet": "ft",
+    "meter": "m",
+    "goal_height_req": "Height:"
   }
 }

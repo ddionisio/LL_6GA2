@@ -128,6 +128,20 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         }
     }
 
+    /// <summary>
+    /// Volume based on side measure from level data
+    /// </summary>
+    public float volume {
+        get {
+            var measure = GridEditController.instance.levelData.sideMeasure;
+            var w = cellSize.col * measure;
+            var l = cellSize.row * measure;
+            var h = cellSize.b * measure;
+
+            return w * h * l;
+        }
+    }
+
     public bool isDragging { get { return mDragFace != FaceFlags.None; } }
 
     public bool isValid { get; private set; }

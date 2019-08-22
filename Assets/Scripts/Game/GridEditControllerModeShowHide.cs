@@ -44,10 +44,12 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
         displayGO.SetActive(true);
 
         if(animator) {
+            var takeLast = animator.currentPlayingTakeName;
+
             while(animator.isPlaying)
                 yield return null;
 
-            if(!string.IsNullOrEmpty(takeEnter))
+            if(!string.IsNullOrEmpty(takeEnter) && takeLast != takeEnter)
                 yield return animator.PlayWait(takeEnter);
         }
 
@@ -56,10 +58,12 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
 
     IEnumerator DoHide() {
         if(animator) {
+            var takeLast = animator.currentPlayingTakeName;
+
             while(animator.isPlaying)
                 yield return null;
 
-            if(!string.IsNullOrEmpty(takeExit))
+            if(!string.IsNullOrEmpty(takeExit) && takeLast != takeExit)
                 yield return animator.PlayWait(takeExit);
         }
 

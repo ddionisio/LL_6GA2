@@ -13,6 +13,7 @@ public class GridEditController : GameModeController<GridEditController> {
         Move,
         Expand,
         Evaluate, //evaluate the goals by clustering cubes based on their data, then display each if they pass or fail
+        Build
     }
 
     [Header("Data")]
@@ -59,6 +60,7 @@ public class GridEditController : GameModeController<GridEditController> {
                 switch(mCurEditMode) {
                     case EditMode.None:
                     case EditMode.Evaluate:
+                    case EditMode.Build:
                         mCurSelected = null;
                         break;
                 }
@@ -69,6 +71,10 @@ public class GridEditController : GameModeController<GridEditController> {
                 if(mCurEditMode == EditMode.Evaluate) {
                     StopCurRout();
                     mRout = StartCoroutine(DoGoalEvaluate());
+                }
+                //run build
+                else if(mCurEditMode == EditMode.Build) {
+                    StopCurRout();
                 }
             }
         }

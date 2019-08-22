@@ -16,6 +16,7 @@ public class CameraPan : MonoBehaviour {
     public Vector3 bounds; //pivot at bottom
 
     [Header("Signal Listen")]
+    public M8.SignalVector3 signalListenPanTo;
     public M8.SignalVector3 signalListenLookAtDelta;
     public M8.SignalFloat signalListenLookYawDelta;
 
@@ -83,6 +84,9 @@ public class CameraPan : MonoBehaviour {
     private Vector3 mLookCurDirVel;
 
     void OnDisable() {
+        if(signalListenPanTo)
+            signalListenPanTo.callback -= OnSignalPanTo;
+
         if(signalListenLookAtDelta)
             signalListenLookAtDelta.callback -= OnSignalLookAtMoveDelta;
 
@@ -99,6 +103,9 @@ public class CameraPan : MonoBehaviour {
         mLookCurDirVel = Vector3.zero;
 
         RefreshPanPosition();
+
+        if(signalListenPanTo)
+            signalListenPanTo.callback += OnSignalPanTo;
 
         if(signalListenLookAtDelta)
             signalListenLookAtDelta.callback += OnSignalLookAtMoveDelta;
@@ -123,6 +130,11 @@ public class CameraPan : MonoBehaviour {
         var curDir = lookTarget.forward;
         if(curDir != lookDir)
             lookTarget.forward = Vector3.SmoothDamp(curDir, lookDir, ref mLookCurDirVel, lookMoveDelay);
+    }
+
+    void OnSignalPanTo(Vector3 pos) {
+        var lpos = boundTarget.InverseTransformPoint(pos);
+        lookAtLocalPosition = lpos;
     }
 
     void OnSignalLookAtMoveDelta(Vector3 delta) {

@@ -22,6 +22,10 @@ public struct GridCell {
     /// </summary>
     public int col;
 
+    public static GridCell zero { get { return new GridCell { b = 0, row = 0, col = 0 }; } }
+    public static GridCell one { get { return new GridCell { b = 1, row = 1, col = 1 }; } }
+    public static GridCell invalid { get { return new GridCell { b = -1, row = -1, col = -1 }; } }
+
     public int volume { get { return b * row * col; } }
 
     public bool isVolumeValid { get { return b > 0 && row > 0 && col > 0; } }
