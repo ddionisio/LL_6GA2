@@ -15,6 +15,10 @@ public struct UnitMeasure {
 
     private static System.Text.StringBuilder mSB = new System.Text.StringBuilder();
 
+    public static string GetVolumeText(UnitMeasureType type) {
+        return GetText(type) + '³';
+    }
+
     public static string GetVolumeText(UnitMeasureType type, float volume) {
         mSB.Clear();
 

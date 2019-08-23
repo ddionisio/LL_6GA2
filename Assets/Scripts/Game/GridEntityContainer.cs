@@ -11,6 +11,8 @@ public class GridEntityContainer : MonoBehaviour {
     GridController _controller = null;
     [SerializeField]
     Transform _root = null;
+    [SerializeField]
+    GridEntityData _doodadEntityData; //use for filtering out entities when grouping
 
     [Header("Signal Invoke")]
     public SignalGridEntityData signalInvokeMapUpdate;
@@ -111,6 +113,9 @@ public class GridEntityContainer : MonoBehaviour {
 
             var ent = ents.RemoveLast();
 
+            if(ent.data == _doodadEntityData) //exclude doodads
+                continue;
+
             entList.Add(ent);
 
             //check neighbors
@@ -126,7 +131,7 @@ public class GridEntityContainer : MonoBehaviour {
                 _cellInd = ent.cellIndex;
                 _cellInd.row -= 1;
                 _cellSize = ent.cellSize;
-                _cellSize.row += 1;
+                _cellSize.row += 2;
 
                 if(GridCell.IsIntersectFloor(_cellInd, _cellSize, checkEnt.cellIndex, checkEnt.cellSize)) {
                     ents.RemoveAt(i);
@@ -138,7 +143,7 @@ public class GridEntityContainer : MonoBehaviour {
                 _cellInd = ent.cellIndex;
                 _cellInd.col -= 1;
                 _cellSize = ent.cellSize;
-                _cellSize.col += 1;
+                _cellSize.col += 2;
                 if(GridCell.IsIntersectFloor(_cellInd, _cellSize, checkEnt.cellIndex, checkEnt.cellSize)) {
                     ents.RemoveAt(i);
                     entList.Add(checkEnt);

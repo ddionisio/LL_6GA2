@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class GoalItemWidget : MonoBehaviour {
     [Header("Data")]
     [M8.Localize]
+    public string volumeReqTextRef;
+    [M8.Localize]
     public string heightReqTextRef;
 
     [Header("Display")]
@@ -17,12 +19,13 @@ public class GoalItemWidget : MonoBehaviour {
 
     public void Setup(GridLevelData.Goal goal) {
         icon.sprite = goal.data.icon;
-
         titleText.text = M8.Localize.Get(goal.data.nameTextRef);
 
         mSB.Clear();
 
         mSB.Append("· ");
+        mSB.Append(M8.Localize.Get(volumeReqTextRef));
+        mSB.Append(' ');
         mSB.Append(UnitMeasure.GetVolumeText(goal.measureType, goal.volume));
 
         if(goal.heightRequire > 0f) {
