@@ -12,7 +12,7 @@ public class GridEntityContainer : MonoBehaviour {
     [SerializeField]
     Transform _root = null;
     [SerializeField]
-    GridEntityData _doodadEntityData; //use for filtering out entities when grouping
+    GridEntityData _doodadEntityData = null; //use for filtering out entities when grouping
 
     [Header("Signal Invoke")]
     public SignalGridEntityData signalInvokeMapUpdate;
@@ -119,42 +119,80 @@ public class GridEntityContainer : MonoBehaviour {
             entList.Add(ent);
 
             //check neighbors
-            var _cellInd = new GridCell();
-            var _cellSize = new GridCell();
-
-            for(int i = ents.Count - 1; i >= 0; i--) {
-                var checkEnt = ents[i];
-                if(checkEnt.data != ent.data)
-                    continue;
-
-                //check with top/bottom extended
-                _cellInd = ent.cellIndex;
-                _cellInd.row -= 1;
-                _cellSize = ent.cellSize;
-                _cellSize.row += 2;
-
-                if(GridCell.IsIntersectFloor(_cellInd, _cellSize, checkEnt.cellIndex, checkEnt.cellSize)) {
-                    ents.RemoveAt(i);
-                    entList.Add(checkEnt);
-                    continue;
-                }
-
-                //check with left/right extended
-                _cellInd = ent.cellIndex;
-                _cellInd.col -= 1;
-                _cellSize = ent.cellSize;
-                _cellSize.col += 2;
-                if(GridCell.IsIntersectFloor(_cellInd, _cellSize, checkEnt.cellIndex, checkEnt.cellSize)) {
-                    ents.RemoveAt(i);
-                    entList.Add(checkEnt);
-                    continue;
-                }
-            }
+            GroupAddEntities(ent, ents, entList);
 
             entGroups.Add(entList);
         }
 
         return entGroups;
+    }
+
+    /// <summary>
+    /// Returns how much was added
+    /// </summary>
+    private int GroupAddEntities(GridEntity srcEnt, M8.CacheList<GridEntity> ents, List<GridEntity> group) {
+        var addedCount = 0;
+
+        var _cellInd = new GridCell();
+        var _cellSize = new GridCell();
+
+        int curInd = ents.Count - 1;
+        while(curInd >= 0) {
+            var checkEnt = ents[curInd];
+            if(checkEnt.data != srcEnt.data) {
+                curInd--;
+                continue;
+            }
+
+            //check with top/bottom extended
+            _cellInd = srcEnt.cellIndex;
+            _cellInd.row -= 1;
+            _cellSize = srcEnt.cellSize;
+            _cellSize.row += 2;
+
+            if(GridCell.IsIntersectFloor(_cellInd, _cellSize, checkEnt.cellIndex, checkEnt.cellSize)) {
+                ents.RemoveLast();
+                group.Add(checkEnt);
+                addedCount++;
+
+                //check this entity with the rest
+                var subAddCount = GroupAddEntities(checkEnt, ents, group);
+                if(subAddCount > 0) {
+                    addedCount += subAddCount;
+                    curInd = ents.Count - 1;
+                }
+                else
+                    curInd--;
+
+                continue;
+            }
+
+            //check with left/right extended
+            _cellInd = srcEnt.cellIndex;
+            _cellInd.col -= 1;
+            _cellSize = srcEnt.cellSize;
+            _cellSize.col += 2;
+            if(GridCell.IsIntersectFloor(_cellInd, _cellSize, checkEnt.cellIndex, checkEnt.cellSize)) {
+                ents.RemoveLast();
+                group.Add(checkEnt);
+                addedCount++;
+
+                //check this entity with the rest
+                var subAddCount = GroupAddEntities(checkEnt, ents, group);
+                if(subAddCount > 0) {
+                    addedCount += subAddCount;
+                    curInd = ents.Count - 1;
+                }
+                else
+                    curInd--;
+
+                continue;
+            }
+
+            curInd--;
+        }
+
+        return addedCount;
     }
 
     void Awake() {
