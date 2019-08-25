@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 179421406840529794}
   - component: {fileID: 179421406840529795}
   - component: {fileID: 179421406840529792}
-  - component: {fileID: 3231962322099418992}
   - component: {fileID: 2454873898226943601}
   m_Layer: 8
   m_Name: placementItem
@@ -73,7 +72,6 @@ MonoBehaviour:
   gridEntity: {fileID: 179421406840529793}
   cubeMeshFilter: {fileID: 179421407436991422}
   rendererDisplay: {fileID: 179421407436991423}
-  textureTile: 1
 --- !u!114 &179421406840529795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,7 +87,6 @@ MonoBehaviour:
   gridEntity: {fileID: 179421406840529793}
   gridMeshFilter: {fileID: 179421407658685267}
   gridRenderer: {fileID: 179421407658685260}
-  textureTile: 1
   _refreshOnEnable: 0
 --- !u!114 &179421406840529792
 MonoBehaviour:
@@ -107,19 +104,8 @@ MonoBehaviour:
   display: {fileID: 179421406840529794}
   displayFloor: {fileID: 179421406840529795}
   _isNonPlaceable: 0
---- !u!114 &3231962322099418992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 179421406840529853}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf7cb81a273c4444c8f0a1d6ca454ea0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  signalInvokeDelta: {fileID: 11400000, guid: 693745d6b16c45b499813926f63ce576, type: 2}
+  signalInvokeCameraPan: {fileID: 11400000, guid: 693745d6b16c45b499813926f63ce576,
+    type: 2}
 --- !u!65 &2454873898226943601
 BoxCollider:
   m_ObjectHideFlags: 0

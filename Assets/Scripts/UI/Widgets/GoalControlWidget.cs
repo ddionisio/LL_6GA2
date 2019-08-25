@@ -29,6 +29,8 @@ public class GoalControlWidget : MonoBehaviour {
     public Button prevButton;
     public Button nextButton;
 
+    public GameObject buildReadyGO;
+
     [Header("Text Refs")]
     [M8.Localize]
     public string totalVolumeTextRef;
@@ -45,7 +47,13 @@ public class GoalControlWidget : MonoBehaviour {
     [M8.Localize]
     public string errorHeightTextRef;
 
+    [Header("Signal Invoke")]
+    public M8.SignalVector3 signalInvokeCameraPanTo;
+    public M8.Signal signalInvokeCameraYawReset;
+
     private System.Text.StringBuilder mSB = new System.Text.StringBuilder();
+
+    private int mCurrentEvaluateIndex;
 
     void OnDestroy() {
         if(GridEditController.isInstantiated)
@@ -57,20 +65,23 @@ public class GoalControlWidget : MonoBehaviour {
 
         prevButton.onClick.AddListener(OnClickPrev);
         nextButton.onClick.AddListener(OnClickNext);
+
+        buildReadyGO.SetActive(false);
     }
 
     void OnClickPrev() {
         var editCtrl = GridEditController.instance;
-        if(editCtrl.currentEvaluateIndex > 0) {
-            editCtrl.currentEvaluateIndex--;
+        if(mCurrentEvaluateIndex > 0) {
+            EvaluateApplyFocus(mCurrentEvaluateIndex - 1);
             RefreshDisplay();
         }
     }
 
     void OnClickNext() {
         var editCtrl = GridEditController.instance;
-        if(editCtrl.currentEvaluateIndex < editCtrl.goalEvaluations.Length - 1) {
-            editCtrl.currentEvaluateIndex++;
+        if(mCurrentEvaluateIndex < editCtrl.goalEvaluations.Length - 1) {
+            EvaluateApplyFocus(mCurrentEvaluateIndex + 1);
+
             RefreshDisplay();
         }
     }
@@ -78,18 +89,22 @@ public class GoalControlWidget : MonoBehaviour {
     void OnEditChanged() {
         var editCtrl = GridEditController.instance;
         if(editCtrl.editMode == GridEditController.EditMode.Evaluate) {
-            editCtrl.currentEvaluateIndex = 0;
+            if(signalInvokeCameraYawReset)
+                signalInvokeCameraYawReset.Invoke();
+
+            mCurrentEvaluateIndex = -1;
+            EvaluateApplyFocus(0);
+
             RefreshDisplay();
+
         }
     }
 
     private void RefreshDisplay() {
         var editCtrl = GridEditController.instance;
 
-        var curEvalInd = editCtrl.currentEvaluateIndex;
-
-        var curEval = editCtrl.goalEvaluations[curEvalInd];
-        var curGoal = editCtrl.levelData.goals[curEvalInd];
+        var curEval = editCtrl.goalEvaluations[mCurrentEvaluateIndex];
+        var curGoal = editCtrl.levelData.goals[mCurrentEvaluateIndex];
 
         //header
         icon.sprite = curGoal.data.icon;
@@ -155,6 +170,54 @@ public class GoalControlWidget : MonoBehaviour {
 
             efficiencyText.gameObject.SetActive(false);
             errorText.gameObject.SetActive(true);
+        }
+
+        if(editCtrl.goalEvaluations.Length == 1) {
+            prevButton.gameObject.SetActive(false);
+            nextButton.gameObject.SetActive(false);
+        }
+        else if(mCurrentEvaluateIndex <= 0) {
+            prevButton.gameObject.SetActive(false);
+            nextButton.gameObject.SetActive(true);
+        }
+        else if(mCurrentEvaluateIndex >= editCtrl.goalEvaluations.Length - 1) {
+            prevButton.gameObject.SetActive(true);
+            nextButton.gameObject.SetActive(false);
+        }
+
+        //check if we have all goals met
+        if(editCtrl.isAllGoalsMet) {
+            //check if we are at the last index
+            if(mCurrentEvaluateIndex >= editCtrl.goalEvaluations.Length - 1)
+                buildReadyGO.SetActive(true);
+        }
+        else
+            buildReadyGO.SetActive(false);
+    }
+
+    private void EvaluateApplyFocus(int toIndex) {
+        var editCtrl = GridEditController.instance;
+
+        GridEditController.EvaluateData eval;
+
+        if(mCurrentEvaluateIndex != -1) {
+            //clear out focus from previous
+            eval = editCtrl.goalEvaluations[mCurrentEvaluateIndex];
+            eval.SetPulseAlpha(0f);
+        }
+
+        mCurrentEvaluateIndex = toIndex;
+
+        //apply focus
+        eval = editCtrl.goalEvaluations[mCurrentEvaluateIndex];
+        if(eval.isValid) {
+            eval.SetPulseAlpha(GameData.instance.selectHighlightPulseScale);
+
+            if(signalInvokeCameraPanTo) {
+                var b = eval.bounds;
+                var focusPt = new Vector3(b.center.x, b.min.y, b.center.z);
+                signalInvokeCameraPanTo.Invoke(focusPt);
+            }
         }
     }
 }

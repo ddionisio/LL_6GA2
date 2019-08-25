@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 /// <summary>
 /// Check GridEditController state to change visibility, do highlight during edit mode, update collider based on entity
 /// </summary>
-public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8.IPoolDespawn, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
+public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8.IPoolDespawn, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
     [Header("Data")]
     public GridEntity entity;
     public GridEntityDisplay display;
@@ -15,6 +15,9 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
     [Header("Config")]
     [SerializeField]
     bool _isNonPlaceable = false; //set this to true for non-placeables
+
+    [Header("Signal Invoke")]
+    public M8.SignalVector3 signalInvokeCameraPan;
 
     public BoxCollider collision {
         get {
@@ -37,6 +40,16 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
     private BoxCollider mColl;
 
     private bool mIsHighlighted;
+
+    private bool mIsMove;
+    private bool mIsViewDrag;
+
+    void OnApplicationFocus(bool focus) {
+        if(!focus) {
+            mIsMove = false;
+            mIsViewDrag = false;
+        }
+    }
 
     void OnDisable() {
         if(_isNonPlaceable) {
@@ -86,7 +99,48 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
 
         editCtrl.selected = entity;
     }
-        
+
+    void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) {
+        if(isSelected) {
+            //apply move mode
+            mIsMove = true;
+
+            GridEditController.instance.editMode = GridEditController.EditMode.Move;
+
+            GridEditController.instance.ghostController.OnBeginDrag(eventData);
+        }
+        else
+            mIsViewDrag = true;
+    }
+
+    void IDragHandler.OnDrag(PointerEventData eventData) {
+        if(mIsMove) {
+            GridEditController.instance.ghostController.OnDrag(eventData);
+        }
+        else if(mIsViewDrag) {
+            //only view drag on specific mode
+            switch(GridEditController.instance.editMode) {
+                case GridEditController.EditMode.None:
+                case GridEditController.EditMode.Evaluate:
+                    return;
+            }
+
+            var delta = eventData.delta;
+
+            if(signalInvokeCameraPan)
+                signalInvokeCameraPan.Invoke(new Vector3(delta.x * GameData.instance.panningScaleX, 0f, delta.y * GameData.instance.panningScaleZ));
+        }
+    }
+
+    void IEndDragHandler.OnEndDrag(PointerEventData eventData) {
+        if(mIsMove) {
+            mIsMove = false;
+            GridEditController.instance.ghostController.OnEndDrag(eventData);
+        }
+
+        mIsViewDrag = false;
+    }
+
     private void Init() {
         if(entity)
             entity.cellChangedCallback += RefreshBounds;
@@ -187,13 +241,21 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
     }
 
     private void RefreshHighlight() {
-        if(isSelected)
-            display.pulseScale = GameData.instance.selectPulseScale;
-        else {
-            if(mIsHighlighted)
-                display.pulseScale = GameData.instance.selectHighlightPulseScale;
-            else
-                display.pulseScale = 0f;
+        var editCtrl = GridEditController.instance;
+        switch(editCtrl.editMode) {
+            case GridEditController.EditMode.Evaluate:
+                break;
+
+            default:
+                if(isSelected)
+                    display.pulseScale = GameData.instance.selectPulseScale;
+                else {
+                    if(mIsHighlighted)
+                        display.pulseScale = GameData.instance.selectHighlightPulseScale;
+                    else
+                        display.pulseScale = 0f;
+                }
+                break;
         }
     }
 }

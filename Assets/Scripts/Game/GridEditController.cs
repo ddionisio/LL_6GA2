@@ -118,9 +118,6 @@ public class GridEditController : GameModeController<GridEditController> {
     [M8.TagSelector]
     string _tagGhostController = "";
 
-    [Header("Signal Invoke")]
-    public M8.SignalVector3 signalInvokeCameraPanTo;
-
     public GridLevelData levelData { get { return _levelData; } }
     
     public GridEntityContainer entityContainer {
@@ -162,8 +159,6 @@ public class GridEditController : GameModeController<GridEditController> {
                         mCurSelected = null;
                                                 
                         GenerateEvaluation();
-
-                        mCurrentEvaluateIndex = -1;
                         break;
 
                     case EditMode.Build:
@@ -209,20 +204,6 @@ public class GridEditController : GameModeController<GridEditController> {
 
     public bool isBusy { get { return mRout != null; } }
 
-    /// <summary>
-    /// Used during evaluate mode
-    /// </summary>
-    public int currentEvaluateIndex {
-        get { return mCurrentEvaluateIndex; }
-        set {
-            if(mCurrentEvaluateIndex != value) {
-                EvaluateApplyFocus(value);
-
-                evalCurrentChangedCallback?.Invoke();
-            }
-        }
-    }
-
     public bool isAllGoalsMet {
         get {
             if(goalEvaluations == null)
@@ -251,19 +232,12 @@ public class GridEditController : GameModeController<GridEditController> {
     /// </summary>
     public event System.Action editChangedCallback;
 
-    /// <summary>
-    /// Called when current evaluation is changed
-    /// </summary>
-    public event System.Action evalCurrentChangedCallback;
-
     private EditMode mCurEditMode = EditMode.None;    
     private GridEntity mCurSelected = null;
 
     private GridEntityContainer mEntityContainer;
     private GridGhostController mGhostController;
 
-    private int mCurrentEvaluateIndex;
-        
     private Coroutine mRout;
         
     protected override void OnInstanceDeinit() {
@@ -324,30 +298,6 @@ public class GridEditController : GameModeController<GridEditController> {
                 goalEvaluations[i] = dat.Value;
             else
                 goalEvaluations[i] = new EvaluateData();
-        }
-    }
-
-    private void EvaluateApplyFocus(int toIndex) {
-        EvaluateData eval;
-
-        if(mCurrentEvaluateIndex != -1) {
-            //clear out focus from previous
-            eval = goalEvaluations[mCurrentEvaluateIndex];
-            eval.SetPulseAlpha(0f);
-        }
-
-        mCurrentEvaluateIndex = toIndex;
-
-        //apply focus
-        eval = goalEvaluations[mCurrentEvaluateIndex];
-        if(eval.isValid) {
-            eval.SetPulseAlpha(GameData.instance.selectHighlightPulseScale);
-
-            if(signalInvokeCameraPanTo) {
-                var b = eval.bounds;
-                var focusPt = new Vector3(b.center.x, b.min.y, b.center.z);
-                signalInvokeCameraPanTo.Invoke(focusPt);
-            }
         }
     }
 

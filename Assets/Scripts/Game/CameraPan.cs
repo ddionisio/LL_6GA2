@@ -19,6 +19,7 @@ public class CameraPan : MonoBehaviour {
     public M8.SignalVector3 signalListenPanTo;
     public M8.SignalVector3 signalListenLookAtDelta;
     public M8.SignalFloat signalListenLookYawDelta;
+    public M8.Signal signalListenLookYawReset;
 
     public Transform lookTarget {
         get { return _lookTarget; }
@@ -92,6 +93,9 @@ public class CameraPan : MonoBehaviour {
 
         if(signalListenLookYawDelta)
             signalListenLookYawDelta.callback -= OnSignalLookYawDelta;
+
+        if(signalListenLookYawReset)
+            signalListenLookYawReset.callback -= OnSignalLookYawReset;
     }
 
     void OnEnable() {
@@ -112,6 +116,9 @@ public class CameraPan : MonoBehaviour {
 
         if(signalListenLookYawDelta)
             signalListenLookYawDelta.callback += OnSignalLookYawDelta;
+
+        if(signalListenLookYawReset)
+            signalListenLookYawReset.callback += OnSignalLookYawReset;
     }
 
     void Awake() {
@@ -151,6 +158,10 @@ public class CameraPan : MonoBehaviour {
 
     void OnSignalLookYawDelta(float a) {
         lookAngleYaw += a;
+    }
+
+    void OnSignalLookYawReset() {
+        lookAngleYaw = 0f;
     }
 
     private void RefreshPanPosition() {

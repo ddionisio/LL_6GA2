@@ -221,13 +221,14 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         }
     }
 
-    void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) {
+    public void OnBeginDrag(PointerEventData eventData) {
         //ensure there's a selection
         if(!GridEditController.instance.selected)
             return;
 
         //ensure it is valid
-        if(eventData.pointerPressRaycast.isValid && eventData.pointerPressRaycast.gameObject == gameObject) {
+        var cast = eventData.pointerPressRaycast;
+        if(cast.isValid && (cast.gameObject == gameObject || cast.gameObject == GridEditController.instance.selected.gameObject)) {
             mColl.enabled = false;
 
             mDragCellIndex.Invalidate();
@@ -243,7 +244,7 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         }
     }
 
-    void IDragHandler.OnDrag(PointerEventData eventData) {
+    public void OnDrag(PointerEventData eventData) {
         if(!isDragging)
             return;
 
@@ -381,7 +382,7 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         }
     }
 
-    void IEndDragHandler.OnEndDrag(PointerEventData eventData) {
+    public void OnEndDrag(PointerEventData eventData) {
         if(!isDragging)
             return;
 
