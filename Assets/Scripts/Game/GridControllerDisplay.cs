@@ -38,7 +38,7 @@ public class GridControllerDisplay : MonoBehaviour {
         //generate mesh if not set
         var mesh = gridMeshFilter.sharedMesh;
         if(!mesh) {
-            mMesh = new Mesh();
+            mesh = mMesh = new Mesh();
             gridMeshFilter.sharedMesh = mMesh;
         }
 

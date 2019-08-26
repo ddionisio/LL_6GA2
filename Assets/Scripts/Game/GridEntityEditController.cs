@@ -213,13 +213,6 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
                 fadeScale = 1f;
                 break;
 
-            case GridEditController.EditMode.Build:
-                if(_isNonPlaceable)
-                    fadeScale = 1f;
-
-                isFloorVisible = true;
-                break;
-
             default: //off
                 if(_isNonPlaceable)
                     fadeScale = 1f;

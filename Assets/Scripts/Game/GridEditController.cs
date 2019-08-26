@@ -146,8 +146,6 @@ public class GridEditController : GameModeController<GridEditController> {
             if(mCurEditMode != value) {
                 mCurEditMode = value;
 
-                StopCurRout();
-
                 //generate specific data based on mode
                 //clear selection based on mode
                 switch(mCurEditMode) {
@@ -193,7 +191,7 @@ public class GridEditController : GameModeController<GridEditController> {
             var ent = entityContainer.entities[i];
 
             //if we are in expand mode, ignore select's volume and use the volume from ghost
-            if(editMode == EditMode.Expand && ent == selected)
+            if((editMode == EditMode.Move || editMode == EditMode.Expand) && ent == selected)
                 placedCount += ghostController.cellSize.volume;
             else
                 placedCount += ent.cellSize.volume;
@@ -201,8 +199,6 @@ public class GridEditController : GameModeController<GridEditController> {
 
         return levelData.resourceCount - placedCount;
     }
-
-    public bool isBusy { get { return mRout != null; } }
 
     public bool isAllGoalsMet {
         get {
@@ -237,8 +233,6 @@ public class GridEditController : GameModeController<GridEditController> {
 
     private GridEntityContainer mEntityContainer;
     private GridGhostController mGhostController;
-
-    private Coroutine mRout;
         
     protected override void OnInstanceDeinit() {
         GridEntityDisplay.ClearMeshCache();
@@ -298,13 +292,6 @@ public class GridEditController : GameModeController<GridEditController> {
                 goalEvaluations[i] = dat.Value;
             else
                 goalEvaluations[i] = new EvaluateData();
-        }
-    }
-
-    private void StopCurRout() {
-        if(mRout != null) {
-            StopCoroutine(mRout);
-            mRout = null;
         }
     }
 }
