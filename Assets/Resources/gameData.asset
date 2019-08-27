@@ -12,6 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bca80d96647c8b4b9db6b68573ba48a, type: 3}
   m_Name: gameData
   m_EditorClassIdentifier: 
+  efficiencyScore: 1000
+  levels:
+  - name: level0
+    path: Assets/Scenes/level0.unity
+  end:
+    name: end
+    path: Assets/Scenes/end.unity
   anchorOffset: 0.15
   panningScaleX: -0.01
   panningScaleZ: -0.01

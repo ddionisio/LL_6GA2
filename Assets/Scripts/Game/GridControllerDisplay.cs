@@ -98,6 +98,21 @@ public class GridControllerDisplay : MonoBehaviour {
     }
 
     void OnEditChanged() {
-        isVisible = GridEditController.instance.editMode != GridEditController.EditMode.None;
+        bool _visible;
+
+        switch(GridEditController.instance.editMode) {
+            case GridEditController.EditMode.Select:
+            case GridEditController.EditMode.Placement:
+            case GridEditController.EditMode.Move:
+            case GridEditController.EditMode.Expand:
+                _visible = true;
+                break;
+
+            default:
+                _visible = false;
+                break;
+        }
+
+        isVisible = _visible;
     }
 }

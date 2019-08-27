@@ -548,6 +548,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4670902993756333090}
+  - component: {fileID: 1439129838658917562}
+  - component: {fileID: 1609297710887190639}
   - component: {fileID: 4670902993756333092}
   - component: {fileID: 4670902993756333091}
   - component: {fileID: 4670902993756333093}
@@ -578,6 +580,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1439129838658917562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4670902993756333089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 189554cdad9550a4a914b40237496614, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mode: {fileID: 0}
+  signalModeChanged: {fileID: 11400000, guid: 4f9dce914f15a6c4b8c0af0d08028ac5, type: 2}
+  _levelData: {fileID: 11400000, guid: 73b2bb7ac6e1b8c4ea758d5862ff5fa9, type: 2}
+  _tagEntityContainer: Level
+  _tagGhostController: Ghost
+--- !u!114 &1609297710887190639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4670902993756333089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a05e590f6f60097459077530bf8e3e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signalInvokeBuildComplete: {fileID: 11400000, guid: ea428cf7666c4d24dbbb8da4db91245f,
+    type: 2}
 --- !u!114 &4670902993756333092
 MonoBehaviour:
   m_ObjectHideFlags: 0
