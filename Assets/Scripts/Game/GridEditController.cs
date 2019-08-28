@@ -111,34 +111,16 @@ public class GridEditController : GameModeController<GridEditController> {
     GridLevelData _levelData = null;
 
     [SerializeField]
-    [M8.TagSelector]
-    string _tagEntityContainer = "";
-    
+    GridEntityContainer _entityContainer = null;
+
     [SerializeField]
-    [M8.TagSelector]
-    string _tagGhostController = "";
+    GridGhostController _ghostController = null;
 
     public GridLevelData levelData { get { return _levelData; } }
     
-    public GridEntityContainer entityContainer {
-        get {
-            if(!mEntityContainer) {
-                var go = GameObject.FindGameObjectWithTag(_tagEntityContainer);
-                mEntityContainer = go.GetComponent<GridEntityContainer>();
-            }
-            return mEntityContainer;
-        }
-    }
+    public GridEntityContainer entityContainer { get { return _entityContainer; } }
 
-    public GridGhostController ghostController {
-        get {
-            if(!mGhostController) {
-                var go = GameObject.FindGameObjectWithTag(_tagGhostController);
-                mGhostController = go.GetComponent<GridGhostController>();
-            }
-            return mGhostController;
-        }
-    }
+    public GridGhostController ghostController { get { return _ghostController; } }
 
     public EditMode editMode {
         get { return mCurEditMode; }
@@ -230,9 +212,6 @@ public class GridEditController : GameModeController<GridEditController> {
 
     private EditMode mCurEditMode = EditMode.None;    
     private GridEntity mCurSelected = null;
-
-    private GridEntityContainer mEntityContainer;
-    private GridGhostController mGhostController;
         
     protected override void OnInstanceDeinit() {
         GridEntityDisplay.ClearMeshCache();

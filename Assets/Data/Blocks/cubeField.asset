@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b744e1029e165154aa6765a71bf9db42, type: 3}
+  m_Name: cubeField
+  m_EditorClassIdentifier: 
+  icon: {fileID: 0}
+  nameTextRef: cube_field
+  descTextRef: 
+  material: {fileID: 2100000, guid: 562eb2eda0c64db4eab61720f0d1c5f9, type: 2}
+  color: {r: 0.6, g: 0.48235297, b: 0.48235297, a: 1}
+  template: {fileID: 179421406840529853, guid: a4814d17d0edf274daa0d174f6af7d71, type: 3}
+  _shaderPulseScaleVar: _PulseScale
+  _shaderPulseColorVar: _PulseColor
+  _shaderColorVar: _Color

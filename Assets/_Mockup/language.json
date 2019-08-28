@@ -15,6 +15,11 @@
     "goal_efficiency": "Efficiency:",
     "goal_error_volume_not_enough": "Not enough volume!",
     "goal_error_height_not_met": "Each object's height must be {0} tall!",
-    "goal_error_not_found": "No matching objects found!"
+    "goal_error_not_found": "No matching objects found!",
+    "cube_field": "Field",
+    "cube_pond": "Pond",
+    "cube_house_1": "House 01",
+    "cube_house_2": "House 02",
+    "cube_house_3": "House 03"
   }
 }

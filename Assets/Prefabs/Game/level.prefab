@@ -595,8 +595,8 @@ MonoBehaviour:
   mode: {fileID: 0}
   signalModeChanged: {fileID: 11400000, guid: 4f9dce914f15a6c4b8c0af0d08028ac5, type: 2}
   _levelData: {fileID: 11400000, guid: 73b2bb7ac6e1b8c4ea758d5862ff5fa9, type: 2}
-  _tagEntityContainer: Level
-  _tagGhostController: Ghost
+  _entityContainer: {fileID: 4670902993756333091}
+  _ghostController: {fileID: 4670902992767433646}
 --- !u!114 &1609297710887190639
 MonoBehaviour:
   m_ObjectHideFlags: 0
