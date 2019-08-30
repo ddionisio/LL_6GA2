@@ -98,6 +98,13 @@ public class GridEditController : GameModeController<GridEditController> {
             bounds.max = max;
         }
 
+        public void SetAlpha(float a) {
+            if(!isValid) return;
+
+            for(int i = 0; i < entityEdits.Length; i++)
+                entityEdits[i].display.alpha = a;
+        }
+
         public void SetPulseAlpha(float a) {
             if(!isValid) return;
 

@@ -7,6 +7,13 @@
   "en": {
     "welcome": "Welcome!",
     "title": "Kero Builder",
+    "options": "OPTIONS",
+    "sound": "SOUND",
+    "music": "MUSIC",
+    "speech": "SPEECH",
+    "on": "ON",
+    "off": "OFF",
+    "close": "CLOSE",
     "feet": "ft",
     "meter": "m",
     "goal_height_req": "Height:",

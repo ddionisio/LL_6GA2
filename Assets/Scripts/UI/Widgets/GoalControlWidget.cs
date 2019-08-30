@@ -54,6 +54,7 @@ public class GoalControlWidget : MonoBehaviour {
     private System.Text.StringBuilder mSB = new System.Text.StringBuilder();
 
     private int mCurrentEvaluateIndex;
+    private int mToEvaluateIndex;
 
     void OnDestroy() {
         if(GridEditController.isInstantiated)
@@ -69,20 +70,24 @@ public class GoalControlWidget : MonoBehaviour {
         buildReadyGO.SetActive(false);
     }
 
+    void LateUpdate() {
+        if(mCurrentEvaluateIndex != mToEvaluateIndex) {
+            EvaluateApplyFocus(mToEvaluateIndex);
+            RefreshDisplay();
+        }
+    }
+
     void OnClickPrev() {
         var editCtrl = GridEditController.instance;
         if(mCurrentEvaluateIndex > 0) {
-            EvaluateApplyFocus(mCurrentEvaluateIndex - 1);
-            RefreshDisplay();
+            mToEvaluateIndex = mCurrentEvaluateIndex - 1;
         }
     }
 
     void OnClickNext() {
         var editCtrl = GridEditController.instance;
         if(mCurrentEvaluateIndex < editCtrl.goalEvaluations.Length - 1) {
-            EvaluateApplyFocus(mCurrentEvaluateIndex + 1);
-
-            RefreshDisplay();
+            mToEvaluateIndex = mCurrentEvaluateIndex + 1;
         }
     }
 
@@ -93,10 +98,7 @@ public class GoalControlWidget : MonoBehaviour {
                 signalInvokeCameraYawReset.Invoke();
 
             mCurrentEvaluateIndex = -1;
-            EvaluateApplyFocus(0);
-
-            RefreshDisplay();
-
+            mToEvaluateIndex = 0;
         }
     }
 
@@ -203,6 +205,7 @@ public class GoalControlWidget : MonoBehaviour {
         if(mCurrentEvaluateIndex != -1) {
             //clear out focus from previous
             eval = editCtrl.goalEvaluations[mCurrentEvaluateIndex];
+            eval.SetAlpha(GameData.instance.selectFadeScale);
             eval.SetPulseAlpha(0f);
         }
 
@@ -211,7 +214,8 @@ public class GoalControlWidget : MonoBehaviour {
         //apply focus
         eval = editCtrl.goalEvaluations[mCurrentEvaluateIndex];
         if(eval.isValid) {
-            eval.SetPulseAlpha(GameData.instance.selectHighlightPulseScale);
+            eval.SetAlpha(1f);
+            eval.SetPulseAlpha(GameData.instance.selectPulseScale);
 
             if(signalInvokeCameraPanTo) {
                 var b = eval.bounds;
