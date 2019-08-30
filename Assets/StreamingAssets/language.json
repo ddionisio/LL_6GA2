@@ -16,6 +16,8 @@
     "close": "CLOSE",
     "feet": "ft",
     "meter": "m",
+    "sides": "Sides:",
+    "objectives": "OBJECTIVES",
     "goal_height_req": "Height:",
     "goal_volume_req": "Volume:",
     "goal_total_volume": "Total Volume:",

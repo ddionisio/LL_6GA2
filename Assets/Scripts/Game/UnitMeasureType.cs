@@ -24,7 +24,7 @@ public struct UnitMeasure {
 
         float whole = Mathf.Floor(volume);
         if(volume - whole > 0f)
-            mSB.Append(volume.ToString("F2"));
+            mSB.Append(volume.ToString("F3"));
         else
             mSB.Append(volume.ToString("F0"));
 
@@ -40,7 +40,7 @@ public struct UnitMeasure {
 
         float whole = Mathf.Floor(val);
         if(val - whole > 0f)
-            mSB.Append(val.ToString("F2"));
+            mSB.Append(val.ToString("F3"));
         else
             mSB.Append(val.ToString("F0"));
 

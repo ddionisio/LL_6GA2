@@ -66,13 +66,7 @@ public class GridEntityDeckWidget : MonoBehaviour {
 
         countText.text = availableCount.ToString();
 
-        if(availableCount >= 0) {
-            if(countInvalidGO) countInvalidGO.SetActive(false);
-            if(invalidGO) invalidGO.SetActive(false);
-        }
-        else {
-            if(countInvalidGO) countInvalidGO.SetActive(true);
-            if(invalidGO) invalidGO.SetActive(true);
-        }
+        if(countInvalidGO) countInvalidGO.SetActive(availableCount < 0);
+        if(invalidGO) invalidGO.SetActive(availableCount <= 0);
     }
 }
