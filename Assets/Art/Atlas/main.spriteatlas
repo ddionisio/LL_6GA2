@@ -45,14 +45,16 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 54b2a57779ab5364aaaa1e0437a43b7f, type: 3}
     - {fileID: 102900000, guid: 989b186f8696db74fa5f2d810851e5b4, type: 3}
     - {fileID: 102900000, guid: 08393df466d1f8549bd2f20e93bf08b7, type: 3}
-    totalSpriteSurfaceArea: 52228
+    totalSpriteSurfaceArea: 53558
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: be98f690b6a68d8478a95623f406a172, type: 3}
+  - {fileID: 21300000, guid: f79a0ad00c264f24f85c456504967d77, type: 3}
   - {fileID: 21300000, guid: 5ed7cd01c36b80f4588c3709e317573b, type: 3}
   - {fileID: 21300000, guid: f4683e31b11d8c249ac19e37611319cd, type: 3}
   - {fileID: 21300000, guid: 1bb0cc5141a073b4aa089346df8cd0a3, type: 3}
+  - {fileID: 21300000, guid: c15727612b5c3304ba9771bb96b4ebe0, type: 3}
   - {fileID: 21300000, guid: 3821ed81270146041a91f097758a2b70, type: 3}
   - {fileID: 21300002, guid: 2c182d91a96c3c949bcbade9ea5d4ba4, type: 3}
   - {fileID: 21300000, guid: 2c182d91a96c3c949bcbade9ea5d4ba4, type: 3}
@@ -104,9 +106,11 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 49f63cbf9fa458c4cbc656fbdbb5124a, type: 3}
   m_PackedSpriteNamesToIndex:
   - star
+  - cube
   - arrow
   - downArrow
   - triangle
+  - iconTrash
   - blob4
   - tutorialArrow2_bottom
   - tutorialArrow2

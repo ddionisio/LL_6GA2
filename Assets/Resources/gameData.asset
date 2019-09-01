@@ -19,7 +19,7 @@ MonoBehaviour:
   end:
     name: end
     path: Assets/Scenes/end.unity
-  anchorOffset: 0.15
+  anchorOffset: 0.5
   panningScaleX: -0.01
   panningScaleZ: -0.01
   textureTile: 1

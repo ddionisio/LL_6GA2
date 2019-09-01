@@ -135,7 +135,20 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
     void IEndDragHandler.OnEndDrag(PointerEventData eventData) {
         if(mIsMove) {
             mIsMove = false;
-            GridEditController.instance.ghostController.OnEndDrag(eventData);
+
+            var editCtrl = GridEditController.instance;
+
+            editCtrl.ghostController.OnEndDrag(eventData);
+
+            //commit ghost if valid
+            if(editCtrl.ghostController.isValid) {
+                var toCellIndex = editCtrl.ghostController.cellIndex;
+                var toCellSize = editCtrl.ghostController.cellSize;
+
+                entity.SetCell(toCellIndex, toCellSize);
+            }
+
+            editCtrl.editMode = GridEditController.EditMode.Select;
         }
 
         mIsViewDrag = false;

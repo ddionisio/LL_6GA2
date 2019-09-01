@@ -171,8 +171,8 @@ public class GridEntityControlWidget : MonoBehaviour {
 
             if(displayVisible) {
                 displayGO.SetActive(true);
-                moveToggleGO.SetActive(moveActive);
-                expandToggleGO.SetActive(expandActive);
+                if(moveToggleGO) moveToggleGO.SetActive(moveActive);
+                if(expandToggleGO) expandToggleGO.SetActive(expandActive);
             }
             else
                 displayGO.SetActive(false);
