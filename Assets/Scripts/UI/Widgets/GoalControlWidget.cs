@@ -11,8 +11,9 @@ public class GoalControlWidget : MonoBehaviour {
         public GameObject incorrectGO;
         public Text text;
 
-        public void Setup(string str, bool isMet) {
+        public void Setup(string str, bool isMet, Color color) {
             text.text = str;
+            text.color = color;
 
             correctGO.SetActive(isMet);
             incorrectGO.SetActive(!isMet);
@@ -24,6 +25,8 @@ public class GoalControlWidget : MonoBehaviour {
     public Text titleText;
     public Text volumeText;
     public ReqData[] reqs;
+    public Color reqCorrectColor;
+    public Color reqIncorrectColor;
     public Text efficiencyText;
     public Text errorText;
     public Button prevButton;
@@ -132,7 +135,7 @@ public class GoalControlWidget : MonoBehaviour {
         mSB.Append(M8.Localize.Get(reqVolumeTextRef));
         mSB.Append(' ');
         mSB.Append(UnitMeasure.GetVolumeText(curGoal.measureType, curGoal.volume));
-        reqs[0].Setup(mSB.ToString(), isVolumeMet);
+        reqs[0].Setup(mSB.ToString(), isVolumeMet, isVolumeMet ? reqCorrectColor : reqIncorrectColor);
 
         //height req
         if(curGoal.heightRequire > 0f) {
@@ -140,7 +143,7 @@ public class GoalControlWidget : MonoBehaviour {
             mSB.Append(M8.Localize.Get(reqHeightTextRef));
             mSB.Append(' ');
             mSB.Append(UnitMeasure.GetMeasureText(curGoal.measureType, curGoal.heightRequire));
-            reqs[1].Setup(mSB.ToString(), isHeightMet);
+            reqs[1].Setup(mSB.ToString(), isHeightMet, isHeightMet ? reqCorrectColor : reqIncorrectColor);
             reqs[1].rootGO.SetActive(true);
         }
         else
