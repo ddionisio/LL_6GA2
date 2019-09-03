@@ -42,6 +42,9 @@ PlayMaker.meta
 tripolygon/
 tripolygon.meta
 
+JMO Assets/
+JMO Assets.meta
+
 # Mate Specifics
 # /Common/*.png.meta
 # /Common/UI/*.png.meta

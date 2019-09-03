@@ -9,6 +9,8 @@ public class CameraPan : MonoBehaviour {
     float _lookDistance; //distance to the bound area
     [SerializeField]
     float _lookAnglePitch; //pitch angle from bound area
+    [SerializeField]
+    float _lookAtMinY = -1f; //minimum Y when applying look-at position
 
     public float lookMoveDelay = 0.1f;
 
@@ -70,7 +72,7 @@ public class CameraPan : MonoBehaviour {
             var hBoundX = bounds.x * 0.5f;
             var hBoundZ = bounds.z * 0.5f;
 
-            var p = new Vector3(Mathf.Clamp(value.x, -hBoundX, hBoundX), Mathf.Clamp(value.y, 0f, bounds.y), Mathf.Clamp(value.z, -hBoundZ, hBoundZ));
+            var p = new Vector3(Mathf.Clamp(value.x, -hBoundX, hBoundX), Mathf.Clamp(value.y, _lookAtMinY, bounds.y), Mathf.Clamp(value.z, -hBoundZ, hBoundZ));
             if(mLookAtLocPos != p) {
                 mLookAtLocPos = p;
                 RefreshPanPosition();

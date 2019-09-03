@@ -46,6 +46,7 @@ MonoBehaviour:
   _lookTarget: {fileID: 0}
   _lookDistance: 5
   _lookAnglePitch: 50
+  _lookAtMinY: -2
   lookMoveDelay: 0.1
   boundTarget: {fileID: 2761860895912102331}
   bounds: {x: 5, y: 2, z: 5}

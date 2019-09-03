@@ -432,10 +432,10 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
             RefreshFaceHighlightFromMode();
 
-            RefreshHighlight();
-
             RefreshValid();
         }
+
+        RefreshHighlight();
 
         mIsFaceHighlightActive = false;
 
@@ -446,15 +446,6 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         var face = display.faceHighlight;
 
         switch(mMode) {
-            case Mode.None:
-            case Mode.Hidden:
-                faceHighlightTopGO.SetActive(false);
-                faceHighlightFrontGO.SetActive(false);
-                faceHighlightBackGO.SetActive(false);
-                faceHighlightLeftGO.SetActive(false);
-                faceHighlightRightGO.SetActive(false);
-                break;
-
             case Mode.Expand:
                 faceHighlightTopGO.SetActive((face & FaceFlags.Top) != FaceFlags.None);
                 faceHighlightFrontGO.SetActive((face & FaceFlags.Front) != FaceFlags.None);
@@ -463,12 +454,12 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
                 faceHighlightRightGO.SetActive((face & FaceFlags.Right) != FaceFlags.None);
                 break;
 
-            case Mode.Move:
+            default:
                 faceHighlightTopGO.SetActive(false);
-                faceHighlightFrontGO.SetActive(true);
-                faceHighlightBackGO.SetActive(true);
-                faceHighlightLeftGO.SetActive(true);
-                faceHighlightRightGO.SetActive(true);
+                faceHighlightFrontGO.SetActive(false);
+                faceHighlightBackGO.SetActive(false);
+                faceHighlightLeftGO.SetActive(false);
+                faceHighlightRightGO.SetActive(false);
                 break;
         }
     }
