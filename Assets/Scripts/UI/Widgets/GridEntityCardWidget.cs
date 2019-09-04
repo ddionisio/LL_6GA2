@@ -99,17 +99,22 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
         var ctrl = container.controller;
 
         if(eventData.pointerCurrentRaycast.isValid && eventData.pointerCurrentRaycast.gameObject == levelGO) {
-            ghost.mode = GridGhostController.Mode.None;
 
             var worldPos = eventData.pointerCurrentRaycast.worldPosition;
 
             var cellInd = ctrl.GetCell(worldPos, false);
 
-            ghost.cellIndex = cellInd;
+            if(ctrl.IsContained(cellInd)) {
+                ghost.mode = GridGhostController.Mode.None;
 
-            var isValid = cellInd.isValid && container.GetEntity(cellInd) == null;
+                ghost.cellIndex = cellInd;
 
-            ghost.display.SetPulseColorValid(isValid);
+                var isValid = cellInd.isValid && container.GetEntity(cellInd) == null;
+
+                ghost.display.SetPulseColorValid(isValid);
+            }
+            else
+                ghost.mode = GridGhostController.Mode.Hidden;
         }
         else
             ghost.mode = GridGhostController.Mode.Hidden;

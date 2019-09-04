@@ -26,7 +26,12 @@ public class GridEntityData : ScriptableObject {
     [SerializeField]
     string _shaderPulseColorVar = "_PulseColor";
     [SerializeField]
-    string _shaderColorVar = "_Color";    
+    string _shaderColorVar = "_Color";
+
+    [Header("Build")]
+    public GridBuildTile buildTileBottom;
+    public GridBuildTile buildTileBase;
+    public GridBuildTile buildTileTop;
 
     public int shaderPulseScaleId { get; private set; }
     public int shaderPulseColorId { get; private set; }

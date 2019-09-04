@@ -24,6 +24,9 @@ public class GridEntityDeckWidget : MonoBehaviour {
     void OnDestroy() {
         signalListenEntitySizeChanged.callback -= OnEntitySizeChanged;
         signalListenMapChanged.callback -= OnMapChanged;
+
+        if(GridEditController.isInstantiated)
+            GridEditController.instance.editChangedCallback -= OnEditModeChanged;
     }
 
     void Awake() {
@@ -51,6 +54,8 @@ public class GridEntityDeckWidget : MonoBehaviour {
 
         signalListenEntitySizeChanged.callback += OnEntitySizeChanged;
         signalListenMapChanged.callback += OnMapChanged;
+
+        GridEditController.instance.editChangedCallback += OnEditModeChanged;
     }
 
     void OnEntitySizeChanged(GridEntity ent) {
@@ -61,12 +66,16 @@ public class GridEntityDeckWidget : MonoBehaviour {
         RefreshCount();
     }
 
+    void OnEditModeChanged() {
+        RefreshCount();
+    }
+
     private void RefreshCount() {
         var availableCount = GridEditController.instance.GetAvailableCount();
 
         countText.text = availableCount.ToString();
 
         if(countInvalidGO) countInvalidGO.SetActive(availableCount < 0);
-        if(invalidGO) invalidGO.SetActive(availableCount <= 0);
+        if(invalidGO) invalidGO.SetActive(availableCount <= 0 || GridEditController.instance.editMode == GridEditController.EditMode.Expand);
     }
 }

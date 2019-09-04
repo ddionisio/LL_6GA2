@@ -51,10 +51,8 @@ public class GridController : MonoBehaviour {
 
     public BoxCollider boxCollider {
         get {
-            if(!mIsBoxCollInit) {
-                mBoxColl = GetComponent<BoxCollider>();
-                mIsBoxCollInit = true;
-            }
+            if(!mIsBoxCollInit)
+                ApplyCollider();
 
             return mBoxColl;
         }
@@ -124,6 +122,21 @@ public class GridController : MonoBehaviour {
         var lpos = new Vector3((cell.col * unitSize - ext.x) + hUnitSize, cell.b * unitSize + hUnitSize, (cell.row * unitSize - ext.z) + hUnitSize);
 
         return new Bounds(lpos, new Vector3(unitSize, unitSize, unitSize));
+    }
+
+    void Awake() {
+        ApplyCollider();
+    }
+
+    private void ApplyCollider() {
+        mBoxColl = GetComponent<BoxCollider>();
+
+        //var b = bounds;
+
+        //mBoxColl.size = new Vector3(b.size.x, mBoxColl.size.y, b.size.z);
+        //mBoxColl.center = new Vector3(b.center.x, mBoxColl.center.y, b.center.z);
+
+        mIsBoxCollInit = true;
     }
 
     void OnDrawGizmosSelected() {
