@@ -103,6 +103,16 @@ public class GridBuildController : MonoBehaviour {
                 if(entBoundMax.z > maxBound.z)
                     maxBound.z = entBoundMax.z;
 
+                if(entCellInd.row < minRow)
+                    minRow = entCellInd.row;
+                if(entCellIndEnd.row > maxRow)
+                    maxRow = entCellIndEnd.row;
+
+                if(entCellInd.col < minCol)
+                    minCol = entCellInd.col;
+                if(entCellIndEnd.col > maxCol)
+                    maxCol = entCellIndEnd.col;
+
                 if(ent.cellSize.b > maxHeight)
                     maxHeight = ent.cellSize.b;
             }
@@ -142,7 +152,7 @@ public class GridBuildController : MonoBehaviour {
             var dat = eval.data;
 
             for(int r = 0; r < rowCount; r++) {
-                var pos = new Vector3(bounds.min.x + unitSizeHalf, 0f, bounds.min.z + r * unitSize + unitSizeHalf);
+                var pos = new Vector3(-bounds.extents.x + unitSizeHalf, 0f, -bounds.extents.z + r * unitSize + unitSizeHalf);
 
                 for(int c = 0; c < colCount; c++) {
                     var height = mHeightMap[r, c];

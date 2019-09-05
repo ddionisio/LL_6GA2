@@ -151,7 +151,7 @@ public class GridEntityContainer : MonoBehaviour {
             _cellSize.row += 2;
 
             if(GridCell.IsIntersectFloor(_cellInd, _cellSize, checkEnt.cellIndex, checkEnt.cellSize)) {
-                ents.RemoveLast();
+                ents.RemoveAt(curInd);
                 group.Add(checkEnt);
                 addedCount++;
 
@@ -173,7 +173,7 @@ public class GridEntityContainer : MonoBehaviour {
             _cellSize = srcEnt.cellSize;
             _cellSize.col += 2;
             if(GridCell.IsIntersectFloor(_cellInd, _cellSize, checkEnt.cellIndex, checkEnt.cellSize)) {
-                ents.RemoveLast();
+                ents.RemoveAt(curInd);
                 group.Add(checkEnt);
                 addedCount++;
 
