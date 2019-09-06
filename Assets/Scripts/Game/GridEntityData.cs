@@ -29,9 +29,9 @@ public class GridEntityData : ScriptableObject {
     string _shaderColorVar = "_Color";
 
     [Header("Build")]
-    public GridBuildTile buildTileBottom;
-    public GridBuildTile buildTileBase;
-    public GridBuildTile buildTileTop;
+    public GridBuildTileData buildTileBottom;
+    public GridBuildTileData buildTileBase;
+    public GridBuildTileData buildTileTop;
 
     public int shaderPulseScaleId { get; private set; }
     public int shaderPulseColorId { get; private set; }

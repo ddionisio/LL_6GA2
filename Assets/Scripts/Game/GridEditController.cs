@@ -13,7 +13,8 @@ public class GridEditController : GameModeController<GridEditController> {
         Move,
         Expand,
         Evaluate, //evaluate the goals by clustering cubes based on their data, then display each if they pass or fail
-        Build
+        Build,
+        BuildComplete
     }
 
     public struct EvaluateData {

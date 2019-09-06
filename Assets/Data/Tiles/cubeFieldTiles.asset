@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: cubeFieldTiles
+  m_EditorClassIdentifier: Assembly-CSharp::GridBuildTileData
+  upperLeft: {fileID: 1822197115935766765, guid: bda16d92f68e9114f84a9731bd66704f,
+    type: 3}
+  upperRight: {fileID: 3907623639297758330, guid: 8fced25473b2f6a46ad6ec82b40e60d4,
+    type: 3}
+  lowerLeft: {fileID: 1369957297949472962, guid: 25e2759d3e6b8314ca753e103df240a2,
+    type: 3}
+  lowerRight: {fileID: 1336829149156310656, guid: a343fe1a010305c40a2d2970c772dd80,
+    type: 3}
+  upperLeftInvert: {fileID: 2536948527478514880, guid: 8a8bf6ec1abe9ca4da6f5362a38adc38,
+    type: 3}
+  upperRightInvert: {fileID: 4419255402016473873, guid: 91885f7e381421d4f9cee7d92b0e0cd4,
+    type: 3}
+  lowerLeftInvert: {fileID: 4737161405299372491, guid: f8d461c5ab266c548a513958e3832a0a,
+    type: 3}
+  lowerRightInvert: {fileID: 5982221378672924708, guid: 8a7c65ed085043644921ff6969c5dfa1,
+    type: 3}
+  horizontalFront: {fileID: 5405831725461391893, guid: 805fd530f48015249b25341c5ad46b3d,
+    type: 3}
+  horizontalBack: {fileID: 8114984461545438724, guid: 8aa0210892df9f147a5d9e7cb87a30cf,
+    type: 3}
+  verticalLeft: {fileID: 2946996683700227205, guid: 57e5becc282f68f4d97a1f98775d4b4b,
+    type: 3}
+  verticalRight: {fileID: 4371427807028772147, guid: 5bffeb13bff43224683a318419284082,
+    type: 3}
+  fill: {fileID: 2205694976767656662, guid: 1115b5c67acf59642a6ac4696dd7c6cc, type: 3}

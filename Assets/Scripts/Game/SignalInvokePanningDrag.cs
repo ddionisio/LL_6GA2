@@ -26,6 +26,7 @@ public class SignalInvokePanningDrag : MonoBehaviour, IBeginDragHandler, IDragHa
         switch(GridEditController.instance.editMode) {
             case GridEditController.EditMode.None:
             case GridEditController.EditMode.Evaluate:
+            case GridEditController.EditMode.Build:
                 return;
         }
 

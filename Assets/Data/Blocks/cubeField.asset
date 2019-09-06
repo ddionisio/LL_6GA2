@@ -21,7 +21,6 @@ MonoBehaviour:
   _shaderPulseScaleVar: _PulseScale
   _shaderPulseColorVar: _PulseColor
   _shaderColorVar: _Color
-  buildTileBottom: {fileID: 5627235075285949217, guid: 25d577a9da1222a49802572fbffc8393,
-    type: 3}
+  buildTileBottom: {fileID: 11400000, guid: 6aafe53f47352f849858b921b44eb044, type: 2}
   buildTileBase: {fileID: 0}
   buildTileTop: {fileID: 0}

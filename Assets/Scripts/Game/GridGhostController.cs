@@ -26,6 +26,12 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     public GameObject faceHighlightLeftGO;
     public GameObject faceHighlightRightGO;
 
+    [Header("Expand Drag Collisions")]
+    public BoxCollider expandCollFront;
+    public BoxCollider expandCollBack;
+    public BoxCollider expandCollLeft;
+    public BoxCollider expandCollRight;
+
     [Header("Signal Invoke")]
     public M8.Signal signalInvokeSizeChanged;
     public SignalGridEntity signalInvokeEntitySizeChanged;
@@ -161,7 +167,7 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     private GridCell mDragCellIndex;
     private GridCell mDragCellSizeStart; //our size when we first dragged
 
-    private bool mIsFaceHighlightActive;
+    private FaceFlags mFaceHighlightMode;
 
     void OnApplicationFocus(bool focus) {
         if(!focus)
@@ -180,7 +186,7 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     }
 
     void Update() {
-        if(!isDragging && mIsFaceHighlightActive && mMode == Mode.Expand) {
+        if(!isDragging && mFaceHighlightMode != FaceFlags.None && mMode == Mode.Expand) {
             var eventSystem = EventSystem.current;
             if(eventSystem) {
                 var faceHighlight = FaceFlags.None;
@@ -188,8 +194,17 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
                 var inputModule = eventSystem.currentInputModule as M8.UI.InputModule;
                 if(inputModule) {
                     var eventData = inputModule.LastPointerEventData(-1);
-                    if(eventData != null && eventData.pointerCurrentRaycast.isValid && eventData.pointerCurrentRaycast.gameObject == gameObject)
-                        faceHighlight = GetFaceFlag(eventData.pointerCurrentRaycast.worldNormal);
+                    if(eventData != null && eventData.pointerCurrentRaycast.isValid) {
+                        var castGO = eventData.pointerCurrentRaycast.gameObject;
+
+                        var _face = GetFaceFlag(castGO);
+                        if(_face == FaceFlags.None && castGO == gameObject) {
+                            //faceHighlight = GetFaceFlag(eventData.pointerCurrentRaycast.worldNormal);
+                            faceHighlight = FaceFlags.Top;
+                        }
+                        else
+                            faceHighlight = _face;
+                    }
                 }
 
                 if(display.faceHighlight != faceHighlight) {
@@ -204,15 +219,15 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         if(mMode == Mode.None || mMode == Mode.Hidden || mMode == Mode.Move)
             return;
 
-        mIsFaceHighlightActive = true;
+        mFaceHighlightMode = FaceFlags.All;
     }
 
     void IPointerExitHandler.OnPointerExit(PointerEventData eventData) {
         if(mMode == Mode.None || mMode == Mode.Hidden || mMode == Mode.Move)
             return;
 
-        if(mIsFaceHighlightActive) {
-            mIsFaceHighlightActive = false;
+        if(mFaceHighlightMode != FaceFlags.None) {
+            mFaceHighlightMode = FaceFlags.None;
 
             if(!isDragging) {
                 display.faceHighlight = FaceFlags.None;
@@ -228,14 +243,26 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
         //ensure it is valid
         var cast = eventData.pointerPressRaycast;
-        if(cast.isValid && (cast.gameObject == gameObject || cast.gameObject == GridEditController.instance.selected.gameObject)) {
+        if(cast.isValid && (cast.gameObject == gameObject || GetFaceFlag(cast.gameObject) != FaceFlags.None || cast.gameObject == GridEditController.instance.selected.gameObject)) {
             mColl.enabled = false;
+
+            if(mMode == Mode.Expand) {
+                if(expandCollFront) expandCollFront.enabled = false;
+                if(expandCollBack) expandCollBack.enabled = false;
+                if(expandCollLeft) expandCollLeft.enabled = false;
+                if(expandCollRight) expandCollRight.enabled = false;
+            }
 
             mDragCellIndex.Invalidate();
             mDragCellSizeStart = cellSize;
 
             if(mode == Mode.Expand) {
-                mDragFace = GetFaceFlag(eventData.pointerPressRaycast.worldNormal);
+                mDragFace = GetFaceFlag(eventData.pointerPressRaycast.gameObject);
+                if(mDragFace == FaceFlags.None) {
+                    //mDragFace = GetFaceFlag(eventData.pointerPressRaycast.worldNormal);
+                    mDragFace = FaceFlags.Top;
+                }
+
                 display.faceHighlight = mDragFace;
                 RefreshHighlight();
             }
@@ -389,6 +416,22 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         EndDrag();
     }
 
+    private FaceFlags GetFaceFlag(GameObject castGO) {
+        if(expandCollFront && castGO == expandCollFront.gameObject)
+            return FaceFlags.Front;
+
+        if(expandCollBack && castGO == expandCollBack.gameObject)
+            return FaceFlags.Back;
+
+        if(expandCollLeft && castGO == expandCollLeft.gameObject)
+            return FaceFlags.Left;
+
+        if(expandCollRight && castGO == expandCollRight.gameObject)
+            return FaceFlags.Right;
+
+        return FaceFlags.None;
+    }
+
     private FaceFlags GetFaceFlag(Vector3 worldNormal) {
         FaceFlags face = FaceFlags.None;
 
@@ -434,12 +477,19 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
             RefreshValid();
         }
-
+                
         RefreshHighlight();
 
-        mIsFaceHighlightActive = false;
+        mFaceHighlightMode = FaceFlags.None;
 
         EndDrag();
+
+        var isExpandCollsEnabled = mMode == Mode.Expand;
+
+        if(expandCollFront) expandCollFront.enabled = isExpandCollsEnabled;
+        if(expandCollBack) expandCollBack.enabled = isExpandCollsEnabled;
+        if(expandCollLeft) expandCollLeft.enabled = isExpandCollsEnabled;
+        if(expandCollRight) expandCollRight.enabled = isExpandCollsEnabled;
     }
 
     private void RefreshHighlight() {
@@ -486,6 +536,35 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         faceHighlightBackGO.transform.localPosition = new Vector3(bounds.center.x, faceHighlightBackGO.transform.localPosition.y, bounds.min.z);
         faceHighlightLeftGO.transform.localPosition = new Vector3(bounds.min.x, faceHighlightLeftGO.transform.localPosition.y, bounds.center.z);
         faceHighlightRightGO.transform.localPosition = new Vector3(bounds.max.x, faceHighlightRightGO.transform.localPosition.y, bounds.center.z);
+
+        //update expand colliders
+        if(expandCollFront) {
+            expandCollFront.transform.localPosition = new Vector3(bounds.center.x, bounds.center.y, bounds.max.z);
+
+            var s = expandCollFront.size; s.x = bounds.size.x; s.y = bounds.size.y;
+            expandCollFront.size = s;
+        }
+
+        if(expandCollBack) {
+            expandCollBack.transform.localPosition = new Vector3(bounds.center.x, bounds.center.y, bounds.min.z);
+
+            var s = expandCollBack.size; s.x = bounds.size.x; s.y = bounds.size.y;
+            expandCollBack.size = s;
+        }
+
+        if(expandCollLeft) {
+            expandCollLeft.transform.localPosition = new Vector3(bounds.min.x, bounds.center.y, bounds.center.z);
+
+            var s = expandCollLeft.size; s.y = bounds.size.y; s.z = bounds.size.z;
+            expandCollLeft.size = s;
+        }
+
+        if(expandCollRight) {
+            expandCollRight.transform.localPosition = new Vector3(bounds.max.x, bounds.center.y, bounds.center.z);
+
+            var s = expandCollRight.size; s.y = bounds.size.y; s.z = bounds.size.z;
+            expandCollRight.size = s;
+        }
     }
 
     private void RefreshValid() {
@@ -521,6 +600,13 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
             RefreshHighlight();
 
             mColl.enabled = !(mMode == Mode.None || mMode == Mode.Hidden);
+
+            if(mMode == Mode.Expand) {
+                if(expandCollFront) expandCollFront.enabled = true;
+                if(expandCollBack) expandCollBack.enabled = true;
+                if(expandCollLeft) expandCollLeft.enabled = true;
+                if(expandCollRight) expandCollRight.enabled = true;
+            }
         }
     }
 }

@@ -16,6 +16,7 @@ public class GridBuildController : MonoBehaviour {
     [Header("Build Animation")]
     public float buildRiseDelay = 1f;
     public DG.Tweening.Ease buildRiseEase = DG.Tweening.Ease.InOutSine;
+    public ParticleSystem buildRiseFX;
 
     [Header("Animation")]
     public M8.Animator.Animate fallAnimator;
@@ -23,7 +24,9 @@ public class GridBuildController : MonoBehaviour {
     public string fallTakePlay;
 
     [Header("Signal Invoke")]
+    public M8.SignalVector3 signalInvokeCameraPanTo;
     public M8.Signal signalInvokeBuildComplete;
+    
 
     private int[,] mHeightMap;
 
@@ -158,7 +161,7 @@ public class GridBuildController : MonoBehaviour {
                     var height = mHeightMap[r, c];
 
                     if(height == 1) {
-                        GridBuildTile tile;
+                        GridBuildTileData tile;
 
                         //determine which template to grab, priority: top, base, bottom
                         if(dat.buildTileTop)
@@ -173,7 +176,7 @@ public class GridBuildController : MonoBehaviour {
                     }
                     else if(height >= 2) {
                         //generate bottom
-                        GridBuildTile bottomTile;
+                        GridBuildTileData bottomTile;
                         if(dat.buildTileBottom)
                             bottomTile = dat.buildTileBottom;
                         else if(dat.buildTileBase)
@@ -185,7 +188,7 @@ public class GridBuildController : MonoBehaviour {
                             GenerateTiles(bottomTile, container, rowCount, colCount, r, c, 1, false, pos, unitSizeQuart);
 
                         //generate base
-                        GridBuildTile baseTile;
+                        GridBuildTileData baseTile;
                         if(dat.buildTileBase)
                             baseTile = dat.buildTileBase;
                         else if(dat.buildTileBottom)
@@ -200,7 +203,7 @@ public class GridBuildController : MonoBehaviour {
                         }
 
                         //generate top
-                        GridBuildTile topTile;
+                        GridBuildTileData topTile;
                         if(dat.buildTileTop)
                             topTile = dat.buildTileTop;
                         else if(dat.buildTileBase)
@@ -216,9 +219,14 @@ public class GridBuildController : MonoBehaviour {
                 }
             }
 
+            var centerBasePos = new Vector3(bounds.center.x, endY, bounds.center.z);
+
+            if(signalInvokeCameraPanTo)
+                signalInvokeCameraPanTo.Invoke(centerBasePos);
+
             //animate crash into
             if(fallAnimator && !string.IsNullOrEmpty(fallTakePlay)) {
-                fallAnimator.transform.position = root.TransformPoint(new Vector3(bounds.center.x, bounds.min.y, bounds.center.z));
+                fallAnimator.transform.position = root.TransformPoint(centerBasePos);
 
                 fallAnimator.gameObject.SetActive(true);
 
@@ -228,6 +236,17 @@ public class GridBuildController : MonoBehaviour {
             }
 
             //build rise
+            buildRiseFX.transform.localPosition = centerBasePos;
+
+            //apply shape to fx
+            var buildRiseFXShape = buildRiseFX.shape;
+            var buildRiseFXShapeScale = buildRiseFXShape.scale;
+            buildRiseFXShapeScale.x = bounds.size.x;
+            buildRiseFXShapeScale.z = bounds.size.z;
+            buildRiseFXShape.scale = buildRiseFXShapeScale;
+
+            buildRiseFX.Play();
+
             var curTime = 0f;
             while(curTime < buildRiseDelay) {
                 yield return null;
@@ -240,46 +259,52 @@ public class GridBuildController : MonoBehaviour {
 
                 container.localPosition = new Vector3(bounds.center.x, y, bounds.center.z);
             }
+
+            buildRiseFX.Stop();
         }
 
 
         if(signalInvokeBuildComplete)
             signalInvokeBuildComplete.Invoke();
+
+        editCtrl.editMode = GridEditController.EditMode.BuildComplete;
     }
 
-    private void GenerateTiles(GridBuildTile tile, Transform container, int rowCount, int colCount, int r, int c, int height, bool isTop, Vector3 center, float cornerOfs) {
-        var filledFlags = tile.GetFilledEdgeFlags(mHeightMap, rowCount, colCount, r, c, height);
+    private void GenerateTiles(GridBuildTileData tile, Transform container, int rowCount, int colCount, int r, int c, int height, bool isTop, Vector3 center, float cornerOfs) {
+        var filledFlags = GridBuildTileData.GetFilledEdgeFlags(mHeightMap, rowCount, colCount, r, c, height);
+
+        GameObject tileTemplate;
 
         //upper left
-        if(tile.IsVisible(GridBuildTile.Flags.UpperLeft, filledFlags, isTop)) {
+        tileTemplate = tile.GetVisibleGO(GridBuildTileData.Flags.UpperLeft, filledFlags, isTop);
+        if(tileTemplate) {
             var tilePos = new Vector3(center.x - cornerOfs, 0f, center.z + cornerOfs);
-            var tileInst = Instantiate(tile, container);
+            var tileInst = Instantiate(tileTemplate, container);
             tileInst.transform.localPosition = tilePos;
-            tileInst.ApplyVisible(GridBuildTile.Flags.UpperLeft, filledFlags, isTop);
         }
 
         //upper right
-        if(tile.IsVisible(GridBuildTile.Flags.UpperRight, filledFlags, isTop)) {
+        tileTemplate = tile.GetVisibleGO(GridBuildTileData.Flags.UpperRight, filledFlags, isTop);
+        if(tileTemplate) {
             var tilePos = new Vector3(center.x + cornerOfs, 0f, center.z + cornerOfs);
-            var tileInst = Instantiate(tile, container);
+            var tileInst = Instantiate(tileTemplate, container);
             tileInst.transform.localPosition = tilePos;
-            tileInst.ApplyVisible(GridBuildTile.Flags.UpperRight, filledFlags, isTop);
         }
 
         //lower left
-        if(tile.IsVisible(GridBuildTile.Flags.LowerLeft, filledFlags, isTop)) {
+        tileTemplate = tile.GetVisibleGO(GridBuildTileData.Flags.LowerLeft, filledFlags, isTop);
+        if(tileTemplate) {
             var tilePos = new Vector3(center.x - cornerOfs, 0f, center.z - cornerOfs);
-            var tileInst = Instantiate(tile, container);
+            var tileInst = Instantiate(tileTemplate, container);
             tileInst.transform.localPosition = tilePos;
-            tileInst.ApplyVisible(GridBuildTile.Flags.LowerLeft, filledFlags, isTop);
         }
 
         //lower right
-        if(tile.IsVisible(GridBuildTile.Flags.LowerRight, filledFlags, isTop)) {
+        tileTemplate = tile.GetVisibleGO(GridBuildTileData.Flags.LowerRight, filledFlags, isTop);
+        if(tileTemplate) {
             var tilePos = new Vector3(center.x + cornerOfs, 0f, center.z - cornerOfs);
-            var tileInst = Instantiate(tile, container);
+            var tileInst = Instantiate(tileTemplate, container);
             tileInst.transform.localPosition = tilePos;
-            tileInst.ApplyVisible(GridBuildTile.Flags.LowerRight, filledFlags, isTop);
         }
     }
 

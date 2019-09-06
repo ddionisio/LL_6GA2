@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridBuildTile : MonoBehaviour {
+[CreateAssetMenu(fileName = "gameData", menuName = "Game/Grid Build Tile Data")]
+public class GridBuildTileData : ScriptableObject {
     [System.Flags]
     public enum Flags {
         None = 0x0,
@@ -31,12 +32,12 @@ public class GridBuildTile : MonoBehaviour {
     public GameObject lowerRightInvert;
 
     [Header("Horizontals")]
-    public GameObject frontHorizontal;
-    public GameObject backHorizontal;
+    public GameObject horizontalFront;
+    public GameObject horizontalBack;
 
     [Header("Verticals")]
-    public GameObject leftVertical;
-    public GameObject rightVertical;
+    public GameObject verticalLeft;
+    public GameObject verticalRight;
 
     [Header("Fill")]
     public GameObject fill;
@@ -44,68 +45,37 @@ public class GridBuildTile : MonoBehaviour {
     /// <summary>
     /// Returns which sides and corners are filled relative to given row/col
     /// </summary>
-    public Flags GetFilledEdgeFlags(int[,] heightMap, int heightMapRowCount, int heightmapColCount, int row, int col, int height) {
+    public static Flags GetFilledEdgeFlags(int[,] heightMap, int heightMapRowCount, int heightmapColCount, int row, int col, int height) {
         Flags retFlags = Flags.None;
 
         //check sides
         if(row > 0 && heightMap[row - 1, col] >= height)
             retFlags |= Flags.Down;
-        if(row < heightMapRowCount && heightMap[row + 1, col] >= height)
+        if(row < heightMapRowCount - 1 && heightMap[row + 1, col] >= height)
             retFlags |= Flags.Up;
 
         if(col > 0 && heightMap[row, col - 1] >= height)
             retFlags |= Flags.Left;
-        if(col < heightmapColCount && heightMap[row, col + 1] >= height)
+        if(col < heightmapColCount - 1 && heightMap[row, col + 1] >= height)
             retFlags |= Flags.Right;
 
         //check diagonals
         if(row > 0 && col > 0 && heightMap[row - 1, col - 1] >= height)
             retFlags |= Flags.LowerLeft;
 
-        if(row > 0 && col < heightmapColCount && heightMap[row - 1, col + 1] >= height)
+        if(row > 0 && col < heightmapColCount - 1 && heightMap[row - 1, col + 1] >= height)
             retFlags |= Flags.LowerRight;
 
-        if(row < heightMapRowCount && col > 0 && heightMap[row + 1, col - 1] >= height)
+        if(row < heightMapRowCount - 1 && col > 0 && heightMap[row + 1, col - 1] >= height)
             retFlags |= Flags.UpperLeft;
 
-        if(row < heightMapRowCount && col < heightmapColCount && heightMap[row + 1, col + 1] >= height)
+        if(row < heightMapRowCount - 1 && col < heightmapColCount - 1 && heightMap[row + 1, col + 1] >= height)
             retFlags |= Flags.UpperRight;
 
         return retFlags;
     }
 
-    public bool IsVisible(Flags corner, Flags filledEdgeFlags, bool isTop) {
-        var visibleGO = GetVisibleGO(corner, filledEdgeFlags, isTop);
-        return visibleGO != null;
-    }
-
-    public void ApplyVisible(Flags corner, Flags filledEdgeFlags, bool isTop) {
-        var visibleGO = GetVisibleGO(corner, filledEdgeFlags, isTop);
-
-        if(upperLeft) upperLeft.SetActive(upperLeft == visibleGO);
-        if(upperRight) upperRight.SetActive(upperRight == visibleGO);
-        if(lowerLeft) lowerLeft.SetActive(lowerLeft == visibleGO);
-        if(lowerRight) lowerRight.SetActive(lowerRight == visibleGO);
-
-        if(upperLeftInvert) upperLeftInvert.SetActive(upperLeftInvert == visibleGO);
-        if(upperRightInvert) upperRightInvert.SetActive(upperRightInvert == visibleGO);
-        if(lowerLeftInvert) lowerLeftInvert.SetActive(lowerLeftInvert == visibleGO);
-        if(lowerRightInvert) lowerRightInvert.SetActive(lowerRightInvert == visibleGO);
-
-        if(frontHorizontal) frontHorizontal.SetActive(frontHorizontal == visibleGO);
-        if(backHorizontal) backHorizontal.SetActive(backHorizontal == visibleGO);
-
-        if(leftVertical) leftVertical.SetActive(leftVertical == visibleGO);
-        if(rightVertical) rightVertical.SetActive(rightVertical == visibleGO);
-
-        if(fill) fill.SetActive(fill == visibleGO);
-    }
-
-    private bool CheckFlags(Flags filledEdgeFlags, Flags checkFlags) {
-        return (filledEdgeFlags & checkFlags) == checkFlags;
-    }
-
-    private GameObject GetVisibleGO(Flags corner, Flags filledEdgeFlags, bool isTop) {
+    public GameObject GetVisibleGO(Flags corner, Flags filledEdgeFlags, bool isTop) {
         switch(corner) {
             case Flags.UpperLeft:
                 //check if up/left is empty
@@ -116,10 +86,10 @@ public class GridBuildTile : MonoBehaviour {
                     return upperLeftInvert;
                 //check if left is filled, and up is empty
                 if(CheckFlags(filledEdgeFlags, Flags.Left) && (filledEdgeFlags & Flags.Up) == Flags.None)
-                    return frontHorizontal;
+                    return horizontalFront;
                 //check if up is filled, and left is empty
                 if(CheckFlags(filledEdgeFlags, Flags.Up) && (filledEdgeFlags & Flags.Left) == Flags.None)
-                    return leftVertical;
+                    return verticalLeft;
                 //check if up/left/upperleft is filled
                 if(CheckFlags(filledEdgeFlags, Flags.Up | Flags.Left | Flags.UpperLeft))
                     return isTop ? fill : null;
@@ -134,10 +104,10 @@ public class GridBuildTile : MonoBehaviour {
                     return upperRightInvert;
                 //check if right is filled, and up is empty
                 if(CheckFlags(filledEdgeFlags, Flags.Right) && (filledEdgeFlags & Flags.Up) == Flags.None)
-                    return frontHorizontal;
+                    return horizontalFront;
                 //check if up is filled, and right is empty
                 if(CheckFlags(filledEdgeFlags, Flags.Up) && (filledEdgeFlags & Flags.Right) == Flags.None)
-                    return rightVertical;
+                    return verticalRight;
                 //check if up/right/upperright is filled
                 if(CheckFlags(filledEdgeFlags, Flags.Up | Flags.Right | Flags.UpperRight))
                     return isTop ? fill : null;
@@ -152,10 +122,10 @@ public class GridBuildTile : MonoBehaviour {
                     return lowerLeftInvert;
                 //check if left is filled, and down is empty
                 if(CheckFlags(filledEdgeFlags, Flags.Left) && (filledEdgeFlags & Flags.Down) == Flags.None)
-                    return backHorizontal;
+                    return horizontalBack;
                 //check if down is filled, and left is empty
                 if(CheckFlags(filledEdgeFlags, Flags.Down) && (filledEdgeFlags & Flags.Left) == Flags.None)
-                    return leftVertical;
+                    return verticalLeft;
                 //check if down/left/lowerleft is filled
                 if(CheckFlags(filledEdgeFlags, Flags.Down | Flags.Left | Flags.LowerLeft))
                     return isTop ? fill : null;
@@ -170,10 +140,10 @@ public class GridBuildTile : MonoBehaviour {
                     return lowerRightInvert;
                 //check if right is filled, and down is empty
                 if(CheckFlags(filledEdgeFlags, Flags.Right) && (filledEdgeFlags & Flags.Down) == Flags.None)
-                    return backHorizontal;
+                    return horizontalBack;
                 //check if down is filled, and right is empty
                 if(CheckFlags(filledEdgeFlags, Flags.Down) && (filledEdgeFlags & Flags.Right) == Flags.None)
-                    return rightVertical;
+                    return verticalRight;
                 //check if down/right/lowerright is filled
                 if(CheckFlags(filledEdgeFlags, Flags.Down | Flags.Right | Flags.LowerRight))
                     return isTop ? fill : null;
@@ -182,4 +152,10 @@ public class GridBuildTile : MonoBehaviour {
 
         return null;
     }
+
+    private bool CheckFlags(Flags filledEdgeFlags, Flags checkFlags) {
+        return (filledEdgeFlags & checkFlags) == checkFlags;
+    }
+
+    
 }

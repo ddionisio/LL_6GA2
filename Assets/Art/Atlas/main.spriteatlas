@@ -45,7 +45,8 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 54b2a57779ab5364aaaa1e0437a43b7f, type: 3}
     - {fileID: 102900000, guid: 989b186f8696db74fa5f2d810851e5b4, type: 3}
     - {fileID: 102900000, guid: 08393df466d1f8549bd2f20e93bf08b7, type: 3}
-    totalSpriteSurfaceArea: 61622
+    - {fileID: 102900000, guid: b055f719595bcfe4380716af57d58acc, type: 3}
+    totalSpriteSurfaceArea: 63558
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -99,6 +100,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 7168da6aea1c4154bbc52d54856e6639, type: 3}
   - {fileID: 21300000, guid: 5952baaa48d611842a22716276cee699, type: 3}
   - {fileID: 21300000, guid: 781b8debc0b4b7741bb22f7e896e042d, type: 3}
+  - {fileID: 21300000, guid: 21e6ac3ceac279145a96215dfa3f7079, type: 3}
   - {fileID: 21300000, guid: 6e46d65c795b56344b389f1886fb3982, type: 3}
   - {fileID: 21300000, guid: 71070d9cb8e6b574a8e999cb3dde2157, type: 3}
   - {fileID: 21300000, guid: e83646acd476410418e0bf338e337799, type: 3}
@@ -157,6 +159,7 @@ SpriteAtlas:
   - gradient8x8
   - ringGlow
   - blob2
+  - motherbasePlatform
   - devicerMouthClose
   - blob1
   - wrongIcon
