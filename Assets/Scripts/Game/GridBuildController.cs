@@ -219,6 +219,8 @@ public class GridBuildController : MonoBehaviour {
                 }
             }
 
+            yield return null;
+
             var centerBasePos = new Vector3(bounds.center.x, endY, bounds.center.z);
 
             if(signalInvokeCameraPanTo)
@@ -273,7 +275,19 @@ public class GridBuildController : MonoBehaviour {
     private void GenerateTiles(GridBuildTileData tile, Transform container, int rowCount, int colCount, int r, int c, int height, bool isTop, Vector3 center, float cornerOfs) {
         var filledFlags = GridBuildTileData.GetFilledEdgeFlags(mHeightMap, rowCount, colCount, r, c, height);
 
-        GameObject tileTemplate;
+        //upper left
+        tile.InstantiateMesh(container, center, cornerOfs, GridBuildTileData.Flags.UpperLeft, filledFlags, isTop);
+
+        //upper right
+        tile.InstantiateMesh(container, center, cornerOfs, GridBuildTileData.Flags.UpperRight, filledFlags, isTop);
+
+        //lower left
+        tile.InstantiateMesh(container, center, cornerOfs, GridBuildTileData.Flags.LowerLeft, filledFlags, isTop);
+
+        //lower right
+        tile.InstantiateMesh(container, center, cornerOfs, GridBuildTileData.Flags.LowerRight, filledFlags, isTop);
+
+        /*GameObject tileTemplate;
 
         //upper left
         tileTemplate = tile.GetVisibleGO(GridBuildTileData.Flags.UpperLeft, filledFlags, isTop);
@@ -305,7 +319,7 @@ public class GridBuildController : MonoBehaviour {
             var tilePos = new Vector3(center.x + cornerOfs, 0f, center.z - cornerOfs);
             var tileInst = Instantiate(tileTemplate, container);
             tileInst.transform.localPosition = tilePos;
-        }
+        }*/
     }
 
     private void ResetHeightMap(int rowSize, int colSize) {

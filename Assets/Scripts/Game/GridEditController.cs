@@ -263,20 +263,18 @@ public class GridEditController : GameModeController<GridEditController> {
                 if(!dat.HasValue || (isMet && !datIsMet)) {
                     dat = eval;
                     datVolumeDelta = delta;
-                    datIsMet = true;
-
-                    evals.RemoveAt(j);
+                    datIsMet = isMet;
                 }
-                else if(delta < datVolumeDelta) {
+                else if(isMet && delta < datVolumeDelta) {
                     dat = eval;
                     datVolumeDelta = delta;
-
-                    evals.RemoveAt(j);
                 }
             }
 
-            if(dat.HasValue)
+            if(dat.HasValue) {
+                evals.Remove(dat.Value);
                 goalEvaluations[i] = dat.Value;
+            }
             else
                 goalEvaluations[i] = new EvaluateData();
         }

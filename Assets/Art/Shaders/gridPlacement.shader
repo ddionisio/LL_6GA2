@@ -14,7 +14,7 @@
     {
         Tags {"Queue"="Transparent" "RenderType"="Transparent" "IgnoreProjector"="True"}
 
-		//ZWrite Off // on might hide behind pixels, off might miss order
+		ZWrite Off // on might hide behind pixels, off might miss order
 		Blend SrcAlpha OneMinusSrcAlpha
 		ColorMask RGB
 		Lighting Off Fog { Mode Off }

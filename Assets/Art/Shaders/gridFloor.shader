@@ -3,8 +3,9 @@
 		_Color ("Color", Color) = (1,1,1,1)
 	}
 	SubShader {
-		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
+		Tags { "Queue"="Transparent-50" "IgnoreProjector"="True" "RenderType"="Transparent" }
 		
+		ZWrite Off // on might hide behind pixels, off might miss order
 		Blend SrcAlpha OneMinusSrcAlpha
 		ColorMask RGB
 		Lighting Off Fog { Mode Off }
