@@ -19,16 +19,19 @@ public struct UnitMeasure {
         return GetText(type) + '³';
     }
 
+    public static string GetNumberFormatted(float val) {
+        float whole = Mathf.Floor(val);
+        if(val - whole > 0f)
+            return val.ToString("F3");
+        else
+            return val.ToString("F0");
+    }
+
     public static string GetVolumeText(UnitMeasureType type, float volume) {
         mSB.Clear();
 
-        float whole = Mathf.Floor(volume);
-        if(volume - whole > 0f)
-            mSB.Append(volume.ToString("F3"));
-        else
-            mSB.Append(volume.ToString("F0"));
-
-        mSB.Append(' ');
+        mSB.Append(GetNumberFormatted(volume));
+        //mSB.Append(' ');
         mSB.Append(GetText(type));
         mSB.Append('³');
 
@@ -38,13 +41,8 @@ public struct UnitMeasure {
     public static string GetMeasureText(UnitMeasureType type, float val) {
         mSB.Clear();
 
-        float whole = Mathf.Floor(val);
-        if(val - whole > 0f)
-            mSB.Append(val.ToString("F3"));
-        else
-            mSB.Append(val.ToString("F0"));
-
-        mSB.Append(' ');
+        mSB.Append(GetNumberFormatted(val));
+        //mSB.Append(' ');
         mSB.Append(GetText(type));
 
         return mSB.ToString();

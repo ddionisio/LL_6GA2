@@ -36,12 +36,6 @@ public class GoalControlWidget : MonoBehaviour {
 
     [Header("Text Refs")]
     [M8.Localize]
-    public string totalVolumeTextRef;
-    [M8.Localize]
-    public string reqVolumeTextRef;
-    [M8.Localize]
-    public string reqHeightTextRef;
-    [M8.Localize]
     public string efficiencyTextRef;
     [M8.Localize]
     public string errorNoMatchTextRef;
@@ -117,8 +111,6 @@ public class GoalControlWidget : MonoBehaviour {
 
         //total volume
         mSB.Clear();
-        mSB.Append(M8.Localize.Get(totalVolumeTextRef));
-        mSB.Append(' ');
 
         if(curEval.isValid)
             mSB.Append(UnitMeasure.GetVolumeText(editCtrl.levelData.measureType, curEval.volume));
@@ -132,16 +124,12 @@ public class GoalControlWidget : MonoBehaviour {
 
         //volume req
         mSB.Clear();
-        mSB.Append(M8.Localize.Get(reqVolumeTextRef));
-        mSB.Append(' ');
         mSB.Append(UnitMeasure.GetVolumeText(curGoal.measureType, curGoal.volume));
         reqs[0].Setup(mSB.ToString(), isVolumeMet, isVolumeMet ? reqCorrectColor : reqIncorrectColor);
 
         //height req
         if(curGoal.heightRequire > 0f) {
             mSB.Clear();
-            mSB.Append(M8.Localize.Get(reqHeightTextRef));
-            mSB.Append(' ');
             mSB.Append(UnitMeasure.GetMeasureText(curGoal.measureType, curGoal.heightRequire));
             reqs[1].Setup(mSB.ToString(), isHeightMet, isHeightMet ? reqCorrectColor : reqIncorrectColor);
             reqs[1].rootGO.SetActive(true);

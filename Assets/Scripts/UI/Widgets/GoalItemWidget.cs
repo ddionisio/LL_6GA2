@@ -14,6 +14,7 @@ public class GoalItemWidget : MonoBehaviour {
     public Image icon;
     public Text titleText;
     public Text descText;
+    public Text valueText;
 
     private System.Text.StringBuilder mSB = new System.Text.StringBuilder();
 
@@ -25,17 +26,24 @@ public class GoalItemWidget : MonoBehaviour {
 
         mSB.Append("· ");
         mSB.Append(M8.Localize.Get(volumeReqTextRef));
-        mSB.Append(' ');
-        mSB.Append(UnitMeasure.GetVolumeText(goal.measureType, goal.volume));
 
         if(goal.heightRequire > 0f) {
             mSB.Append('\n');
             mSB.Append("· ");
             mSB.Append(M8.Localize.Get(heightReqTextRef));
-            mSB.Append(' ');
-            mSB.Append(UnitMeasure.GetMeasureText(goal.measureType, goal.heightRequire));
         }
 
         descText.text = mSB.ToString();
+
+        mSB.Clear();
+
+        mSB.Append(UnitMeasure.GetVolumeText(goal.measureType, goal.volume));
+
+        if(goal.heightRequire > 0f) {
+            mSB.Append('\n');
+            mSB.Append(UnitMeasure.GetMeasureText(goal.measureType, goal.heightRequire));
+        }
+
+        valueText.text = mSB.ToString();
     }
 }

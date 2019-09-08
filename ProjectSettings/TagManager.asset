@@ -44,6 +44,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Sprite
+  - name: Doodad
     uniqueID: 422781377
     locked: 0

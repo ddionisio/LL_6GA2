@@ -88,10 +88,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if up/left is empty
                 if((filledEdgeFlags & (Flags.Up | Flags.Left)) == Flags.None) {
                     if(cornerMesh) { //upper left
-                        var goInst = Instantiate(cornerMesh);
-                        var t = goInst.transform;
-                        t.SetParent(container);
-                        t.localPosition = center;
+                        var goInst = Instantiate(cornerMesh, container);
+                        goInst.transform.localPosition = center;
 
                         return goInst;
                     }
@@ -99,10 +97,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if up/left is filled, and upperleft is empty
                 else if(CheckFlags(filledEdgeFlags, Flags.Up | Flags.Left) && (filledEdgeFlags & Flags.UpperLeft) == Flags.None) {
                     if(cornerInvertMesh) { //upper left
-                        var goInst = Instantiate(cornerInvertMesh);
-                        var t = goInst.transform;
-                        t.SetParent(container);
-                        t.localPosition = center;
+                        var goInst = Instantiate(cornerInvertMesh, container);
+                        goInst.transform.localPosition = center;
 
                         return goInst;
                     }
@@ -110,9 +106,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if left is filled, and up is empty
                 else if(CheckFlags(filledEdgeFlags, Flags.Left) && (filledEdgeFlags & Flags.Up) == Flags.None) {
                     if(sideMesh) { //horizontal front
-                        var goInst = Instantiate(sideMesh);
+                        var goInst = Instantiate(sideMesh, container);
                         var t = goInst.transform;
-                        t.SetParent(container);
                         t.localPosition = new Vector3(center.x - cornerOfs, center.y, center.z);
                         t.localEulerAngles = new Vector3(0f, 90f, 0f);
 
@@ -122,10 +117,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if up is filled, and left is empty
                 else if(CheckFlags(filledEdgeFlags, Flags.Up) && (filledEdgeFlags & Flags.Left) == Flags.None) {
                     if(sideMesh) { //vertical left
-                        var goInst = Instantiate(sideMesh);
-                        var t = goInst.transform;
-                        t.SetParent(container);
-                        t.localPosition = new Vector3(center.x, center.y, center.z + cornerOfs);
+                        var goInst = Instantiate(sideMesh, container);
+                        goInst.transform.localPosition = new Vector3(center.x, center.y, center.z + cornerOfs);
 
                         return goInst;
                     }
@@ -133,10 +126,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if up/left/upperleft is filled
                 else if(CheckFlags(filledEdgeFlags, Flags.Up | Flags.Left | Flags.UpperLeft)) {
                     if(isTop && fillMesh) {
-                        var goInst = Instantiate(fillMesh);
-                        var t = goInst.transform;
-                        t.SetParent(container);
-                        t.localPosition = new Vector3(center.x - cornerOfs, center.y, center.z + cornerOfs);
+                        var goInst = Instantiate(fillMesh, container);
+                        goInst.transform.localPosition = new Vector3(center.x - cornerOfs, center.y, center.z + cornerOfs);
 
                         return goInst;
                     }
@@ -147,9 +138,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if up/right is empty
                 if((filledEdgeFlags & (Flags.Up | Flags.Right)) == Flags.None) {
                     if(cornerMesh) { //upper right
-                        var goInst = Instantiate(cornerMesh);
+                        var goInst = Instantiate(cornerMesh, container);
                         var t = goInst.transform;
-                        t.SetParent(container);
                         t.localPosition = center;
                         t.localEulerAngles = new Vector3(0f, 90f, 0f);
 
@@ -159,9 +149,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if up/right is filled, and upperright is empty
                 else if(CheckFlags(filledEdgeFlags, Flags.Up | Flags.Right) && (filledEdgeFlags & Flags.UpperRight) == Flags.None) {
                     if(cornerInvertMesh) { //upper right
-                        var goInst = Instantiate(cornerInvertMesh);
+                        var goInst = Instantiate(cornerInvertMesh, container);
                         var t = goInst.transform;
-                        t.SetParent(container);
                         t.localPosition = center;
                         t.localEulerAngles = new Vector3(0f, 90f, 0f);
 
@@ -171,9 +160,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if right is filled, and up is empty
                 else if(CheckFlags(filledEdgeFlags, Flags.Right) && (filledEdgeFlags & Flags.Up) == Flags.None) {
                     if(sideMesh) { //horizontal front
-                        var goInst = Instantiate(sideMesh);
+                        var goInst = Instantiate(sideMesh, container);
                         var t = goInst.transform;
-                        t.SetParent(container);
                         t.localPosition = new Vector3(center.x + cornerOfs, center.y, center.z);
                         t.localEulerAngles = new Vector3(0f, 90f, 0f);
 
@@ -183,9 +171,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if up is filled, and right is empty
                 else if(CheckFlags(filledEdgeFlags, Flags.Up) && (filledEdgeFlags & Flags.Right) == Flags.None) {
                     if(sideMesh) { //vertical right
-                        var goInst = Instantiate(sideMesh);
+                        var goInst = Instantiate(sideMesh, container);
                         var t = goInst.transform;
-                        t.SetParent(container);
                         t.localPosition = new Vector3(center.x, center.y, center.z + cornerOfs);
                         t.localEulerAngles = new Vector3(0f, 180f, 0f);
 
@@ -195,10 +182,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if up/right/upperright is filled
                 else if(CheckFlags(filledEdgeFlags, Flags.Up | Flags.Right | Flags.UpperRight)) {
                     if(isTop && fillMesh) {
-                        var goInst = Instantiate(fillMesh);
-                        var t = goInst.transform;
-                        t.SetParent(container);
-                        t.localPosition = new Vector3(center.x + cornerOfs, center.y, center.z + cornerOfs);
+                        var goInst = Instantiate(fillMesh, container);
+                        goInst.transform.localPosition = new Vector3(center.x + cornerOfs, center.y, center.z + cornerOfs);
 
                         return goInst;
                     }
@@ -209,9 +194,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if down/left is empty
                 if((filledEdgeFlags & (Flags.Down | Flags.Left)) == Flags.None) {
                     if(cornerMesh) { //lower left
-                        var goInst = Instantiate(cornerMesh);
+                        var goInst = Instantiate(cornerMesh, container);
                         var t = goInst.transform;
-                        t.SetParent(container);
                         t.localPosition = center;
                         t.localEulerAngles = new Vector3(0f, 270f, 0f);
 
@@ -221,9 +205,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if down/left is filled, and lowerleft is empty
                 else if(CheckFlags(filledEdgeFlags, Flags.Down | Flags.Left) && (filledEdgeFlags & Flags.LowerLeft) == Flags.None) {
                     if(cornerInvertMesh) { //lower left
-                        var goInst = Instantiate(cornerInvertMesh);
+                        var goInst = Instantiate(cornerInvertMesh, container);
                         var t = goInst.transform;
-                        t.SetParent(container);
                         t.localPosition = center;
                         t.localEulerAngles = new Vector3(0f, 270f, 0f);
 
@@ -233,9 +216,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if left is filled, and down is empty
                 else if(CheckFlags(filledEdgeFlags, Flags.Left) && (filledEdgeFlags & Flags.Down) == Flags.None) {
                     if(sideMesh) { //horizontal back
-                        var goInst = Instantiate(sideMesh);
+                        var goInst = Instantiate(sideMesh, container);
                         var t = goInst.transform;
-                        t.SetParent(container);
                         t.localPosition = new Vector3(center.x - cornerOfs, center.y, center.z);
                         t.localEulerAngles = new Vector3(0f, 270f, 0f);
 
@@ -245,10 +227,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if down is filled, and left is empty
                 else if(CheckFlags(filledEdgeFlags, Flags.Down) && (filledEdgeFlags & Flags.Left) == Flags.None) {
                     if(sideMesh) { //vertical left
-                        var goInst = Instantiate(sideMesh);
-                        var t = goInst.transform;
-                        t.SetParent(container);
-                        t.localPosition = new Vector3(center.x, center.y, center.z - cornerOfs);
+                        var goInst = Instantiate(sideMesh, container);
+                        goInst.transform.localPosition = new Vector3(center.x, center.y, center.z - cornerOfs);
 
                         return goInst;
                     }
@@ -256,10 +236,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if down/left/lowerleft is filled
                 else if(CheckFlags(filledEdgeFlags, Flags.Down | Flags.Left | Flags.LowerLeft)) {
                     if(isTop && fillMesh) {
-                        var goInst = Instantiate(fillMesh);
-                        var t = goInst.transform;
-                        t.SetParent(container);
-                        t.localPosition = new Vector3(center.x - cornerOfs, center.y, center.z - cornerOfs);
+                        var goInst = Instantiate(fillMesh, container);
+                        goInst.transform.localPosition = new Vector3(center.x - cornerOfs, center.y, center.z - cornerOfs);
 
                         return goInst;
                     }
@@ -270,9 +248,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if down/right is empty
                 if((filledEdgeFlags & (Flags.Down | Flags.Right)) == Flags.None) {
                     if(cornerMesh) { //lower right
-                        var goInst = Instantiate(cornerMesh);
+                        var goInst = Instantiate(cornerMesh, container);
                         var t = goInst.transform;
-                        t.SetParent(container);
                         t.localPosition = center;
                         t.localEulerAngles = new Vector3(0f, 180f, 0f);
 
@@ -282,9 +259,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if down/right is filled, and lowerright is empty
                 else if(CheckFlags(filledEdgeFlags, Flags.Down | Flags.Right) && (filledEdgeFlags & Flags.LowerRight) == Flags.None) {
                     if(cornerInvertMesh) { //lower right
-                        var goInst = Instantiate(cornerInvertMesh);
+                        var goInst = Instantiate(cornerInvertMesh, container);
                         var t = goInst.transform;
-                        t.SetParent(container);
                         t.localPosition = center;
                         t.localEulerAngles = new Vector3(0f, 180f, 0f);
 
@@ -294,9 +270,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if right is filled, and down is empty
                 else if(CheckFlags(filledEdgeFlags, Flags.Right) && (filledEdgeFlags & Flags.Down) == Flags.None) {
                     if(sideMesh) { //horizontal back
-                        var goInst = Instantiate(sideMesh);
+                        var goInst = Instantiate(sideMesh, container);
                         var t = goInst.transform;
-                        t.SetParent(container);
                         t.localPosition = new Vector3(center.x + cornerOfs, center.y, center.z);
                         t.localEulerAngles = new Vector3(0f, 270f, 0f);
 
@@ -306,9 +281,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if down is filled, and right is empty
                 else if(CheckFlags(filledEdgeFlags, Flags.Down) && (filledEdgeFlags & Flags.Right) == Flags.None) {
                     if(sideMesh) { //vertical right
-                        var goInst = Instantiate(sideMesh);
+                        var goInst = Instantiate(sideMesh, container);
                         var t = goInst.transform;
-                        t.SetParent(container);
                         t.localPosition = new Vector3(center.x, center.y, center.z - cornerOfs);
                         t.localEulerAngles = new Vector3(0f, 180f, 0f);
 
@@ -318,10 +292,8 @@ public class GridBuildTileData : ScriptableObject {
                 //check if down/right/lowerright is filled
                 else if(CheckFlags(filledEdgeFlags, Flags.Down | Flags.Right | Flags.LowerRight)) {
                     if(isTop && fillMesh) {
-                        var goInst = Instantiate(fillMesh);
-                        var t = goInst.transform;
-                        t.SetParent(container);
-                        t.localPosition = new Vector3(center.x + cornerOfs, center.y, center.z - cornerOfs);
+                        var goInst = Instantiate(fillMesh, container);
+                        goInst.transform.localPosition = new Vector3(center.x + cornerOfs, center.y, center.z - cornerOfs);
 
                         return goInst;
                     }

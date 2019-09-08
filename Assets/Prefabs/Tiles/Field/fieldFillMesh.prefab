@@ -29,7 +29,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 7231619838637760033}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -149,3 +150,62 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 01000000000000000200000003000000
+--- !u!1 &7464538998617113487
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7231619838637760033}
+  - component: {fileID: 4551131765462756086}
+  m_Layer: 0
+  m_Name: doodad
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7231619838637760033
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464538998617113487}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.25, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7831748998501518245}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4551131765462756086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464538998617113487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e9f6cc5db9c3614c94a63703feb95c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  probabilityScale: 0.4
+  delayRange:
+    min: 0
+    max: 2
+  randomRange: {x: 0.07, y: 0.07}
+  templates:
+  - {fileID: 6860055843988726926, guid: 2b0f07d987c685d4db61386671d8f84d, type: 3}
+  - {fileID: 2192625945197431184, guid: 4630a1e07844392419918c4a38a8d490, type: 3}
+  - {fileID: 5766589792752629649, guid: a75d5fde2cc3e3347b7e4f6f0d9bba6c, type: 3}
+  - {fileID: 6374225946926352536, guid: ea2340a7fa67b434eacdcfc9225aaf80, type: 3}
+  - {fileID: 181410812711636948, guid: e8679b17242dd4c4791f2376a79680f1, type: 3}
+  - {fileID: 8429867066843812163, guid: 08cd8b01e6aa60442962b74d61d51e7e, type: 3}
+  - {fileID: 7141279493131132779, guid: d45cf5044d1367647a49b87c74f1934a, type: 3}
+  - {fileID: 4380485715499416656, guid: e5df03791fef02b42b13458c7912ffe7, type: 3}
+  signalListenExecute: {fileID: 11400000, guid: ea428cf7666c4d24dbbb8da4db91245f,
+    type: 2}

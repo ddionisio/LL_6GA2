@@ -28,6 +28,8 @@ public class GridEntityControlWidget : MonoBehaviour {
     private GridEditController.EditMode mCurEditMode = GridEditController.EditMode.None;
     private GridEntity mCurEntity;
 
+    private System.Text.StringBuilder mDimensionStr = new System.Text.StringBuilder();
+
     public void ExpandToggle() {
         var editCtrl = GridEditController.instance;
 
@@ -231,7 +233,23 @@ public class GridEntityControlWidget : MonoBehaviour {
                 break;
         }
 
-        gridDimensionText.text = size.ToString();
+        //generate dimension measurement
+        var measureStr = UnitMeasure.GetText(editCtrl.levelData.measureType);
+
+        mDimensionStr.Clear();
+
+        mDimensionStr.Append(UnitMeasure.GetNumberFormatted(size.col * editCtrl.levelData.sideMeasure));
+        mDimensionStr.Append(measureStr);
+        mDimensionStr.Append(" x ");
+
+        mDimensionStr.Append(UnitMeasure.GetNumberFormatted(size.row * editCtrl.levelData.sideMeasure));
+        mDimensionStr.Append(measureStr);
+        mDimensionStr.Append(" x ");
+
+        mDimensionStr.Append(UnitMeasure.GetNumberFormatted(size.b * editCtrl.levelData.sideMeasure));
+        mDimensionStr.Append(measureStr);
+
+        gridDimensionText.text = mDimensionStr.ToString();
         volumeText.text = UnitMeasure.GetVolumeText(editCtrl.levelData.measureType, volume);
     }
 }
