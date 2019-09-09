@@ -16,9 +16,9 @@ MonoBehaviour:
   sideMeasure: 1
   measureType: 0
   items:
-  - {fileID: 11400000, guid: 956337d7a9155ba42a6c779e256d28df, type: 2}
+  - {fileID: 11400000, guid: a9c7330333ba7d8408229cc938cab77b, type: 2}
   goals:
-  - data: {fileID: 11400000, guid: 956337d7a9155ba42a6c779e256d28df, type: 2}
+  - data: {fileID: 11400000, guid: a9c7330333ba7d8408229cc938cab77b, type: 2}
     volume: 8
     heightRequire: 1
     measureType: 0

@@ -12,12 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b744e1029e165154aa6765a71bf9db42, type: 3}
   m_Name: cubePond
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: d6c99e8fd0456ea4582df9e471ed0b46, type: 3}
   nameTextRef: cube_pond
   descTextRef: 
   material: {fileID: 2100000, guid: 92dd5687e5656b240b3d5903a7bb62cc, type: 2}
-  color: {r: 0, g: 0.12941177, b: 0.34117648, a: 1}
+  color: {r: 0.5254902, g: 0.46274513, b: 0.5921569, a: 1}
   template: {fileID: 179421406840529853, guid: a4814d17d0edf274daa0d174f6af7d71, type: 3}
   _shaderPulseScaleVar: _PulseScale
   _shaderPulseColorVar: _PulseColor
   _shaderColorVar: _Color
+  buildTileBottom: {fileID: 11400000, guid: 67b830a13164b0c4ca45ba51a84b4eac, type: 2}
+  buildTileBase: {fileID: 0}
+  buildTileTop: {fileID: 0}

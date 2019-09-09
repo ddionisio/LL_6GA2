@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b744e1029e165154aa6765a71bf9db42, type: 3}
   m_Name: cubeField
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 9792352e2aeb6cf4185767e1f11b4c36, type: 3}
   nameTextRef: cube_field
   descTextRef: 
   material: {fileID: 2100000, guid: 562eb2eda0c64db4eab61720f0d1c5f9, type: 2}
-  color: {r: 0.6, g: 0.48235297, b: 0.48235297, a: 1}
+  color: {r: 0.5803922, g: 0.7411765, b: 0.4666667, a: 1}
   template: {fileID: 179421406840529853, guid: a4814d17d0edf274daa0d174f6af7d71, type: 3}
   _shaderPulseScaleVar: _PulseScale
   _shaderPulseColorVar: _PulseColor

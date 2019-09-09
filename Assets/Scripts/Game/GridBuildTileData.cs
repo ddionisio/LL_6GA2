@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "gameData", menuName = "Game/Grid Build Tile Data")]
+[CreateAssetMenu(fileName = "tile", menuName = "Game/Grid Build Tile Data")]
 public class GridBuildTileData : ScriptableObject {
     [System.Flags]
     public enum Flags {

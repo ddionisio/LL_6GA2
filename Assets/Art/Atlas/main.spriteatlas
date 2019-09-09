@@ -46,7 +46,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 989b186f8696db74fa5f2d810851e5b4, type: 3}
     - {fileID: 102900000, guid: 08393df466d1f8549bd2f20e93bf08b7, type: 3}
     - {fileID: 102900000, guid: b055f719595bcfe4380716af57d58acc, type: 3}
-    totalSpriteSurfaceArea: 67988
+    totalSpriteSurfaceArea: 71480
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -88,6 +88,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 49058c18c2c62da43b51e914e09a0d64, type: 3}
   - {fileID: 21300000, guid: a2ee6238091f6714eb87397ca3bed4e9, type: 3}
   - {fileID: 21300000, guid: b5f1f248fc842084cb79fa132167e30b, type: 3}
+  - {fileID: 21300000, guid: 1d6da5680eae0024faf5478cfe2de999, type: 3}
   - {fileID: 21300010, guid: 02cb7109eec577d45a27167e2308de23, type: 3}
   - {fileID: 21300006, guid: 02cb7109eec577d45a27167e2308de23, type: 3}
   - {fileID: 21300000, guid: 02cb7109eec577d45a27167e2308de23, type: 3}
@@ -116,8 +117,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 41f1dfcc86c5a55408bf5b9d2683900a, type: 3}
   - {fileID: 21300000, guid: 36ce24ec9ae04524289ce0e80bf270be, type: 3}
   - {fileID: 21300000, guid: 3b2c848d201ef554a80af5707776a4d1, type: 3}
+  - {fileID: 21300000, guid: 9792352e2aeb6cf4185767e1f11b4c36, type: 3}
   - {fileID: 21300000, guid: c5a54a7e88b59e547a8905c1ad93d892, type: 3}
   - {fileID: 21300000, guid: d100bf3fba8e48343b4f69fe5447d682, type: 3}
+  - {fileID: 21300000, guid: d6c99e8fd0456ea4582df9e471ed0b46, type: 3}
   - {fileID: 21300000, guid: 006549bf55cfba2428c766cf94f1740d, type: 3}
   - {fileID: 21300000, guid: 49f63cbf9fa458c4cbc656fbdbb5124a, type: 3}
   m_PackedSpriteNamesToIndex:
@@ -159,6 +162,7 @@ SpriteAtlas:
   - flowerBloom02
   - blob5
   - tutorialHandPointDown
+  - clover
   - blank4x4_top
   - blank4x4_bottomLeft
   - blank4x4_bottom
@@ -187,8 +191,10 @@ SpriteAtlas:
   - leaf04
   - circleGlowTiny
   - flowerStem
+  - cubeFieldIcon
   - edge_shade
   - tutorialHandPoint
+  - cubePondIcon
   - leaf02
   - devicerMouthOpen
   m_Tag: main

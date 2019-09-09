@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de17c6d3fd7659a4daa044253fd1494b, type: 3}
+  m_Name: cubePondTiles
+  m_EditorClassIdentifier: 
+  cornerMesh: {fileID: 2132585964194285297, guid: 336092b0fd732b2468266063d49a79a0,
+    type: 3}
+  cornerInvertMesh: {fileID: 2572590293997452698, guid: aae537556175a3047bc6b6ca581e1202,
+    type: 3}
+  sideMesh: {fileID: 5724522509570521607, guid: 8e62c50da5e4cf0428e3c49d3cbd1f2c,
+    type: 3}
+  fillMesh: {fileID: 1345727190003298715, guid: 74fffc93516948b46afbc3d05f22a011,
+    type: 3}

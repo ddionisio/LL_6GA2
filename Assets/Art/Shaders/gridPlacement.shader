@@ -3,18 +3,25 @@
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+		_ScrollTex("Texture", 2D) = "white" {}
+
 		_Color ("Color", Color) = (1,1,1,1)
+		_ScrollColor ("Scroll Color", Color) = (1,1,1,1)
 		_PulseColor ("Pulse Color", Color) = (1,1,1,1)
+
 		_PulseStart("Pulse Start Alpha", Float) = 0
 		_PulseEnd("Pulse End Alpha", Float) = 1
 		_PulseSpeed ("Pulse Speed", Float) = 1
 		_PulseScale ("Pulse Scale", Float) = 0
+
+		scrollSpeedX("Speed X", Float) = 1
+		scrollSpeedY("Speed Y", Float) = 1
     }
     SubShader
     {
         Tags {"Queue"="Transparent" "RenderType"="Transparent" "IgnoreProjector"="True"}
 
-		ZWrite Off // on might hide behind pixels, off might miss order
+		ZWrite On // on might hide behind pixels, off might miss order
 		Blend SrcAlpha OneMinusSrcAlpha
 		ColorMask RGB
 		Lighting Off Fog { Mode Off }
@@ -38,14 +45,20 @@
             {
                 float4 vertex : POSITION;
 				float2 texcoord : TEXCOORD0;
-				fixed4 color1 : COLOR0;
+				float2 texcoord2 : TEXCOORD1;
+				fixed4 color : COLOR0;
 				fixed4 color2 : COLOR1;
             };
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+
+			sampler2D _ScrollTex;
+			float4 _ScrollTex_ST;
 			
 			fixed4 _Color;
+
+			fixed4 _ScrollColor;
 			
 			fixed4 _PulseColor;
 			float _PulseStart;
@@ -53,21 +66,35 @@
 			float _PulseSpeed;
 			float _PulseScale;
 
+			float scrollSpeedX;
+			float scrollSpeedY;
+
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
+
                 o.texcoord = TRANSFORM_TEX(v.uv, _MainTex);
-				o.color1 = _Color * v.color;
+
+				o.texcoord2 = TRANSFORM_TEX(v.uv, _ScrollTex);
+				o.texcoord2.x += scrollSpeedX * _Time.y;
+				o.texcoord2.y += scrollSpeedY * _Time.y;
+
+				o.color = _Color * v.color;
 				o.color2 = fixed4(_PulseColor.rgb, _PulseScale * lerp(_PulseStart, _PulseEnd, sin(_PulseSpeed*_Time.y)));
                 
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
-            {
-                // sample the texture
-                fixed4 col = tex2D(_MainTex, i.texcoord) * i.color1;
+			fixed4 frag(v2f i) : SV_Target
+			{
+				// sample the texture
+				fixed4 col = tex2D(_MainTex, i.texcoord);
+				fixed3 colScroll = tex2D(_ScrollTex, i.texcoord2) * _ScrollColor;
+
+				col = fixed4(lerp(colScroll.rgb, col.rgb, col.a), 1) * i.color;
+
+                //fixed4 col = tex2D(_MainTex, i.texcoord) * i.color;
 				
 				col = fixed4(lerp(col.rgb, i.color2.rgb, i.color2.a), col.a);
                 

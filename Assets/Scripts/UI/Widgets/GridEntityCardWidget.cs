@@ -21,7 +21,7 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
 
         if(icon) {
             icon.sprite = data.icon;
-            icon.SetNativeSize();
+            //icon.SetNativeSize();
         }
 
         if(titleText) titleText.text = M8.Localize.Get(data.nameTextRef);
