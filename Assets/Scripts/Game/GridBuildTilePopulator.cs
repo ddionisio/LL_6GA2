@@ -7,6 +7,7 @@ public class GridBuildTilePopulator : MonoBehaviour {
     public float probabilityScale = 0.3f; //probability to spawn, if random lands to [0, probabilityScale], then spawn
     public M8.RangeFloat delayRange;
     public Vector2 randomRange;
+    public M8.RangeFloat rotateRange = new M8.RangeFloat { min=0f, max=360f };
 
     [Header("Templates")]
     public GameObject[] templates;
@@ -49,7 +50,7 @@ public class GridBuildTilePopulator : MonoBehaviour {
         var t = goInst.transform;
 
         t.localPosition = new Vector3(Random.Range(-randomRange.x, randomRange.x), 0f, Random.Range(-randomRange.y, randomRange.y));
-        t.localEulerAngles = new Vector3(0f, Random.Range(0f, 360f), 0f);
+        t.localEulerAngles = new Vector3(0f, rotateRange.random, 0f);
     }
 
     void OnDrawGizmos() {

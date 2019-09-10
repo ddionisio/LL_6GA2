@@ -12,12 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b744e1029e165154aa6765a71bf9db42, type: 3}
   m_Name: cubeHouse02
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 9fe4c9bc25df4b942a4ebf8963f82ac1, type: 3}
   nameTextRef: cube_house_2
   descTextRef: 
   material: {fileID: 2100000, guid: ca9f3206bea5cfe438748044656dd0b1, type: 2}
-  color: {r: 0.6117647, g: 0.58431375, b: 0.4901961, a: 1}
+  color: {r: 0.37647063, g: 0.58431375, b: 0.45882356, a: 1}
   template: {fileID: 179421406840529853, guid: a4814d17d0edf274daa0d174f6af7d71, type: 3}
   _shaderPulseScaleVar: _PulseScale
   _shaderPulseColorVar: _PulseColor
   _shaderColorVar: _Color
+  buildTileBottom: {fileID: 11400000, guid: d01168d89437a544a9b93660a0d019ca, type: 2}
+  buildTileBase: {fileID: 11400000, guid: 5540f4ba4d8c50c46aec952475e51d35, type: 2}
+  buildTileTop: {fileID: 11400000, guid: c5939db51a7b49649b285df32ec2894d, type: 2}

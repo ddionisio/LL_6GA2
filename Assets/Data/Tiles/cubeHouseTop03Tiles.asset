@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de17c6d3fd7659a4daa044253fd1494b, type: 3}
+  m_Name: cubeHouseTop03Tiles
+  m_EditorClassIdentifier: 
+  cornerMesh: {fileID: 7005290632856131078, guid: 26062e90a1c71ef479914aa7f4ee6e99,
+    type: 3}
+  cornerInvertMesh: {fileID: 1951953496046693395, guid: 4aa6286e0b303034381e2348c668b9b2,
+    type: 3}
+  sideMesh: {fileID: 8325238962741305625, guid: 2febe4e866233be4bb89af37c9159826,
+    type: 3}
+  fillMesh: {fileID: 1755006112994652625, guid: bb0eff4c871935c478ff3fa5b37b77c3,
+    type: 3}

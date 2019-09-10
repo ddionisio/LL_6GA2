@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47bdd5c5de3204c4e9af9246baf5546e, type: 3}
   m_Name: _testLevel
   m_EditorClassIdentifier: 
-  resourceCount: 32
+  resourceCount: 128
   sideMeasure: 1
   measureType: 0
   items:
-  - {fileID: 11400000, guid: a9c7330333ba7d8408229cc938cab77b, type: 2}
+  - {fileID: 11400000, guid: 9045ebc6276bae748a05e10cec9f67ed, type: 2}
   goals:
-  - data: {fileID: 11400000, guid: a9c7330333ba7d8408229cc938cab77b, type: 2}
+  - data: {fileID: 11400000, guid: 9045ebc6276bae748a05e10cec9f67ed, type: 2}
     volume: 8
-    heightRequire: 1
+    heightRequire: 0
     measureType: 0

@@ -46,10 +46,11 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 989b186f8696db74fa5f2d810851e5b4, type: 3}
     - {fileID: 102900000, guid: 08393df466d1f8549bd2f20e93bf08b7, type: 3}
     - {fileID: 102900000, guid: b055f719595bcfe4380716af57d58acc, type: 3}
-    totalSpriteSurfaceArea: 71480
+    totalSpriteSurfaceArea: 74552
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 106d8740056c80e4ead51f4dae30f0cb, type: 3}
   - {fileID: 21300000, guid: be98f690b6a68d8478a95623f406a172, type: 3}
   - {fileID: 21300000, guid: f79a0ad00c264f24f85c456504967d77, type: 3}
   - {fileID: 21300000, guid: 5ed7cd01c36b80f4588c3709e317573b, type: 3}
@@ -103,6 +104,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 8978f2a9dc2c38b43a5b556518900369, type: 3}
   - {fileID: 21300000, guid: 1936bac986127cb4bad904bfad92c266, type: 3}
   - {fileID: 21300002, guid: 1936bac986127cb4bad904bfad92c266, type: 3}
+  - {fileID: 21300000, guid: 6e2aba0a9081baf49bcd26a156201dcc, type: 3}
   - {fileID: 21300000, guid: 08a2183a126de914ea9d3a2a31a76d94, type: 3}
   - {fileID: 21300000, guid: 883da75ae6298ff4aa392e42671c18e3, type: 3}
   - {fileID: 21300000, guid: 74dffb5afe75ee645b82baac600fdfda, type: 3}
@@ -114,6 +116,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 6e46d65c795b56344b389f1886fb3982, type: 3}
   - {fileID: 21300000, guid: 71070d9cb8e6b574a8e999cb3dde2157, type: 3}
   - {fileID: 21300000, guid: e83646acd476410418e0bf338e337799, type: 3}
+  - {fileID: 21300000, guid: 9fe4c9bc25df4b942a4ebf8963f82ac1, type: 3}
   - {fileID: 21300000, guid: 41f1dfcc86c5a55408bf5b9d2683900a, type: 3}
   - {fileID: 21300000, guid: 36ce24ec9ae04524289ce0e80bf270be, type: 3}
   - {fileID: 21300000, guid: 3b2c848d201ef554a80af5707776a4d1, type: 3}
@@ -124,6 +127,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 006549bf55cfba2428c766cf94f1740d, type: 3}
   - {fileID: 21300000, guid: 49f63cbf9fa458c4cbc656fbdbb5124a, type: 3}
   m_PackedSpriteNamesToIndex:
+  - cubeHouse03Icon
   - star
   - cube
   - arrow
@@ -177,6 +181,7 @@ SpriteAtlas:
   - checkIcon
   - shade
   - shade_bottom
+  - cubeHouse01Icon
   - flowerBloom01
   - droplet
   - arrowPointer
@@ -188,6 +193,7 @@ SpriteAtlas:
   - devicerMouthClose
   - blob1
   - wrongIcon
+  - cubeHouse02Icon
   - leaf04
   - circleGlowTiny
   - flowerStem
