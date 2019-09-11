@@ -105,6 +105,9 @@ public class GoalControlWidget : MonoBehaviour {
         var curEval = editCtrl.goalEvaluations[mCurrentEvaluateIndex];
         var curGoal = editCtrl.levelData.goals[mCurrentEvaluateIndex];
 
+        var goalVolume = curGoal.volume * editCtrl.levelData.unitVolume;
+        var goalHeight = curGoal.unitHeightRequire * editCtrl.levelData.sideMeasure;
+
         //header
         icon.sprite = curGoal.data.icon;
         titleText.text = M8.Localize.Get(curGoal.data.nameTextRef);
@@ -124,13 +127,13 @@ public class GoalControlWidget : MonoBehaviour {
 
         //volume req
         mSB.Clear();
-        mSB.Append(UnitMeasure.GetVolumeText(curGoal.measureType, curGoal.volume));
+        mSB.Append(UnitMeasure.GetVolumeText(curGoal.measureType, goalVolume));
         reqs[0].Setup(mSB.ToString(), isVolumeMet, isVolumeMet ? reqCorrectColor : reqIncorrectColor);
 
         //height req
-        if(curGoal.heightRequire > 0f) {
+        if(goalHeight > 0f) {
             mSB.Clear();
-            mSB.Append(UnitMeasure.GetMeasureText(curGoal.measureType, curGoal.heightRequire));
+            mSB.Append(UnitMeasure.GetMeasureText(curGoal.measureType, goalHeight));
             reqs[1].Setup(mSB.ToString(), isHeightMet, isHeightMet ? reqCorrectColor : reqIncorrectColor);
             reqs[1].rootGO.SetActive(true);
         }
@@ -157,7 +160,7 @@ public class GoalControlWidget : MonoBehaviour {
             else if(!isVolumeMet)
                 errorText.text = M8.Localize.Get(errorVolumeTextRef);
             else if(!isHeightMet)
-                errorText.text = string.Format(M8.Localize.Get(errorHeightTextRef), UnitMeasure.GetMeasureText(curGoal.measureType, curGoal.heightRequire));
+                errorText.text = string.Format(M8.Localize.Get(errorHeightTextRef), UnitMeasure.GetMeasureText(curGoal.measureType, goalHeight));
             else
                 errorText.text = "";
 

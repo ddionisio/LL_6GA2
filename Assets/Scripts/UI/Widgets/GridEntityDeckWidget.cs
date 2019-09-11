@@ -73,6 +73,13 @@ public class GridEntityDeckWidget : MonoBehaviour {
     private void RefreshCount() {
         var availableCount = GridEditController.instance.GetAvailableCount();
 
+        /*var editCtrl = GridEditController.instance;
+        var measureType = editCtrl.levelData.measureType;
+        var side = editCtrl.levelData.sideMeasure;
+        var volume = side * side * side;
+
+        countText.text = UnitMeasure.GetVolumeText(measureType, volume * availableCount);*/
+
         countText.text = availableCount.ToString();
 
         if(countInvalidGO) countInvalidGO.SetActive(availableCount < 0);

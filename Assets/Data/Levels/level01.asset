@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47bdd5c5de3204c4e9af9246baf5546e, type: 3}
-  m_Name: level00
+  m_Name: level01
   m_EditorClassIdentifier: 
-  resourceCount: 16
+  resourceCount: 27
   sideMeasure: 1
   measureType: 0
   items:
-  - {fileID: 11400000, guid: 956337d7a9155ba42a6c779e256d28df, type: 2}
+  - {fileID: 11400000, guid: 9045ebc6276bae748a05e10cec9f67ed, type: 2}
   goals:
-  - data: {fileID: 11400000, guid: 956337d7a9155ba42a6c779e256d28df, type: 2}
-    volume: 16
-    heightRequire: 0
+  - data: {fileID: 11400000, guid: 9045ebc6276bae748a05e10cec9f67ed, type: 2}
+    volume: 27
+    unitHeightRequire: 0
     measureType: 0

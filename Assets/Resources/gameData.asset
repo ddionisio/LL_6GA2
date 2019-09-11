@@ -16,10 +16,14 @@ MonoBehaviour:
   levels:
   - name: level0
     path: Assets/Scenes/level0.unity
+  - name: level1
+    path: Assets/Scenes/level1.unity
+  - name: level2
+    path: Assets/Scenes/level2.unity
   end:
     name: end
     path: Assets/Scenes/end.unity
-  anchorOffset: 0.65
+  anchorOffset: 1
   panningScaleX: -0.01
   panningScaleZ: -0.01
   textureTile: 1

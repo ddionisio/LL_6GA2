@@ -41,7 +41,7 @@ public struct GridCell {
     }
 
     public override string ToString() {
-        return string.Format("{0}x{1}x{2}", col, row, b);
+        return string.Format("{0} x {1} x {2}", col, row, b);
     }
 
     public override int GetHashCode() {

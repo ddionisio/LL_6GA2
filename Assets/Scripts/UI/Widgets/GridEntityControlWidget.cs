@@ -9,8 +9,10 @@ public class GridEntityControlWidget : MonoBehaviour {
     public GameObject moveToggleGO;
     public GameObject expandToggleGO;
     public Text titleText;
-    public Text gridDimensionText;
-    public Text volumeText;
+    public Text detailText;
+
+    [Header("Anchor")]
+    public RectTransform anchorClamp;
 
     [Header("Signal Listen")]
     public M8.Signal signalListenGhostSizeChanged;
@@ -28,7 +30,7 @@ public class GridEntityControlWidget : MonoBehaviour {
     private GridEditController.EditMode mCurEditMode = GridEditController.EditMode.None;
     private GridEntity mCurEntity;
 
-    private System.Text.StringBuilder mDimensionStr = new System.Text.StringBuilder();
+    private System.Text.StringBuilder mStrBuff = new System.Text.StringBuilder();
 
     public void ExpandToggle() {
         var editCtrl = GridEditController.instance;
@@ -123,6 +125,23 @@ public class GridEntityControlWidget : MonoBehaviour {
                     anchorPos = Vector2.zero;
                     break;
             }
+
+            //clamp to offscreen anchor
+            var ext = anchorClamp.sizeDelta * 0.5f;
+
+            var anchorLocalPos = anchorClamp.InverseTransformPoint(anchorPos);
+            
+            if(anchorLocalPos.x < -ext.x)
+                anchorLocalPos.x = -ext.x;
+            else if(anchorLocalPos.x > ext.x)
+                anchorLocalPos.x = ext.x;
+
+            if(anchorLocalPos.y < -ext.y)
+                anchorLocalPos.y = -ext.y;
+            else if(anchorLocalPos.y > ext.y)
+                anchorLocalPos.y = ext.y;
+
+            anchorPos = anchorClamp.TransformPoint(anchorLocalPos);
 
             transform.position = anchorPos;
         }
@@ -236,20 +255,25 @@ public class GridEntityControlWidget : MonoBehaviour {
         //generate dimension measurement
         var measureStr = UnitMeasure.GetText(editCtrl.levelData.measureType);
 
-        mDimensionStr.Clear();
+        mStrBuff.Clear();
 
-        mDimensionStr.Append(UnitMeasure.GetNumberFormatted(size.col * editCtrl.levelData.sideMeasure));
-        mDimensionStr.Append(measureStr);
-        mDimensionStr.Append(" x ");
+        mStrBuff.AppendLine(size.ToString());
 
-        mDimensionStr.Append(UnitMeasure.GetNumberFormatted(size.row * editCtrl.levelData.sideMeasure));
-        mDimensionStr.Append(measureStr);
-        mDimensionStr.Append(" x ");
+        mStrBuff.Append(UnitMeasure.GetNumberFormatted(size.col * editCtrl.levelData.sideMeasure));
+        mStrBuff.Append(measureStr);
+        mStrBuff.Append(" x ");
 
-        mDimensionStr.Append(UnitMeasure.GetNumberFormatted(size.b * editCtrl.levelData.sideMeasure));
-        mDimensionStr.Append(measureStr);
+        mStrBuff.Append(UnitMeasure.GetNumberFormatted(size.row * editCtrl.levelData.sideMeasure));
+        mStrBuff.Append(measureStr);
+        mStrBuff.Append(" x ");
 
-        gridDimensionText.text = mDimensionStr.ToString();
-        volumeText.text = UnitMeasure.GetVolumeText(editCtrl.levelData.measureType, volume);
+        mStrBuff.Append(UnitMeasure.GetNumberFormatted(size.b * editCtrl.levelData.sideMeasure));
+        mStrBuff.Append(measureStr);
+
+        mStrBuff.Append('\n');
+
+        mStrBuff.Append(UnitMeasure.GetVolumeText(editCtrl.levelData.measureType, volume));
+
+        detailText.text = mStrBuff.ToString();
     }
 }

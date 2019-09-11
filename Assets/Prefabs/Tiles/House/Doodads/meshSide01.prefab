@@ -795,8 +795,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2875279906560713494}
-  ofsMin: {x: -0.5, y: -0.5, z: -0.5}
-  ofsMax: {x: 0.65, y: 0.4, z: 0.65}
+  ofsMin: {x: -0.5, y: -0.5, z: 0}
+  ofsMax: {x: 0.65, y: 0.4, z: 0}
   ofsUniform:
     min: 0
     max: 0

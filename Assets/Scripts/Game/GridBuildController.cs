@@ -172,7 +172,7 @@ public class GridBuildController : MonoBehaviour {
                             tile = dat.buildTileBottom;
 
                         if(tile)
-                            GenerateTiles(tile, container, rowCount, colCount, r, c, height, true, pos, unitSizeQuart);
+                            GenerateTiles(tile, tile, container, rowCount, colCount, r, c, height, pos, unitSizeQuart);
                     }
                     else if(height >= 2) {
                         //generate bottom
@@ -185,7 +185,7 @@ public class GridBuildController : MonoBehaviour {
                             bottomTile = dat.buildTileTop;
 
                         if(bottomTile)
-                            GenerateTiles(bottomTile, container, rowCount, colCount, r, c, 1, false, pos, unitSizeQuart);
+                            GenerateTiles(bottomTile, dat.buildTileTop, container, rowCount, colCount, r, c, 1, pos, unitSizeQuart);
 
                         //generate base
                         GridBuildTileData baseTile;
@@ -197,22 +197,10 @@ public class GridBuildController : MonoBehaviour {
                             baseTile = dat.buildTileTop;
 
                         if(baseTile) {
-                            for(int h = 2; h < height; h++) {
-                                GenerateTiles(baseTile, container, rowCount, colCount, r, c, height, true, new Vector3(pos.x, pos.y + (h - 1) * unitSize, pos.z), unitSizeQuart);
+                            for(int h = 2; h <= height; h++) {
+                                GenerateTiles(baseTile, dat.buildTileTop, container, rowCount, colCount, r, c, h, new Vector3(pos.x, pos.y + (h - 1) * unitSize, pos.z), unitSizeQuart);
                             }
                         }
-
-                        //generate top
-                        GridBuildTileData topTile;
-                        if(dat.buildTileTop)
-                            topTile = dat.buildTileTop;
-                        else if(dat.buildTileBase)
-                            topTile = dat.buildTileBase;
-                        else
-                            topTile = dat.buildTileBottom;
-
-                        if(topTile)
-                            GenerateTiles(topTile, container, rowCount, colCount, r, c, height, true, new Vector3(pos.x, pos.y + (height - 1) * unitSize, pos.z), unitSizeQuart);
                     }
 
                     pos.x += unitSize;
@@ -272,20 +260,43 @@ public class GridBuildController : MonoBehaviour {
         editCtrl.editMode = GridEditController.EditMode.BuildComplete;
     }
 
-    private void GenerateTiles(GridBuildTileData tile, Transform container, int rowCount, int colCount, int r, int c, int height, bool isTop, Vector3 center, float cornerOfs) {
+    private void GenerateTiles(GridBuildTileData tile, GridBuildTileData tileTop, Transform container, int rowCount, int colCount, int r, int c, int height, Vector3 center, float cornerOfs) {
         var filledFlags = GridBuildTileData.GetFilledEdgeFlags(mHeightMap, rowCount, colCount, r, c, height);
 
+        bool isTop;
+        GridBuildTileData _tile;
+
         //upper left
-        tile.InstantiateMesh(container, center, cornerOfs, GridBuildTileData.Flags.UpperLeft, filledFlags, isTop);
+        isTop = mHeightMap[r, c] == height 
+            || ((filledFlags & GridBuildTileData.Flags.Left) != GridBuildTileData.Flags.None && (c > 0 && mHeightMap[r, c - 1] <= height)) 
+            || ((filledFlags & GridBuildTileData.Flags.Up) != GridBuildTileData.Flags.None && (r < rowCount - 1 && mHeightMap[r + 1, c] <= height));
+        _tile = isTop && tileTop ? tileTop : tile;
+
+        _tile.InstantiateMesh(container, center, cornerOfs, GridBuildTileData.Flags.UpperLeft, filledFlags, isTop);
 
         //upper right
-        tile.InstantiateMesh(container, center, cornerOfs, GridBuildTileData.Flags.UpperRight, filledFlags, isTop);
+        isTop = mHeightMap[r, c] == height 
+            || ((filledFlags & GridBuildTileData.Flags.Right) != GridBuildTileData.Flags.None && (c < colCount-1 && mHeightMap[r, c + 1] <= height))
+            || ((filledFlags & GridBuildTileData.Flags.Up) != GridBuildTileData.Flags.None && (r < rowCount - 1 && mHeightMap[r + 1, c] <= height));
+        _tile = isTop && tileTop ? tileTop : tile;
+
+        _tile.InstantiateMesh(container, center, cornerOfs, GridBuildTileData.Flags.UpperRight, filledFlags, isTop);
 
         //lower left
-        tile.InstantiateMesh(container, center, cornerOfs, GridBuildTileData.Flags.LowerLeft, filledFlags, isTop);
+        isTop = mHeightMap[r, c] == height 
+            || ((filledFlags & GridBuildTileData.Flags.Left) != GridBuildTileData.Flags.None && (c > 0 && mHeightMap[r, c - 1] <= height))
+            || ((filledFlags & GridBuildTileData.Flags.Down) != GridBuildTileData.Flags.None && (r > 0 && mHeightMap[r - 1, c] <= height));
+        _tile = isTop && tileTop ? tileTop : tile;
+
+        _tile.InstantiateMesh(container, center, cornerOfs, GridBuildTileData.Flags.LowerLeft, filledFlags, isTop);
 
         //lower right
-        tile.InstantiateMesh(container, center, cornerOfs, GridBuildTileData.Flags.LowerRight, filledFlags, isTop);
+        isTop = mHeightMap[r, c] == height 
+            || ((filledFlags & GridBuildTileData.Flags.Right) != GridBuildTileData.Flags.None && (c < colCount - 1 && mHeightMap[r, c + 1] <= height))
+            || ((filledFlags & GridBuildTileData.Flags.Down) != GridBuildTileData.Flags.None && (r > 0 && mHeightMap[r - 1, c] <= height));
+        _tile = isTop && tileTop ? tileTop : tile;
+
+        _tile.InstantiateMesh(container, center, cornerOfs, GridBuildTileData.Flags.LowerRight, filledFlags, isTop);
 
         /*GameObject tileTemplate;
 

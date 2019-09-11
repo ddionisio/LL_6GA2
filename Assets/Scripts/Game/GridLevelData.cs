@@ -7,8 +7,8 @@ public class GridLevelData : ScriptableObject {
     [System.Serializable]
     public struct Goal {
         public GridEntityData data;
-        public float volume;
-        public float heightRequire; //set to 0 to have no height restriction
+        public int volume; //volume based on 1 unit
+        public int unitHeightRequire; //height based on 1 unit, set to 0 to have no height restriction
         public UnitMeasureType measureType;
     }
 
@@ -19,4 +19,6 @@ public class GridLevelData : ScriptableObject {
     public GridEntityData[] items;
 
     public Goal[] goals;
+
+    public float unitVolume { get { return sideMeasure * sideMeasure * sideMeasure; } }
 }

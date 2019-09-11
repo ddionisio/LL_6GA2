@@ -31,15 +31,22 @@ public class GridEditController : GameModeController<GridEditController> {
 
         public bool GoalIsVolumeMet(GridLevelData.Goal goal) {
             //TODO: conversion?
-            return volume >= goal.volume;
+            var goalVolume = goal.volume * instance.levelData.unitVolume;
+            return volume >= goalVolume;
         }
 
         public bool GoalIsHeightMet(GridLevelData.Goal goal) {
-            return goal.heightRequire <= 0f || (minHeight == goal.heightRequire && minHeight == maxHeight);
+            if(goal.unitHeightRequire <= 0)
+                return true;
+
+            var heightReq = goal.unitHeightRequire * instance.levelData.unitVolume;
+
+            return minHeight == heightReq && minHeight == maxHeight;
         }
 
         public float GoalEfficiencyScale(GridLevelData.Goal goal) {
-            var s = goal.volume / volume;
+            var goalVolume = goal.volume * instance.levelData.unitVolume;
+            var s = goalVolume / volume;
             return Mathf.Clamp01(s);
         }
 
@@ -258,7 +265,10 @@ public class GridEditController : GameModeController<GridEditController> {
 
                 //check if met with goal
                 var isMet = eval.GoalIsVolumeMet(goal) && eval.GoalIsHeightMet(goal);
-                var delta = Mathf.Abs(eval.volume - goal.volume);
+
+                var goalVolume = goal.volume * levelData.unitVolume;
+
+                var delta = Mathf.Abs(eval.volume - goalVolume);
 
                 if(!dat.HasValue || (isMet && !datIsMet)) {
                     dat = eval;

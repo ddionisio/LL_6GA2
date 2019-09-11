@@ -27,7 +27,12 @@ public class GoalItemWidget : MonoBehaviour {
         mSB.Append("· ");
         mSB.Append(M8.Localize.Get(volumeReqTextRef));
 
-        if(goal.heightRequire > 0f) {
+        var editCtrl = GridEditController.instance;
+
+        var goalVolume = goal.volume * editCtrl.levelData.unitVolume;
+        var goalHeight = goal.unitHeightRequire * editCtrl.levelData.sideMeasure;
+
+        if(goalHeight > 0f) {
             mSB.Append('\n');
             mSB.Append("· ");
             mSB.Append(M8.Localize.Get(heightReqTextRef));
@@ -37,11 +42,11 @@ public class GoalItemWidget : MonoBehaviour {
 
         mSB.Clear();
 
-        mSB.Append(UnitMeasure.GetVolumeText(goal.measureType, goal.volume));
+        mSB.Append(UnitMeasure.GetVolumeText(goal.measureType, goalVolume));
 
-        if(goal.heightRequire > 0f) {
+        if(goalHeight > 0f) {
             mSB.Append('\n');
-            mSB.Append(UnitMeasure.GetMeasureText(goal.measureType, goal.heightRequire));
+            mSB.Append(UnitMeasure.GetMeasureText(goal.measureType, goalHeight));
         }
 
         valueText.text = mSB.ToString();
