@@ -228,7 +228,7 @@ public class GridEntityControlWidget : MonoBehaviour {
 
     private void RefreshDimensionInfoDisplay() {
         GridCell size;
-        float volume;
+        MixedNumber volume;
 
         var editCtrl = GridEditController.instance;
         switch(editCtrl.editMode) {
@@ -247,7 +247,7 @@ public class GridEntityControlWidget : MonoBehaviour {
                 }
                 else {
                     size = GridCell.zero;
-                    volume = 0f;
+                    volume = new MixedNumber();
                 }
                 break;
         }
@@ -259,15 +259,15 @@ public class GridEntityControlWidget : MonoBehaviour {
 
         mStrBuff.AppendLine(size.ToString());
 
-        mStrBuff.Append(UnitMeasure.GetNumberFormatted(size.col * editCtrl.levelData.sideMeasure));
+        mStrBuff.Append(size.col * editCtrl.levelData.sideMeasure);
         mStrBuff.Append(measureStr);
         mStrBuff.Append(" x ");
 
-        mStrBuff.Append(UnitMeasure.GetNumberFormatted(size.row * editCtrl.levelData.sideMeasure));
+        mStrBuff.Append(size.row * editCtrl.levelData.sideMeasure);
         mStrBuff.Append(measureStr);
         mStrBuff.Append(" x ");
 
-        mStrBuff.Append(UnitMeasure.GetNumberFormatted(size.b * editCtrl.levelData.sideMeasure));
+        mStrBuff.Append(size.b * editCtrl.levelData.sideMeasure);
         mStrBuff.Append(measureStr);
 
         mStrBuff.Append('\n');

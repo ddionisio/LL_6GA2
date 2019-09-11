@@ -13,12 +13,12 @@ public class GridLevelData : ScriptableObject {
     }
 
     public int resourceCount;
-    public float sideMeasure = 1f; //measurement per side
+    public MixedNumber sideMeasure; //measurement per side
     public UnitMeasureType measureType = UnitMeasureType.Feet;
 
     public GridEntityData[] items;
 
     public Goal[] goals;
 
-    public float unitVolume { get { return sideMeasure * sideMeasure * sideMeasure; } }
+    public MixedNumber unitVolume { get { return sideMeasure * sideMeasure * sideMeasure; } }
 }

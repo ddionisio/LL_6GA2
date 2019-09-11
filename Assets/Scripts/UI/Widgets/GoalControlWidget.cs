@@ -131,7 +131,7 @@ public class GoalControlWidget : MonoBehaviour {
         reqs[0].Setup(mSB.ToString(), isVolumeMet, isVolumeMet ? reqCorrectColor : reqIncorrectColor);
 
         //height req
-        if(goalHeight > 0f) {
+        if(goalHeight.fValue > 0f) {
             mSB.Clear();
             mSB.Append(UnitMeasure.GetMeasureText(curGoal.measureType, goalHeight));
             reqs[1].Setup(mSB.ToString(), isHeightMet, isHeightMet ? reqCorrectColor : reqIncorrectColor);

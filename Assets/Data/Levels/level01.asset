@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: level01
   m_EditorClassIdentifier: 
   resourceCount: 27
-  sideMeasure: 1
+  sideMeasure:
+    _negative: 0
+    _whole: 1
+    _numerator: 0
+    _denominator: 0
   measureType: 0
   items:
   - {fileID: 11400000, guid: 9045ebc6276bae748a05e10cec9f67ed, type: 2}

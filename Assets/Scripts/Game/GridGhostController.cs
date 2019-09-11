@@ -137,7 +137,7 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     /// <summary>
     /// Volume based on side measure from level data
     /// </summary>
-    public float volume {
+    public MixedNumber volume {
         get {
             var measure = GridEditController.instance.levelData.sideMeasure;
             var w = cellSize.col * measure;

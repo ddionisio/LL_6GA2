@@ -19,9 +19,9 @@ public class GridEditController : GameModeController<GridEditController> {
 
     public struct EvaluateData {
         public GridEntityEditController[] entityEdits;
-        public float volume;
-        public float minHeight;
-        public float maxHeight;
+        public MixedNumber volume;
+        public MixedNumber minHeight;
+        public MixedNumber maxHeight;
 
         public Bounds bounds; //local to level
 
@@ -46,7 +46,7 @@ public class GridEditController : GameModeController<GridEditController> {
 
         public float GoalEfficiencyScale(GridLevelData.Goal goal) {
             var goalVolume = goal.volume * instance.levelData.unitVolume;
-            var s = goalVolume / volume;
+            var s = goalVolume.fValue / volume.fValue;
             return Mathf.Clamp01(s);
         }
 
@@ -64,9 +64,9 @@ public class GridEditController : GameModeController<GridEditController> {
             var min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
             var max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
-            volume = 0f;
-            minHeight = float.MaxValue;
-            maxHeight = float.MinValue;
+            volume = new MixedNumber();
+            minHeight = new MixedNumber { whole = int.MaxValue };
+            maxHeight = new MixedNumber { whole = int.MinValue };
 
             for(int i = 0; i < entityEdits.Length; i++) {
                 var entEdit = entityEdits[i];
@@ -253,6 +253,8 @@ public class GridEditController : GameModeController<GridEditController> {
         for(int i = 0; i < levelData.goals.Length; i++) {
             var goal = levelData.goals[i];
 
+            var goalVolume = goal.volume * levelData.unitVolume;
+
             //grab most matching evaluation
             EvaluateData? dat = null;
             var datIsMet = false;
@@ -266,9 +268,7 @@ public class GridEditController : GameModeController<GridEditController> {
                 //check if met with goal
                 var isMet = eval.GoalIsVolumeMet(goal) && eval.GoalIsHeightMet(goal);
 
-                var goalVolume = goal.volume * levelData.unitVolume;
-
-                var delta = Mathf.Abs(eval.volume - goalVolume);
+                var delta = Mathf.Abs(eval.volume.fValue - goalVolume.fValue);
 
                 if(!dat.HasValue || (isMet && !datIsMet)) {
                     dat = eval;

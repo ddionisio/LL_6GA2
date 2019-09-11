@@ -32,7 +32,7 @@ public class GoalItemWidget : MonoBehaviour {
         var goalVolume = goal.volume * editCtrl.levelData.unitVolume;
         var goalHeight = goal.unitHeightRequire * editCtrl.levelData.sideMeasure;
 
-        if(goalHeight > 0f) {
+        if(goalHeight.fValue > 0f) {
             mSB.Append('\n');
             mSB.Append("· ");
             mSB.Append(M8.Localize.Get(heightReqTextRef));
@@ -44,7 +44,7 @@ public class GoalItemWidget : MonoBehaviour {
 
         mSB.Append(UnitMeasure.GetVolumeText(goal.measureType, goalVolume));
 
-        if(goalHeight > 0f) {
+        if(goalHeight.fValue > 0f) {
             mSB.Append('\n');
             mSB.Append(UnitMeasure.GetMeasureText(goal.measureType, goalHeight));
         }

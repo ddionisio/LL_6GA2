@@ -38,10 +38,31 @@ public struct UnitMeasure {
         return mSB.ToString();
     }
 
+    public static string GetVolumeText(UnitMeasureType type, MixedNumber volume) {
+        mSB.Clear();
+
+        volume.ApplyString(mSB);
+        //mSB.Append(' ');
+        mSB.Append(GetText(type));
+        mSB.Append('³');
+
+        return mSB.ToString();
+    }
+
     public static string GetMeasureText(UnitMeasureType type, float val) {
         mSB.Clear();
 
         mSB.Append(GetNumberFormatted(val));
+        //mSB.Append(' ');
+        mSB.Append(GetText(type));
+
+        return mSB.ToString();
+    }
+
+    public static string GetMeasureText(UnitMeasureType type, MixedNumber val) {
+        mSB.Clear();
+
+        val.ApplyString(mSB);
         //mSB.Append(' ');
         mSB.Append(GetText(type));
 
