@@ -19,3 +19,9 @@ MonoBehaviour:
   languageExtraInfos:
   - key: welcome
     voiceDuration: 1.5
+  - key: goal_error_volume_not_enough
+    voiceDuration: 2
+  - key: goal_error_height_not_met
+    voiceDuration: 2
+  - key: goal_error_not_found
+    voiceDuration: 2

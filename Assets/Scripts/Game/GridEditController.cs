@@ -65,8 +65,8 @@ public class GridEditController : GameModeController<GridEditController> {
             var max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
             volume = new MixedNumber();
-            minHeight = new MixedNumber { whole = int.MaxValue };
-            maxHeight = new MixedNumber { whole = int.MinValue };
+            minHeight = instance.entityContainer.controller.cellSize.b * sideVal;
+            maxHeight = new MixedNumber { whole = 0 };
 
             for(int i = 0; i < entityEdits.Length; i++) {
                 var entEdit = entityEdits[i];
@@ -100,6 +100,8 @@ public class GridEditController : GameModeController<GridEditController> {
                 if(bMax.z > max.z)
                     max.z = bMax.z;
             }
+
+            volume.SimplifyImproper();
 
             bounds = new Bounds();
             bounds.min = min;

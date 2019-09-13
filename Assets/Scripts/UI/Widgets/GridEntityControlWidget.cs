@@ -259,20 +259,25 @@ public class GridEntityControlWidget : MonoBehaviour {
 
         mStrBuff.AppendLine(size.ToString());
 
-        mStrBuff.Append(size.col * editCtrl.levelData.sideMeasure);
+        MixedNumber num;
+
+        num = size.col * editCtrl.levelData.sideMeasure; num.SimplifyImproper();
+        mStrBuff.Append(num);
         mStrBuff.Append(measureStr);
         mStrBuff.Append(" x ");
 
-        mStrBuff.Append(size.row * editCtrl.levelData.sideMeasure);
+        num = size.row * editCtrl.levelData.sideMeasure; num.SimplifyImproper();
+        mStrBuff.Append(num);
         mStrBuff.Append(measureStr);
         mStrBuff.Append(" x ");
 
-        mStrBuff.Append(size.b * editCtrl.levelData.sideMeasure);
+        num = size.b * editCtrl.levelData.sideMeasure; num.SimplifyImproper();
+        mStrBuff.Append(num);
         mStrBuff.Append(measureStr);
 
-        mStrBuff.Append('\n');
+        /*mStrBuff.Append('\n');
 
-        mStrBuff.Append(UnitMeasure.GetVolumeText(editCtrl.levelData.measureType, volume));
+        mStrBuff.Append(UnitMeasure.GetVolumeText(editCtrl.levelData.measureType, volume));*/
 
         detailText.text = mStrBuff.ToString();
     }

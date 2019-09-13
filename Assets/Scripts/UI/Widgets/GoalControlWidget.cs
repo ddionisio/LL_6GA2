@@ -29,6 +29,7 @@ public class GoalControlWidget : MonoBehaviour {
     public Color reqIncorrectColor;
     public Text efficiencyText;
     public Text errorText;
+    public Text errorText2;
     public Button prevButton;
     public Button nextButton;
 
@@ -52,6 +53,8 @@ public class GoalControlWidget : MonoBehaviour {
 
     private int mCurrentEvaluateIndex;
     private int mToEvaluateIndex;
+
+    private const string speechGroup = "goalControl";
 
     void OnDestroy() {
         if(GridEditController.isInstantiated)
@@ -106,7 +109,10 @@ public class GoalControlWidget : MonoBehaviour {
         var curGoal = editCtrl.levelData.goals[mCurrentEvaluateIndex];
 
         var goalVolume = curGoal.volume * editCtrl.levelData.unitVolume;
+        goalVolume.SimplifyImproper();
+
         var goalHeight = curGoal.unitHeightRequire * editCtrl.levelData.sideMeasure;
+        goalHeight.SimplifyImproper();
 
         //header
         icon.sprite = curGoal.data.icon;
@@ -153,16 +159,35 @@ public class GoalControlWidget : MonoBehaviour {
 
             efficiencyText.gameObject.SetActive(true);
             errorText.gameObject.SetActive(false);
+            errorText2.gameObject.SetActive(false);
         }
         else { //error, show message
-            if(!curEval.isValid)
+            if(!curEval.isValid) {
                 errorText.text = M8.Localize.Get(errorNoMatchTextRef);
-            else if(!isVolumeMet)
-                errorText.text = M8.Localize.Get(errorVolumeTextRef);
-            else if(!isHeightMet)
-                errorText.text = string.Format(M8.Localize.Get(errorHeightTextRef), UnitMeasure.GetMeasureText(curGoal.measureType, goalHeight));
-            else
-                errorText.text = "";
+
+                LoLManager.instance.SpeakText(errorNoMatchTextRef);
+            }
+            else {
+                int speakQueue = 0;
+
+                if(!isVolumeMet) {
+                    errorText.text = M8.Localize.Get(errorVolumeTextRef);
+
+                    LoLManager.instance.SpeakTextQueue(errorVolumeTextRef, speechGroup, speakQueue);
+                    speakQueue++;
+                }
+
+                if(!isHeightMet) {//Each object's height must be {0} tall!
+                    if(isVolumeMet)
+                        errorText.text = M8.Localize.Get(errorHeightTextRef);//string.Format(M8.Localize.Get(errorHeightTextRef), UnitMeasure.GetMeasureText(curGoal.measureType, goalHeight));
+                    else {
+                        errorText2.text = M8.Localize.Get(errorHeightTextRef);
+                        errorText2.gameObject.SetActive(true);
+                    }
+
+                    LoLManager.instance.SpeakTextQueue(errorHeightTextRef, speechGroup, speakQueue);
+                }
+            }
 
             efficiencyText.gameObject.SetActive(false);
             errorText.gameObject.SetActive(true);

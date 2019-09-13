@@ -32,7 +32,7 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
 
     public Material material {
         get {
-            if(!mMat)
+            if(!mMat && rendererDisplay)
                 mMat = rendererDisplay.material;
 
             return mMat;
@@ -40,8 +40,8 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
     }
 
     public bool isVisible {
-        get { return rendererDisplay.enabled; }
-        set { rendererDisplay.enabled = value; }
+        get { return rendererDisplay ? rendererDisplay.enabled : false; }
+        set { if(rendererDisplay) rendererDisplay.enabled = value; }
     }
 
     private static readonly int[] mInds = new int[] {
@@ -83,7 +83,7 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
     }
 
     public void ApplyMaterial(Material mat) {
-        if(rendererDisplay.sharedMaterial == null || mat == null || rendererDisplay.sharedMaterial.name != mat.name) {
+        if(rendererDisplay && (rendererDisplay.sharedMaterial == null || mat == null || rendererDisplay.sharedMaterial.name != mat.name)) {
             if(mMat) {
                 Destroy(mMat);
                 mMat = null;
@@ -132,7 +132,7 @@ public class GridEntityDisplay : MonoBehaviour, M8.IPoolSpawnComplete {
     void Awake() {
         //initialize property values
         var dat = gridEntity ? gridEntity.data : null;
-        var mat = rendererDisplay.sharedMaterial;
+        var mat = rendererDisplay ? rendererDisplay.sharedMaterial : null;
 
         if(dat && mat) {
             if(mat.HasProperty(dat.shaderColorId)) {

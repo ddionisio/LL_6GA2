@@ -30,7 +30,10 @@ public class GoalItemWidget : MonoBehaviour {
         var editCtrl = GridEditController.instance;
 
         var goalVolume = goal.volume * editCtrl.levelData.unitVolume;
+        goalVolume.SimplifyImproper();
+
         var goalHeight = goal.unitHeightRequire * editCtrl.levelData.sideMeasure;
+        goalHeight.SimplifyImproper();
 
         if(goalHeight.fValue > 0f) {
             mSB.Append('\n');

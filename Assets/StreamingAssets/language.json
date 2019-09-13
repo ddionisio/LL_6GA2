@@ -26,7 +26,7 @@
     "goal_total_volume": "Total Volume:",
     "goal_efficiency": "Efficiency:",
     "goal_error_volume_not_enough": "Not enough volume!",
-    "goal_error_height_not_met": "Each object's height must be {0} tall!",
+    "goal_error_height_not_met": "One or more objects do not match the height!",
     "goal_error_not_found": "No matching objects found!",
     "victory_title": "MISSION COMPLETE",
     "score": "Score:",
