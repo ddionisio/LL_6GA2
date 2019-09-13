@@ -99,7 +99,7 @@ MonoBehaviour:
   ofsMax: {x: 0, y: 0, z: 0}
   ofsUniform:
     min: 0
-    max: 0.1
+    max: 0.2
 --- !u!114 &7451446203050915186
 MonoBehaviour:
   m_ObjectHideFlags: 0

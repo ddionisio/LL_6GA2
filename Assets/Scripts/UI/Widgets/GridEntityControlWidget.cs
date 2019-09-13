@@ -198,6 +198,9 @@ public class GridEntityControlWidget : MonoBehaviour {
             else
                 displayGO.SetActive(false);
 
+            if(ghostMode != GridGhostController.Mode.Hidden && editCtrl.selected)
+                ghost.data = editCtrl.selected.data;
+
             ghost.mode = ghostMode;
         }
 
@@ -224,6 +227,9 @@ public class GridEntityControlWidget : MonoBehaviour {
                 }
                 break;
         }
+
+        if(mCurEntity && mCurEntity.signalInvokeEntitySizeChanged) //this will refresh display on cards
+            mCurEntity.signalInvokeEntitySizeChanged.Invoke(mCurEntity);
     }
 
     private void RefreshDimensionInfoDisplay() {

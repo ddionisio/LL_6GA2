@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bca80d96647c8b4b9db6b68573ba48a, type: 3}
   m_Name: gameData
   m_EditorClassIdentifier: 
-  efficiencyScore: 1000
+  efficiencyScore: 5000
+  bonusScore: 1000
+  bonusPenalty: 100
   levels:
   - name: level0
     path: Assets/Scenes/level0.unity
@@ -24,6 +26,12 @@ MonoBehaviour:
     path: Assets/Scenes/level3.unity
   - name: level4
     path: Assets/Scenes/level4.unity
+  - name: level5
+    path: Assets/Scenes/level5.unity
+  - name: level6
+    path: Assets/Scenes/level6.unity
+  - name: level7
+    path: Assets/Scenes/level7.unity
   end:
     name: end
     path: Assets/Scenes/end.unity

@@ -3209,7 +3209,6 @@ GameObject:
   - component: {fileID: 3278751020614718915}
   - component: {fileID: 5332279261728557726}
   - component: {fileID: 583336986589331371}
-  - component: {fileID: 4951545305118808458}
   m_Layer: 5
   m_Name: volumeText
   m_TagString: Untagged
@@ -3295,20 +3294,6 @@ MonoBehaviour:
   _brightness: 1
   _alpha: 1
   _target: {fileID: 5332279261728557726}
---- !u!114 &4951545305118808458
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1871844267468933428}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 053a561a000d402489b891a0bd9385de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: goal_total_volume
-  isKeyExclusive: 0
 --- !u!1 &1892195403304292308
 GameObject:
   m_ObjectHideFlags: 0
@@ -14634,6 +14619,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 2915850217588685302}
   titleText: {fileID: 5253207096745839856}
+  volumeGO: {fileID: 5722271737098270211}
   volumeText: {fileID: 5332279261728557726}
   reqs:
   - rootGO: {fileID: 5253207096416104224}

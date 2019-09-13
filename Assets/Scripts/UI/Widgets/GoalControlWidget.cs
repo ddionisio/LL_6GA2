@@ -23,6 +23,7 @@ public class GoalControlWidget : MonoBehaviour {
     [Header("Display")]
     public Image icon;
     public Text titleText;
+    public GameObject volumeGO;
     public Text volumeText;
     public ReqData[] reqs;
     public Color reqCorrectColor;
@@ -160,6 +161,8 @@ public class GoalControlWidget : MonoBehaviour {
             efficiencyText.gameObject.SetActive(true);
             errorText.gameObject.SetActive(false);
             errorText2.gameObject.SetActive(false);
+
+            volumeGO.SetActive(true);
         }
         else { //error, show message
             if(!curEval.isValid) {
@@ -191,6 +194,8 @@ public class GoalControlWidget : MonoBehaviour {
 
             efficiencyText.gameObject.SetActive(false);
             errorText.gameObject.SetActive(true);
+
+            volumeGO.SetActive(false);
         }
 
         if(editCtrl.goalEvaluations.Length == 1) {

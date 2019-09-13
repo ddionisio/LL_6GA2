@@ -6,6 +6,8 @@ using UnityEngine;
 public class GameData : M8.SingletonScriptableObject<GameData> {
     [Header("Data")]
     public int efficiencyScore = 1000;
+    public int bonusScore = 1000;
+    public int bonusPenalty = 100;
 
     [Header("Levels")]
     public M8.SceneAssetPath[] levels;

@@ -217,7 +217,7 @@ public struct MixedNumber : System.IComparable, System.IComparable<MixedNumber> 
             else
                 strBuff.Append(_numerator).Append('/').Append(_denominator);
         }
-        else
+        else if(_whole == 0)
             strBuff.Append('0');
     }
 
@@ -337,7 +337,7 @@ public struct MixedNumber : System.IComparable, System.IComparable<MixedNumber> 
     }
 
     public static bool operator >(MixedNumber a, MixedNumber b) {
-        return a.fValue < b.fValue;
+        return a.fValue > b.fValue;
     }
 
     public static bool operator >=(MixedNumber a, MixedNumber b) {

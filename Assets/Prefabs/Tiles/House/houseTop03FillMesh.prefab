@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e9f6cc5db9c3614c94a63703feb95c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  probabilityScale: 0.4
+  probabilityScale: 0.3
   delayRange:
     min: 0
     max: 2

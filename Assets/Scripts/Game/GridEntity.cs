@@ -272,20 +272,22 @@ public class GridEntity : MonoBehaviour, M8.IPoolSpawn, M8.IPoolDespawn {
             if(!container)
                 return;
 
+            RefreshBounds();
+
             //snap position
-            var lpos = transform.localPosition;
+            var lpos = transform.localPosition + mBounds.min;
 
             var gridCtrl = container.controller;
 
             var cellPos = gridCtrl.GetCellLocal(lpos, false);
             var cellBound = gridCtrl.GetBoundsFromCell(cellPos);
 
-            transform.localPosition = new Vector3(cellBound.center.x, cellBound.min.y, cellBound.center.z);
+            transform.localPosition =  new Vector3(cellBound.min.x + mBounds.extents.x, cellBound.min.y, cellBound.min.z + mBounds.extents.z);
 
             //apply cell index
-            var b = bounds;
+            //var b = bounds;
 
-            mCellIndex = gridCtrl.GetCellLocal(new Vector3(cellBound.center.x - b.extents.x, cellBound.min.y, cellBound.center.z - b.extents.z), false);
+            mCellIndex = cellPos;// gridCtrl.GetCellLocal(new Vector3(cellBound.center.x - b.extents.x, cellBound.min.y, cellBound.center.z - b.extents.z), false);
         }
     }
 #endif

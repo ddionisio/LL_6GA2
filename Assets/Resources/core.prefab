@@ -11,6 +11,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: core
       objectReference: {fileID: 0}
+    - target: {fileID: 114961774454783636, guid: c61adcd6bc0d04c44ad8a02b67ff3b4c,
+        type: 3}
+      propertyPath: _gameID
+      value: com.daviddionisio.6GA2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114961774454783636, guid: c61adcd6bc0d04c44ad8a02b67ff3b4c,
+        type: 3}
+      propertyPath: _progressMax
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 4154283446843298, guid: c61adcd6bc0d04c44ad8a02b67ff3b4c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -54,16 +64,6 @@ PrefabInstance:
     - target: {fileID: 4154283446843298, guid: c61adcd6bc0d04c44ad8a02b67ff3b4c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114961774454783636, guid: c61adcd6bc0d04c44ad8a02b67ff3b4c,
-        type: 3}
-      propertyPath: _gameID
-      value: com.daviddionisio.6GA2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114961774454783636, guid: c61adcd6bc0d04c44ad8a02b67ff3b4c,
-        type: 3}
-      propertyPath: _progressMax
-      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c61adcd6bc0d04c44ad8a02b67ff3b4c, type: 3}

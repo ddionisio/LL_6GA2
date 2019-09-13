@@ -39,7 +39,7 @@ public class GridEditController : GameModeController<GridEditController> {
             if(goal.unitHeightRequire <= 0)
                 return true;
 
-            var heightReq = goal.unitHeightRequire * instance.levelData.unitVolume;
+            var heightReq = goal.unitHeightRequire * instance.levelData.sideMeasure;
 
             return minHeight == heightReq && minHeight == maxHeight;
         }
@@ -66,7 +66,7 @@ public class GridEditController : GameModeController<GridEditController> {
 
             volume = new MixedNumber();
             minHeight = instance.entityContainer.controller.cellSize.b * sideVal;
-            maxHeight = new MixedNumber { whole = 0 };
+            maxHeight = new MixedNumber { whole = -1 };
 
             for(int i = 0; i < entityEdits.Length; i++) {
                 var entEdit = entityEdits[i];
@@ -101,7 +101,8 @@ public class GridEditController : GameModeController<GridEditController> {
                     max.z = bMax.z;
             }
 
-            volume.SimplifyImproper();
+            //volume.SimplifyImproper();
+            volume.Simplify();
 
             bounds = new Bounds();
             bounds.min = min;
