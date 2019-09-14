@@ -29,7 +29,7 @@ MonoBehaviour:
     unitHeightRequire: 0
     measureType: 0
   - data: {fileID: 11400000, guid: c96e81b746799ae448e325e70df18023, type: 2}
-    volume: 27
+    volume: 24
     unitHeightRequire: 2
     measureType: 0
   - data: {fileID: 11400000, guid: a9c7330333ba7d8408229cc938cab77b, type: 2}

@@ -101,8 +101,8 @@ public class GridEditController : GameModeController<GridEditController> {
                     max.z = bMax.z;
             }
 
-            //volume.SimplifyImproper();
-            volume.Simplify();
+            volume.SimplifyImproper();
+            //volume.Simplify();
 
             bounds = new Bounds();
             bounds.min = min;
@@ -144,7 +144,12 @@ public class GridEditController : GameModeController<GridEditController> {
         get { return mCurEditMode; }
         set {
             if(mCurEditMode != value) {
+                var prevEditMode = mCurEditMode;
                 mCurEditMode = value;
+
+                //keep tabs on how many times we return to evaluate
+                if(prevEditMode == EditMode.Evaluate && mCurEditMode == EditMode.Select)
+                    returnCount++;
 
                 //generate specific data based on mode
                 //clear selection based on mode
@@ -183,6 +188,11 @@ public class GridEditController : GameModeController<GridEditController> {
     /// Generated when switching to evaluation, will have the same size as goals from level data
     /// </summary>
     public EvaluateData[] goalEvaluations { get; private set; }
+
+    /// <summary>
+    /// Count of how many times we returned to Edit mode
+    /// </summary>
+    public int returnCount { get; private set; }
 
     public int GetAvailableCount() {
         var placedCount = 0;

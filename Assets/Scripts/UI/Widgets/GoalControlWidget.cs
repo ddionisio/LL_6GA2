@@ -9,11 +9,13 @@ public class GoalControlWidget : MonoBehaviour {
         public GameObject rootGO;
         public GameObject correctGO;
         public GameObject incorrectGO;
+        public Text textTitle;
         public Text text;
 
         public void Setup(string str, bool isMet, Color color) {
             text.text = str;
             text.color = color;
+            textTitle.color = color;
 
             correctGO.SetActive(isMet);
             incorrectGO.SetActive(!isMet);
@@ -162,7 +164,7 @@ public class GoalControlWidget : MonoBehaviour {
             errorText.gameObject.SetActive(false);
             errorText2.gameObject.SetActive(false);
 
-            volumeGO.SetActive(true);
+            //volumeGO.SetActive(true);
         }
         else { //error, show message
             if(!curEval.isValid) {
@@ -195,8 +197,10 @@ public class GoalControlWidget : MonoBehaviour {
             efficiencyText.gameObject.SetActive(false);
             errorText.gameObject.SetActive(true);
 
-            volumeGO.SetActive(false);
+            //volumeGO.SetActive(false);
         }
+
+        volumeGO.SetActive(true);
 
         if(editCtrl.goalEvaluations.Length == 1) {
             prevButton.gameObject.SetActive(false);
