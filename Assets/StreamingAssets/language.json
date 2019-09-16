@@ -7,6 +7,9 @@
   "en": {
     "welcome": "Welcome!",
     "title": "Kero Builder",
+    "play": "PLAY",
+    "credits": "CREDITS",
+    "credits_detail": "Written By: David Dionisio\nMusic From: Kevin Macleod",
     "options": "OPTIONS",
     "sound": "SOUND",
     "music": "MUSIC",
@@ -32,10 +35,10 @@
     "score": "Score:",
     "bonus": "Bonus:",
     "total": "Total:",
-    "cube_field": "Field",
-    "cube_pond": "Pond",
-    "cube_house_1": "House 01",
-    "cube_house_2": "House 02",
-    "cube_house_3": "House 03"
+    "cube_field": "Pleasant Field",
+    "cube_pond": "Serene Pond",
+    "cube_house_1": "Marigold House",
+    "cube_house_2": "Green House",
+    "cube_house_3": "Pennyroyal House"
   }
 }
