@@ -25,3 +25,9 @@ MonoBehaviour:
     voiceDuration: 2
   - key: goal_error_not_found
     voiceDuration: 2
+  - key: next_instruct
+    voiceDuration: 3
+  - key: level_0_intro_0_2
+    voiceDuration: 3
+  - key: level_0_intro_0_3
+    voiceDuration: 3

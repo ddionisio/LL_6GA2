@@ -28,6 +28,16 @@ public class GridEntityContainer : MonoBehaviour {
     /// </summary>
     public event System.Action<GridEntityData> mapUpdateCallback;
 
+    public bool IsEntityContain(GridEntityData dat) {
+        for(int i = 0; i < entities.Count; i++) {
+            var ent = entities[i];
+            if(ent.data == dat)
+                return true;
+        }
+
+        return false;
+    }
+
     public int GetVolumeCount(GridEntityData entDat) {
         int count = 0;
         

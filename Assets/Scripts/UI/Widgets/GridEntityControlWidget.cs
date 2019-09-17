@@ -79,11 +79,10 @@ public class GridEntityControlWidget : MonoBehaviour {
     public void Delete() {
         if(mCurEntity && mCurEntity.poolDataController) {
             var ent = mCurEntity;
+            ent.poolDataController.Release();
 
             GridEditController.instance.editMode = GridEditController.EditMode.Select;
             GridEditController.instance.selected = null;
-                        
-            ent.poolDataController.Release();
         }
     }
 

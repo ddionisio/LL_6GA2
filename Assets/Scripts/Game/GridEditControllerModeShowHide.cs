@@ -22,6 +22,10 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
     private Coroutine mRout;
     private bool mIsVisible;
 
+    protected virtual bool IsVisibleVerify() {
+        return true;
+    }
+
     void OnDisable() {
         mRout = null;
 
@@ -41,6 +45,8 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
     }
 
     IEnumerator DoShow() {
+        yield return null;
+
         displayGO.SetActive(true);
 
         if(animator) {
@@ -57,6 +63,8 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
     }
 
     IEnumerator DoHide() {
+        yield return null;
+
         if(animator) {
             var takeLast = animator.currentPlayingTakeName;
 
@@ -72,7 +80,7 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
         mRout = null;
     }
 
-    private void RefreshDisplay(bool forceApply) {
+    protected void RefreshDisplay(bool forceApply) {
         if(mRout != null) {
             StopCoroutine(mRout);
             mRout = null;
@@ -89,6 +97,9 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
                 break;
             }
         }
+
+        if(isVisible)
+            isVisible = IsVisibleVerify();
 
         if(forceApply || mIsVisible != isVisible) {
             mIsVisible = isVisible;

@@ -12781,7 +12781,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 683485ca927c13e4b9fdb445e4a8bbeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleModes: 01000000020000000300000004000000
+  visibleModes: 010000000200000003000000040000000a000000
   displayGO: {fileID: 5253207096749035312}
   animator: {fileID: 3309549271045529834}
   takeEnter: enter
@@ -13341,7 +13341,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 683485ca927c13e4b9fdb445e4a8bbeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleModes: 01000000030000000400000007000000
+  visibleModes: 0100000003000000040000000700000008000000090000000a000000
   displayGO: {fileID: 5253207096411706163}
   animator: {fileID: 1607370865488258667}
   takeEnter: enter
@@ -13672,7 +13672,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5253207097893821827}
-  - component: {fileID: 5253207097893821852}
+  - component: {fileID: 6280859759929763533}
   - component: {fileID: 3635492397105791018}
   m_Layer: 5
   m_Name: goalsVerify
@@ -13701,7 +13701,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5253207097893821852
+--- !u!114 &6280859759929763533
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13710,7 +13710,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5253207097893821826}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 683485ca927c13e4b9fdb445e4a8bbeb, type: 3}
+  m_Script: {fileID: 11500000, guid: 698106b02a2d0b748976cbcb165f9f56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   visibleModes: 0100000002000000
@@ -19090,7 +19090,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 683485ca927c13e4b9fdb445e4a8bbeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleModes: 0100000002000000030000000400000005000000
+  visibleModes: 0100000002000000030000000400000005000000090000000a000000
   displayGO: {fileID: 6071193857209926970}
   animator: {fileID: 1946957257612221838}
   takeEnter: enter

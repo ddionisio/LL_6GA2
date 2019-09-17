@@ -39,6 +39,13 @@
     "cube_pond": "Serene Pond",
     "cube_house_1": "Marigold House",
     "cube_house_2": "Green House",
-    "cube_house_3": "Pennyroyal House"
+    "cube_house_3": "Pennyroyal House",
+    "intro_0": "Welcome to Kero Builder!",
+    "intro_1": "You will be playing as a builder to help these spacefaring frogs settle into their new planet. ",
+    "intro_2": "Let's do our best to build their homes!",
+    "next_instruct": "Press this button when you're ready to continue.",
+    "level_0_intro_0_1": "Before we begin, let's first look at the view controls.",
+    "level_0_intro_0_2": "You can drag the view around to get a better look at the map.",
+    "level_0_intro_0_3": "These buttons allow you to rotate or zoom the view of the map."
   }
 }
