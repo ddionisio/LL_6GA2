@@ -19,12 +19,17 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
     [M8.Animator.TakeSelector(animatorField = "animator")]
     public string takeExit;
 
-    private Coroutine mRout;
-    private bool mIsVisible;
+    public bool isVisible { get; private set; }
 
+    private Coroutine mRout;
+    
     protected virtual bool IsVisibleVerify() {
         return true;
     }
+
+    protected virtual void OnShow() { }
+
+    protected virtual void OnHide() { }
 
     void OnDisable() {
         mRout = null;
@@ -46,8 +51,6 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
 
     IEnumerator DoShow() {
         yield return null;
-
-        displayGO.SetActive(true);
 
         if(animator) {
             var takeLast = animator.currentPlayingTakeName;
@@ -81,32 +84,39 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
     }
 
     protected void RefreshDisplay(bool forceApply) {
-        if(mRout != null) {
-            StopCoroutine(mRout);
-            mRout = null;
-        }
-
         var editCtrl = GridEditController.instance;
         var curMode = editCtrl.editMode;
 
-        bool isVisible = false;
+        bool _isVisible = false;
 
         for(int i = 0; i < visibleModes.Length; i++) {
             if(curMode == visibleModes[i]) {
-                isVisible = true;
+                _isVisible = true;
                 break;
             }
         }
 
-        if(isVisible)
-            isVisible = IsVisibleVerify();
+        if(_isVisible)
+            _isVisible = IsVisibleVerify();
 
-        if(forceApply || mIsVisible != isVisible) {
-            mIsVisible = isVisible;
+        if(forceApply || isVisible != _isVisible) {
+            if(mRout != null) {
+                StopCoroutine(mRout);
+                mRout = null;
+            }
 
-            if(mIsVisible)
+            isVisible = _isVisible;
+
+            if(isVisible) {
+                OnShow();
+
+                displayGO.SetActive(true);
+
                 mRout = StartCoroutine(DoShow());
+            }
             else {
+                OnHide();
+
                 if(forceApply)
                     displayGO.SetActive(false);
                 else

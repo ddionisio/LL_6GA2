@@ -16,6 +16,8 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
     [Header("Data")]
     public float topExpandDragScale = 1f;
+    [M8.EnumMask]
+    public FaceFlags expandRestrictions; //do not allow given expand sides
 
     [Header("Display")]
     public GridGhostDisplay display;
@@ -198,12 +200,16 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
                         var castGO = eventData.pointerCurrentRaycast.gameObject;
 
                         var _face = GetFaceFlag(castGO);
+                                                
                         if(_face == FaceFlags.None && castGO == gameObject) {
                             //faceHighlight = GetFaceFlag(eventData.pointerCurrentRaycast.worldNormal);
                             faceHighlight = FaceFlags.Top;
                         }
                         else
                             faceHighlight = _face;
+
+                        if((faceHighlight & expandRestrictions) != FaceFlags.None) //do not allow certain faces
+                            faceHighlight = FaceFlags.None;
                     }
                 }
 
@@ -244,15 +250,6 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         //ensure it is valid
         var cast = eventData.pointerPressRaycast;
         if(cast.isValid && (cast.gameObject == gameObject || GetFaceFlag(cast.gameObject) != FaceFlags.None || cast.gameObject == GridEditController.instance.selected.gameObject)) {
-            mColl.enabled = false;
-
-            if(mMode == Mode.Expand) {
-                if(expandCollFront) expandCollFront.enabled = false;
-                if(expandCollBack) expandCollBack.enabled = false;
-                if(expandCollLeft) expandCollLeft.enabled = false;
-                if(expandCollRight) expandCollRight.enabled = false;
-            }
-
             mDragCellIndex.Invalidate();
             mDragCellSizeStart = cellSize;
 
@@ -263,11 +260,25 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
                     mDragFace = FaceFlags.Top;
                 }
 
+                if((mDragFace & expandRestrictions) != FaceFlags.None) //do not allow certain faces
+                    mDragFace = FaceFlags.None;
+
                 display.faceHighlight = mDragFace;
                 RefreshHighlight();
             }
             else
                 mDragFace = FaceFlags.All;
+
+            if(mDragFace != FaceFlags.None) {
+                mColl.enabled = false;
+
+                if(mMode == Mode.Expand) {
+                    if(expandCollFront) expandCollFront.enabled = false;
+                    if(expandCollBack) expandCollBack.enabled = false;
+                    if(expandCollLeft) expandCollLeft.enabled = false;
+                    if(expandCollRight) expandCollRight.enabled = false;
+                }
+            }
         }
     }
 

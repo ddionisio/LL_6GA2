@@ -46,7 +46,7 @@ public class GridEditController : GameModeController<GridEditController> {
 
             var heightReq = goal.unitHeightRequire * instance.levelData.sideMeasure;
 
-            return minHeight == heightReq && minHeight == maxHeight;
+            return maxHeight <= heightReq;
         }
 
         public float GoalEfficiencyScale(GridLevelData.Goal goal) {

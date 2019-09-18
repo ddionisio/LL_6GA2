@@ -7,6 +7,7 @@ TagManager:
   - Level
   - Ghost
   - Deck
+  - DragInstruct
   layers:
   - Default
   - TransparentFX

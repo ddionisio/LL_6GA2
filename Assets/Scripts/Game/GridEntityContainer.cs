@@ -69,7 +69,7 @@ public class GridEntityContainer : MonoBehaviour {
             //ensure nothing is occupying the spaces
             for(int i = 0; i < entities.Count; i++) {
                 var ent = entities[i];
-                if(ent != ignoreEnt) {
+                if(ent != ignoreEnt && ent.gameObject.activeInHierarchy) {
                     if(GridCell.IsIntersectFloor(index, size, ent.cellIndex, ent.cellSize))
                         return false;
                 }
