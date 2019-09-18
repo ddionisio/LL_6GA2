@@ -8,10 +8,18 @@ public class GridEditControllerModeShowHideExpandDragGuide : GridEditControllerM
 
     public DragToGuideWidget dragGuideWidget;
 
+    public GameObject confirmExpandGO;
+
     private Camera mCamera;
 
     protected override void OnHide() {
         dragGuideWidget.Hide();
+
+        confirmExpandGO.SetActive(false);
+    }
+
+    void Awake() {
+        confirmExpandGO.SetActive(false);
     }
 
     void Update() {
@@ -64,9 +72,14 @@ public class GridEditControllerModeShowHideExpandDragGuide : GridEditControllerM
                     dragGuideWidget.Show(false, dragStart, dragEnd);
                 else
                     dragGuideWidget.UpdatePositions(dragStart, dragEnd);
+
+                confirmExpandGO.SetActive(false);
             }
-            else
+            else {
                 dragGuideWidget.Hide();
+
+                confirmExpandGO.SetActive(true);
+            }
         }
     }
 }

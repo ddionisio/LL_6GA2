@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47bdd5c5de3204c4e9af9246baf5546e, type: 3}
   m_Name: level07
   m_EditorClassIdentifier: 
-  resourceCount: 126
+  resourceCount: 90
   sideMeasure:
     _negative: 0
     _whole: 0

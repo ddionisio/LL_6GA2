@@ -21,4 +21,14 @@ public class GridLevelData : ScriptableObject {
     public Goal[] goals;
 
     public MixedNumber unitVolume { get { return sideMeasure * sideMeasure * sideMeasure; } }
+
+    public int GetHeightRequirement(GridEntityData dat) {
+        for(int i = 0; i < goals.Length; i++) {
+            var goal = goals[i];
+            if(goal.data == dat)
+                return goal.unitHeightRequire;
+        }
+
+        return 0;
+    }
 }

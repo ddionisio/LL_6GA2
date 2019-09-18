@@ -19,7 +19,9 @@ public class GridEditController : GameModeController<GridEditController> {
         //special
         View, //only show view
         UnitInfo, //only show view, unit info
-        Goals //only show view, unit info, goals
+        Goals, //only show view, unit info, goals
+
+        Blocks //only show the blocks
     }
 
     public struct EvaluateData {

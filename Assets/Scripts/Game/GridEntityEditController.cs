@@ -229,6 +229,10 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
                     fadeScale = GameData.instance.selectFadeScale; //let goal evaluate take care of applying fade
                 break;
 
+            case GridEditController.EditMode.Blocks:
+                fadeScale = 1f;
+                break;
+
             default: //off
                 if(_isNonPlaceable)
                     fadeScale = 1f;

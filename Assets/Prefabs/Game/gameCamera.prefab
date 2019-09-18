@@ -163,7 +163,7 @@ MonoBehaviour:
   m_EventMask:
     serializedVersion: 2
     m_Bits: 256
-  m_MaxRayIntersections: 3
+  m_MaxRayIntersections: 6
 --- !u!114 &195224564551852452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,4 +176,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e42b542035d5ae43a1c59be9c1bf436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 2100000, guid: 6c6ec82dfc900994f8e937151b520d13, type: 2}

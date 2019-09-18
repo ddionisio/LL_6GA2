@@ -24,5 +24,5 @@ MonoBehaviour:
   goals:
   - data: {fileID: 11400000, guid: 956337d7a9155ba42a6c779e256d28df, type: 2}
     volume: 16
-    unitHeightRequire: 1
+    unitHeightRequire: 0
     measureType: 0

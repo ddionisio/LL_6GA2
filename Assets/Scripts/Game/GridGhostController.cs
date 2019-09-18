@@ -308,10 +308,15 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
                 var newSize = mDragCellSizeStart.b + ind;
                 if(cellSize.b != newSize) {
+                    //clamp based on goal height limit
+                    var heightLimit = editCtrl.levelData.GetHeightRequirement(curEnt.data);
+                    if(heightLimit == 0)
+                        heightLimit = editCtrl.entityContainer.controller.cellSize.b;
+
                     if(newSize < 1)
                         newSize = 1;
-                    else if(newSize > editCtrl.entityContainer.controller.cellSize.b)
-                        newSize = editCtrl.entityContainer.controller.cellSize.b;
+                    else if(newSize > heightLimit)
+                        newSize = heightLimit;
 
                     var _cellSize = cellSize;
                     _cellSize.b = newSize;

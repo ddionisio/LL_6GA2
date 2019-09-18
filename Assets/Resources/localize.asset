@@ -27,7 +27,17 @@ MonoBehaviour:
     voiceDuration: 2
   - key: next_instruct
     voiceDuration: 3
+  - key: drag_side_instruct
+    voiceDuration: 2.5
+  - key: expand_confirm_instruct
+    voiceDuration: 2.5
   - key: level_0_intro_0_2
     voiceDuration: 3
   - key: level_0_intro_0_3
     voiceDuration: 3
+  - key: end_title
+    voiceDuration: 1.5
+  - key: end_detail
+    voiceDuration: 3
+  - key: end_detail_2
+    voiceDuration: 2
