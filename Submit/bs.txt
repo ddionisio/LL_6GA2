@@ -1,0 +1,9 @@
+The spacefaring frogs need your help! Build them their homes using your mastery of volume with fractional sides.
+
+Controls:
+Use the touchpad or mouse for interactions.
+
+Dragging/dropping a cube – press and hold the item of interest using the touchpad or mouse. While pressing, slide towards where you want to drop the cube, and then release the touchpad or mouse left button.
+Moving a cube - select a cube by pressing on it, then drag it to move.
+Expanding a cube - select a cube by pressing on it, then press the expand button. You can then hover over any of its side, and drag to resize the cube. Once you are done, press the expand button once again.
+Deleting a cube - select a cube by pressing on it, then press and hold the red trash icon.

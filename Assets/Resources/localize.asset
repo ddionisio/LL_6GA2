@@ -32,12 +32,12 @@ MonoBehaviour:
   - key: expand_confirm_instruct
     voiceDuration: 2.5
   - key: level_0_intro_0_2
-    voiceDuration: 3
+    voiceDuration: 3.5
   - key: level_0_intro_0_3
-    voiceDuration: 3
+    voiceDuration: 3.5
   - key: end_title
     voiceDuration: 1.5
   - key: end_detail
-    voiceDuration: 3
+    voiceDuration: 3.5
   - key: end_detail_2
     voiceDuration: 2
