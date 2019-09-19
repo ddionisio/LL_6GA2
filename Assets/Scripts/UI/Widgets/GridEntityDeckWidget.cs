@@ -15,6 +15,10 @@ public class GridEntityDeckWidget : MonoBehaviour {
 
     public Transform container;
 
+    [Header("SFX")]
+    [M8.SoundPlaylist]
+    public string sfxInsufficientResource;
+
     [Header("Signal Listen")]
     public SignalGridEntity signalListenEntitySizeChanged;
     public SignalGridEntityData signalListenMapChanged;
@@ -82,7 +86,20 @@ public class GridEntityDeckWidget : MonoBehaviour {
 
         countText.text = availableCount.ToString();
 
-        if(countInvalidGO) countInvalidGO.SetActive(availableCount < 0);
+        var prevInvalidActive = false;
+        var curInvalidActive = false;
+
+        if(countInvalidGO) {
+            prevInvalidActive = countInvalidGO.activeSelf;
+            curInvalidActive = availableCount < 0;
+            countInvalidGO.SetActive(curInvalidActive);
+        }
+
         if(invalidGO) invalidGO.SetActive(availableCount <= 0 || GridEditController.instance.editMode == GridEditController.EditMode.Expand);
+
+        if(curInvalidActive && !prevInvalidActive) {
+            if(!string.IsNullOrEmpty(sfxInsufficientResource))
+                M8.SoundPlaylist.instance.Play(sfxInsufficientResource, false);
+        }
     }
 }

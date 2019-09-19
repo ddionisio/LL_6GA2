@@ -34,6 +34,12 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
     public BoxCollider expandCollLeft;
     public BoxCollider expandCollRight;
 
+    [Header("SFX")]
+    [M8.SoundPlaylist]
+    public string sfxExpand;
+    [M8.SoundPlaylist]
+    public string sfxMove;
+
     [Header("Signal Invoke")]
     public M8.Signal signalInvokeSizeChanged;
     public SignalGridEntity signalInvokeEntitySizeChanged;
@@ -298,6 +304,8 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
         var cast = eventData.pointerCurrentRaycast;
 
         if(mode == Mode.Expand) {
+            var prevCellSize = cellSize;
+
             if(mDragFace == FaceFlags.Top) { //special case for top, rely on screen position delta
                 var start = eventData.pressPosition;
                 var end = eventData.position;
@@ -321,11 +329,6 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
                     var _cellSize = cellSize;
                     _cellSize.b = newSize;
                     cellSize = _cellSize;
-
-                    RefreshValid();
-
-                    if(signalInvokeEntitySizeChanged)
-                        signalInvokeEntitySizeChanged.Invoke(curEnt);
                 }
             }
             else {
@@ -372,13 +375,18 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
                         cellIndex = _cellInd;
                         cellSize = new GridCell { b = _cellEnd.b - _cellInd.b + 1, row = _cellEnd.row - _cellInd.row + 1, col = _cellEnd.col - _cellInd.col + 1 };
-
-                        RefreshValid();
-
-                        if(signalInvokeEntitySizeChanged)
-                            signalInvokeEntitySizeChanged.Invoke(curEnt);
                     }
                 }
+            }
+
+            if(cellSize != prevCellSize) {
+                RefreshValid();
+
+                if(!string.IsNullOrEmpty(sfxExpand))
+                    M8.SoundPlaylist.instance.Play(sfxExpand, false);
+
+                if(signalInvokeEntitySizeChanged)
+                    signalInvokeEntitySizeChanged.Invoke(curEnt);
             }
         }
         else if(mode == Mode.Move) {
@@ -404,6 +412,8 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
                         var gridCtrl = editCtrl.entityContainer.controller;
 
+                        var prevCellInd = cellIndex;
+
                         //clamp if out of bounds
                         if(_cellIndex.row < 0)
                             _cellIndex.row = 0;
@@ -417,6 +427,11 @@ public class GridGhostController : MonoBehaviour, IPointerEnterHandler, IPointer
 
                         if(gridCtrl.IsContained(_cellIndex))
                             cellIndex = _cellIndex;
+
+                        if(cellIndex != prevCellInd) {
+                            if(!string.IsNullOrEmpty(sfxMove))
+                                M8.SoundPlaylist.instance.Play(sfxMove, false);
+                        }
                     }
                 }
             }

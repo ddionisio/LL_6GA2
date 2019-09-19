@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47bdd5c5de3204c4e9af9246baf5546e, type: 3}
   m_Name: _testLevel
   m_EditorClassIdentifier: 
-  resourceCount: 128
+  resourceCount: 8
   sideMeasure:
     _negative: 0
     _whole: 1

@@ -23,6 +23,10 @@ public class GridBuildController : MonoBehaviour {
     [M8.Animator.TakeSelector(animatorField = "fallAnimator")]
     public string fallTakePlay;
 
+    [Header("SFX")]
+    [M8.SoundPlaylist]
+    public string sfxConstruct;
+
     [Header("Signal Invoke")]
     public M8.SignalVector3 signalInvokeCameraPanTo;
     public M8.Signal signalInvokeBuildComplete;
@@ -236,6 +240,9 @@ public class GridBuildController : MonoBehaviour {
             buildRiseFXShape.scale = buildRiseFXShapeScale;
 
             buildRiseFX.Play();
+
+            if(!string.IsNullOrEmpty(sfxConstruct))
+                M8.SoundPlaylist.instance.Play(sfxConstruct, false);
 
             var curTime = 0f;
             while(curTime < buildRiseDelay) {

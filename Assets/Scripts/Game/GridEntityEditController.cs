@@ -16,6 +16,10 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
     [SerializeField]
     bool _isNonPlaceable = false; //set this to true for non-placeables
 
+    [Header("SFX")]
+    [M8.SoundPlaylist]
+    public string sfxInvalid;
+
     [Header("Signal Invoke")]
     public M8.SignalVector3 signalInvokeCameraPan;
 
@@ -146,6 +150,10 @@ public class GridEntityEditController : MonoBehaviour, M8.IPoolSpawnComplete, M8
                 var toCellSize = editCtrl.ghostController.cellSize;
 
                 entity.SetCell(toCellIndex, toCellSize);
+            }
+            else {
+                if(!string.IsNullOrEmpty(sfxInvalid))
+                    M8.SoundPlaylist.instance.Play(sfxInvalid, false);
             }
 
             editCtrl.editMode = GridEditController.EditMode.Select;

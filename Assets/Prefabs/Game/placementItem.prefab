@@ -104,6 +104,7 @@ MonoBehaviour:
   display: {fileID: 179421406840529794}
   displayFloor: {fileID: 179421406840529795}
   _isNonPlaceable: 0
+  sfxInvalid: wrong
   signalInvokeCameraPan: {fileID: 11400000, guid: 693745d6b16c45b499813926f63ce576,
     type: 2}
 --- !u!65 &2454873898226943601

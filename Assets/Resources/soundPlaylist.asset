@@ -17,6 +17,54 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 9d18778d72ce9114e9bd29337e518944, type: 3}
     clipVariants: []
     spatialBlend: 0
+  - name: boop
+    clip: {fileID: 0}
+    clipVariants:
+    - {fileID: 8300000, guid: 3f33f2c107cb5b54faa5cc821ba7f71b, type: 3}
+    - {fileID: 8300000, guid: bd7a3140c005c9048bbebe6519eb7d45, type: 3}
+    - {fileID: 8300000, guid: 358a5089757a692449f3849b054b8e0c, type: 3}
+    - {fileID: 8300000, guid: 0a0e6a27f0058f843a5c6b091f4f2c38, type: 3}
+    spatialBlend: 0
+  - name: tap
+    clip: {fileID: 8300000, guid: 28b2df0ab3d233548886ec1e1e4d44ee, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: tapTiny
+    clip: {fileID: 8300000, guid: 0a8ccb54ce20062479bfc3b69d5c59dc, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: correct
+    clip: {fileID: 8300000, guid: 331413503a37d074c817dee0eddf097b, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: wrong
+    clip: {fileID: 8300000, guid: 1e1b18f65e30e0445bdd276ff4a23f88, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: paletteOpen
+    clip: {fileID: 8300000, guid: cee3068c00ec3594c83229541fa8b4db, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: paletteClose
+    clip: {fileID: 8300000, guid: dc4b196dd24221041acadcb3676be6c9, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: delete
+    clip: {fileID: 8300000, guid: dc7d4edbd00c2784aa82761af89fe482, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: success
+    clip: {fileID: 8300000, guid: dcf94dea48fd6874da5272aac56f21f6, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: explode
+    clip: {fileID: 8300000, guid: 5d937f10705fb734397eaa4c452e54c6, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: construct
+    clip: {fileID: 8300000, guid: c80f1eee4c2b6cf469c56facb2facb83, type: 3}
+    clipVariants: []
+    spatialBlend: 0
   max: 32
   audioMixer: {fileID: 0}
   muteOnFocusLost: 1

@@ -1478,6 +1478,7 @@ MonoBehaviour:
   bonusText: {fileID: 9133928211178346136}
   totalText: {fileID: 1093739199991799069}
   rankText: {fileID: 4185979948816683210}
+  sfxVictory: success
 --- !u!114 &6799392023584232093
 MonoBehaviour:
   m_ObjectHideFlags: 0

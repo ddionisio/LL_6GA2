@@ -48,6 +48,10 @@ public class GoalControlWidget : MonoBehaviour {
     [M8.Localize]
     public string errorHeightTextRef;
 
+    [Header("SFX")]
+    [M8.SoundPlaylist]
+    public string sfxBuildReady;
+
     [Header("Signal Invoke")]
     public M8.SignalVector3 signalInvokeCameraPanTo;
     public M8.Signal signalInvokeCameraYawReset;
@@ -218,8 +222,15 @@ public class GoalControlWidget : MonoBehaviour {
         //check if we have all goals met
         if(editCtrl.isAllGoalsMet) {
             //check if we are at the last index
-            if(mCurrentEvaluateIndex >= editCtrl.goalEvaluations.Length - 1)
+            if(mCurrentEvaluateIndex >= editCtrl.goalEvaluations.Length - 1) {
+                var prevBuildActive = buildReadyGO.activeSelf;
                 buildReadyGO.SetActive(true);
+
+                if(!prevBuildActive && buildReadyGO.activeSelf) {
+                    if(!string.IsNullOrEmpty(sfxBuildReady))
+                        M8.SoundPlaylist.instance.Play(sfxBuildReady, false);
+                }
+            }
         }
         else
             buildReadyGO.SetActive(false);

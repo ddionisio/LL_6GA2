@@ -19,6 +19,12 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
     [M8.Animator.TakeSelector(animatorField = "animator")]
     public string takeExit;
 
+    [Header("SFX")]
+    [M8.SoundPlaylist]
+    public string sfxOpen;
+    [M8.SoundPlaylist]
+    public string sfxClose;
+
     public bool isVisible { get; private set; }
 
     private Coroutine mRout;
@@ -58,6 +64,9 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
             while(animator.isPlaying)
                 yield return null;
 
+            if(!string.IsNullOrEmpty(sfxOpen))
+                M8.SoundPlaylist.instance.Play(sfxOpen, false);
+
             if(!string.IsNullOrEmpty(takeEnter) && takeLast != takeEnter)
                 yield return animator.PlayWait(takeEnter);
         }
@@ -73,6 +82,9 @@ public class GridEditControllerModeShowHide : MonoBehaviour {
 
             while(animator.isPlaying)
                 yield return null;
+
+            if(!string.IsNullOrEmpty(sfxClose))
+                M8.SoundPlaylist.instance.Play(sfxClose, false);
 
             if(!string.IsNullOrEmpty(takeExit) && takeLast != takeExit)
                 yield return animator.PlayWait(takeExit);

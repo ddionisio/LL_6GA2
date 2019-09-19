@@ -13,6 +13,10 @@ public class ModalVictory : M8.ModalController, M8.IModalPush {
 
     public Text rankText;
 
+    [Header("SFX")]
+    [M8.SoundPlaylist]
+    public string sfxVictory;
+
     void M8.IModalPush.Push(M8.GenericParams parms) {
         //get average efficiency
         var efficiencyScale = 0f;
@@ -51,5 +55,8 @@ public class ModalVictory : M8.ModalController, M8.IModalPush {
 
         rankText.text = rankData.text;
         rankText.color = rankData.color;
+
+        if(!string.IsNullOrEmpty(sfxVictory))
+            M8.SoundPlaylist.instance.Play(sfxVictory, false);
     }
 }

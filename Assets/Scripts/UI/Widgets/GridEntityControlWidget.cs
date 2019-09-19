@@ -10,9 +10,16 @@ public class GridEntityControlWidget : MonoBehaviour {
     public GameObject expandToggleGO;
     public Text titleText;
     public Text detailText;
+    public GameObject insufficientResourcesGO;
 
     [Header("Anchor")]
     public RectTransform anchorClamp;
+
+    [Header("SFX")]
+    [M8.SoundPlaylist]
+    public string sfxSelected;
+    [M8.SoundPlaylist]
+    public string sfxInvalid;
 
     [Header("Signal Listen")]
     public M8.Signal signalListenGhostSizeChanged;
@@ -70,6 +77,9 @@ public class GridEntityControlWidget : MonoBehaviour {
 
                 if(mCurEntity.signalInvokeEntitySizeChanged) //this will refresh display on cards
                     mCurEntity.signalInvokeEntitySizeChanged.Invoke(mCurEntity);
+
+                if(!string.IsNullOrEmpty(sfxInvalid))
+                    M8.SoundPlaylist.instance.Play(sfxInvalid, false);
             }
         }
         else //fail-safe
@@ -203,6 +213,8 @@ public class GridEntityControlWidget : MonoBehaviour {
             ghost.mode = ghostMode;
         }
 
+        insufficientResourcesGO.SetActive(false);
+
         //change info based on selected entity
         if(forceChanged || mCurEntity != editCtrl.selected) {
             mCurEntity = editCtrl.selected;
@@ -213,6 +225,9 @@ public class GridEntityControlWidget : MonoBehaviour {
                 titleText.text = M8.Localize.Get(mCurEntity.data.nameTextRef);
 
                 RefreshDimensionInfoDisplay();
+
+                if(!string.IsNullOrEmpty(sfxSelected))
+                    M8.SoundPlaylist.instance.Play(sfxSelected, false);
             }
         }
 
@@ -285,5 +300,9 @@ public class GridEntityControlWidget : MonoBehaviour {
         mStrBuff.Append(UnitMeasure.GetVolumeText(editCtrl.levelData.measureType, volume));*/
 
         detailText.text = mStrBuff.ToString();
+
+        //display insufficient resources
+        var availableCount = GridEditController.instance.GetAvailableCount();
+        insufficientResourcesGO.SetActive(availableCount < 0);
     }
 }

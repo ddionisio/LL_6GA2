@@ -10,6 +10,12 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
     public Text titleText;
     public GridEntityCardWidget cardDrag; //use for dragging
 
+    [Header("SFX")]
+    [M8.SoundPlaylist]
+    public string sfxDrag;
+    [M8.SoundPlaylist]
+    public string sfxInvalid;
+
     public GridEntityData data { get; private set; }
 
     private static readonly GridCell spawnSize = new GridCell { b=1, row=1, col=1 };
@@ -52,6 +58,9 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
 
         GridEditController.instance.editMode = GridEditController.EditMode.Placement;
 
+        if(!string.IsNullOrEmpty(sfxDrag))
+            M8.SoundPlaylist.instance.Play(sfxDrag, false);
+
         DragUpdate(eventData);
     }
 
@@ -84,6 +93,10 @@ public class GridEntityCardWidget : MonoBehaviour, IBeginDragHandler, IDragHandl
                 //select and set mode to expand
                 editCtrl.selected = spawnEnt;
                 editCtrl.editMode = GridEditController.EditMode.Expand;
+            }
+            else { //invalid placement
+                if(!string.IsNullOrEmpty(sfxInvalid))
+                    M8.SoundPlaylist.instance.Play(sfxInvalid, false);
             }
         }
     }
