@@ -116,7 +116,8 @@ public class GoalControlWidget : MonoBehaviour {
         var curGoal = editCtrl.levelData.goals[mCurrentEvaluateIndex];
 
         var goalVolume = curGoal.volume * editCtrl.levelData.unitVolume;
-        goalVolume.SimplifyImproper();
+        //goalVolume.SimplifyImproper();
+        goalVolume.Simplify();
 
         var goalHeight = curGoal.unitHeightRequire * editCtrl.levelData.sideMeasure;
         goalHeight.SimplifyImproper();
@@ -129,7 +130,8 @@ public class GoalControlWidget : MonoBehaviour {
         mSB.Clear();
 
         if(curEval.isValid)
-            mSB.Append(UnitMeasure.GetVolumeText(editCtrl.levelData.measureType, curEval.volume));
+            //mSB.Append(UnitMeasure.GetVolumeText(editCtrl.levelData.measureType, curEval.volume));
+            mSB.Append(UnitMeasure.GetVolumeText(editCtrl.levelData.measureType, curEval.volume.simplified));
         else
             mSB.Append("-- " + UnitMeasure.GetVolumeText(editCtrl.levelData.measureType));
 

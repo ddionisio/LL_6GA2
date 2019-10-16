@@ -295,9 +295,11 @@ public class GridEntityControlWidget : MonoBehaviour {
         mStrBuff.Append(num);
         mStrBuff.Append(measureStr);
 
-        /*mStrBuff.Append('\n');
+        mStrBuff.Append('\n');
 
-        mStrBuff.Append(UnitMeasure.GetVolumeText(editCtrl.levelData.measureType, volume));*/
+        var volDisplay = volume.simplified;
+
+        mStrBuff.Append(UnitMeasure.GetVolumeText(editCtrl.levelData.measureType, volDisplay));
 
         detailText.text = mStrBuff.ToString();
 
