@@ -31,7 +31,8 @@ public class GoalItemWidget : MonoBehaviour {
 
         var goalVolume = goal.volume * editCtrl.levelData.unitVolume;
         //goalVolume.SimplifyImproper();
-        goalVolume.Simplify();
+        //goalVolume.Simplify();
+        goalVolume.FractionToWhole();
 
         var goalHeight = goal.unitHeightRequire * editCtrl.levelData.sideMeasure;
         goalHeight.SimplifyImproper();

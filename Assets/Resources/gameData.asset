@@ -16,17 +16,17 @@ MonoBehaviour:
   bonusScore: 2500
   bonusPenalty: 250
   ranks:
-  - text: S
+  - text: A+
     scale: 1
     color: {r: 1, g: 0.8431373, b: 0.6, a: 1}
   - text: A
     scale: 0.9
     color: {r: 0.6627451, g: 0.8196079, b: 0.5176471, a: 1}
   - text: B
-    scale: 0.8
+    scale: 0.7
     color: {r: 0.8078432, g: 0.8000001, b: 0.87843144, a: 1}
   - text: C
-    scale: 0.7
+    scale: 0.5
     color: {r: 0.8078432, g: 0.52156866, b: 0.36078432, a: 1}
   - text: D
     scale: 0
