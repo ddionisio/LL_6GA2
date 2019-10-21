@@ -71,6 +71,7 @@
     "level_0_intro_2_1": "You will be placing a number of unit cubes on the ground to match the required volume.",
     "level_0_end_1": "If you count the number of unit cubes placed on the ground, it tells you the volume of the object.",
     "level_0_end_2": "In this case, this object is made up of 16 unit cubes, where each cube's volume is 1 cubic feet. Therefore the volume of the object is 16 cubic feet.",
+    "level_0_end_2_a": "To simplify this, take the measurement of the length, width, and height; then multiply them. In this case: 4 times 4 times 1 equals 16.",
     "level_0_end_3": "Anyhow, it's time to build!",
     "level_1_intro_0_1": "For this objective, we will have to stack more than one layer of cubes.",
     "level_1_intro_0_2": "In order to increase the stack while expanding, simply highlight the top surface and drag upwards.",
@@ -84,10 +85,15 @@
     "level_4_intro_0_1": "On this level, you will need to place two groups of unit cubes to get the required amount of volume.",
     "level_4_intro_0_2": "Volumes can be added together in any shape or form, so long as they are in the same measurement.",
     "level_4_intro_0_3": "In order for volumes to be added together, make sure they are placed adjacently on any of the sides.",
+    "level_4_intro_0_4": "Simply apply what you've done from the previous level to fill the grid, but with only one type of cube.",
     "level_6_intro_0_1": "On this level, one of the objectives have a restricted height.",
     "level_6_intro_0_2": "You won't be able to expand this particular material's height beyond the limit.",
     "end_title": "CONGRATULATIONS",
     "end_detail": "You have successfully given all the frogs a loving home!",
-    "end_detail_2": "Thank you for playing!"
+    "end_detail_2": "Thank you for playing!",
+    "delete_all_title": "Delete All Cubes",
+    "delete_all_desc": "Are you sure you want to delete all the cubes?",
+    "yes": "YES",
+    "no": "NO"
   }
 }

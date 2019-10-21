@@ -247,6 +247,10 @@ public class GridEditController : GameModeController<GridEditController> {
 
     private EditMode mCurEditMode = EditMode.None;    
     private GridEntity mCurSelected = null;
+
+    public void ChangeInvoke() {
+        editChangedCallback?.Invoke();
+    }
         
     protected override void OnInstanceDeinit() {
         GridEntityDisplay.ClearMeshCache();

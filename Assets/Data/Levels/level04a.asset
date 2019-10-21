@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47bdd5c5de3204c4e9af9246baf5546e, type: 3}
+  m_Name: level04a
+  m_EditorClassIdentifier: 
+  resourceCount: 48
+  sideMeasure:
+    _negative: 0
+    _whole: 1
+    _numerator: 0
+    _denominator: 0
+  measureType: 0
+  items:
+  - {fileID: 11400000, guid: 9045ebc6276bae748a05e10cec9f67ed, type: 2}
+  - {fileID: 11400000, guid: 11f91b665f80f3742a75b8684f9fce94, type: 2}
+  goals:
+  - data: {fileID: 11400000, guid: 9045ebc6276bae748a05e10cec9f67ed, type: 2}
+    volume: 30
+    unitHeightRequire: 0
+    measureType: 0
+  - data: {fileID: 11400000, guid: 11f91b665f80f3742a75b8684f9fce94, type: 2}
+    volume: 18
+    unitHeightRequire: 0
+    measureType: 0

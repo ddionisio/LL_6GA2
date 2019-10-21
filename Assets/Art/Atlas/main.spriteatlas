@@ -46,7 +46,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 989b186f8696db74fa5f2d810851e5b4, type: 3}
     - {fileID: 102900000, guid: 08393df466d1f8549bd2f20e93bf08b7, type: 3}
     - {fileID: 102900000, guid: b055f719595bcfe4380716af57d58acc, type: 3}
-    totalSpriteSurfaceArea: 82394
+    totalSpriteSurfaceArea: 84510
     bindAsDefault: 1
     storedHash:
       serializedVersion: 2
@@ -54,6 +54,7 @@ SpriteAtlas:
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 106d8740056c80e4ead51f4dae30f0cb, type: 3}
+  - {fileID: 21300000, guid: 91fe0e40bd0acce44bb27d56e315b470, type: 3}
   - {fileID: 21300000, guid: be98f690b6a68d8478a95623f406a172, type: 3}
   - {fileID: 21300000, guid: f79a0ad00c264f24f85c456504967d77, type: 3}
   - {fileID: 21300000, guid: 5ed7cd01c36b80f4588c3709e317573b, type: 3}
@@ -138,6 +139,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 49f63cbf9fa458c4cbc656fbdbb5124a, type: 3}
   m_PackedSpriteNamesToIndex:
   - cubeHouse03Icon
+  - retryButton
   - star
   - cube
   - arrow

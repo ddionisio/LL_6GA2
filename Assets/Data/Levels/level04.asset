@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47bdd5c5de3204c4e9af9246baf5546e, type: 3}
   m_Name: level04
   m_EditorClassIdentifier: 
-  resourceCount: 72
+  resourceCount: 48
   sideMeasure:
     _negative: 0
     _whole: 0
     _numerator: 1
-    _denominator: 3
+    _denominator: 2
   measureType: 0
   items:
   - {fileID: 11400000, guid: 9045ebc6276bae748a05e10cec9f67ed, type: 2}
   goals:
   - data: {fileID: 11400000, guid: 9045ebc6276bae748a05e10cec9f67ed, type: 2}
-    volume: 54
+    volume: 48
     unitHeightRequire: 0
     measureType: 0

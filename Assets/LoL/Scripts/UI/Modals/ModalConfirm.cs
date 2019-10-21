@@ -8,6 +8,9 @@ public class ModalConfirm : M8.ModalController, M8.IModalPush, M8.IModalPop, M8.
     public const string parmDescTextRef = "confirmDescTxtRef";
     public const string parmCallback = "confirmCB";
 
+    [Header("Config")]
+    public bool isDescSpeak = true;
+
     [Header("UI")]
     public Text titleText;
     public Text descText;
@@ -33,11 +36,13 @@ public class ModalConfirm : M8.ModalController, M8.IModalPush, M8.IModalPop, M8.
 
     void M8.IModalActive.SetActive(bool aActive) {
         if(aActive) {
-            if(!mIsDescSpoken) {
-                mIsDescSpoken = true;
+            if(isDescSpeak) {
+                if(!mIsDescSpoken) {
+                    mIsDescSpoken = true;
 
-                if(!string.IsNullOrEmpty(mDescTextRef))
-                    LoLManager.instance.SpeakText(mDescTextRef);
+                    if(!string.IsNullOrEmpty(mDescTextRef))
+                        LoLManager.instance.SpeakText(mDescTextRef);
+                }
             }
         }
     }
